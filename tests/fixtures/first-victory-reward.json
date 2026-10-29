@@ -1,0 +1,850 @@
+{
+  "source": {
+    "kind": "Recorded natural first battle victory used only as an isolated reward test fixture",
+    "version": "1.0.0-playtest.7-android.4",
+    "hp": 79,
+    "deckSize": 12
+  },
+  "state": {
+    "scene": "reward",
+    "timeMs": 1051766.6239999998,
+    "frameCount": 55845,
+    "fixedWidth": 1280,
+    "fixedHeight": 720,
+    "viewportScale": 0.79296875,
+    "settings": {
+      "volume": 0.7,
+      "musicVolume": 1,
+      "sfxVolume": 1,
+      "quality": "high"
+    },
+    "title": {
+      "heading": "江湖残卷：庶子刺客",
+      "subtitle": "杀入九城前，先选你的杀法",
+      "mode": "styles",
+      "prompt": "庶子命，九城已烂。你得先决定，自己靠什么手艺活下去。",
+      "note": "先把流派定下来，再入九城。",
+      "startLabel": "杀入九城",
+      "backLabel": "返回主菜单",
+      "selectedStyle": "blade",
+      "continueAvailable": false,
+      "saveSummary": null,
+      "saveLine": "本地存档：当前没有可续的 run。",
+      "settingsLine": "设置：音量 70% / 画质 高",
+      "saveSummaryLines": [
+        "还没有可续死局。",
+        "从「杀入九城」进入流派选择后开启新 run。"
+      ],
+      "menuItems": [
+        {
+          "id": "new_run",
+          "label": "杀入九城",
+          "subtitle": "开启新 run，先定流派再入城",
+          "disabled": false
+        },
+        {
+          "id": "continue",
+          "label": "再续死局",
+          "subtitle": "当前没有可续的死局",
+          "disabled": true
+        },
+        {
+          "id": "settings",
+          "label": "设置",
+          "subtitle": "音量与画质，直接写入本地",
+          "disabled": false
+        },
+        {
+          "id": "credits",
+          "label": "风云榜",
+          "subtitle": "制作名单与当前构建说明",
+          "disabled": false
+        }
+      ],
+      "options": [
+        {
+          "id": "blade",
+          "name": "吹命刀",
+          "theme": "极速 / 致命斩杀",
+          "keyword": "破绽",
+          "summary": "放弃防守，以伤换命，抢在体力耗尽前割开喉咙。",
+          "killerLine": "你不是来周旋，是来把人一刀封喉。",
+          "starterSummary": "起手：3 张抹脖子、1 张舍身一刀，其余由劲砍与招架撑底。",
+          "pressureLabel": "极高",
+          "complexityLabel": "偏难",
+          "accent": "#9d2a36",
+          "fill": "rgba(38, 16, 18, 0.96)",
+          "previewCards": [
+            {
+              "id": "blade_strike",
+              "name": "抹脖子",
+              "nameUpgraded": "抹脖子+",
+              "style": "blade",
+              "cost": 1,
+              "upgradeRule": "damage",
+              "damage": 9,
+              "flaw": 3,
+              "upgradedValues": {
+                "damage": 12,
+                "flaw": 3
+              },
+              "description": "造成 {damage} 伤害，施加 {flaw} 层破绽。",
+              "upgraded": false,
+              "baseName": "抹脖子",
+              "text": "造成 9 伤害，施加 3 层破绽。"
+            },
+            {
+              "id": "blade_sacrifice",
+              "name": "舍身一刀",
+              "nameUpgraded": "舍身一刀+",
+              "style": "blade",
+              "cost": 1,
+              "upgradeRule": "self_damage_down",
+              "consumeFlaw": true,
+              "damagePerFlaw": 3,
+              "selfDamage": 1,
+              "upgradedValues": {
+                "damagePerFlaw": 3,
+                "selfDamage": 0
+              },
+              "description": "消耗所有破绽，每层造成 {damagePerFlaw} 伤害，自己固定扣除 {selfDamage} 气血。",
+              "upgraded": false,
+              "baseName": "舍身一刀",
+              "text": "消耗所有破绽，每层造成 3 伤害，自己固定扣除 1 气血。"
+            },
+            {
+              "id": "blade_gut",
+              "name": "开膛",
+              "nameUpgraded": "开膛+",
+              "style": "blade",
+              "cost": 2,
+              "upgradeRule": "cost_down",
+              "damage": 16,
+              "executeThreshold": 0.35,
+              "executeDamage": 32,
+              "upgradedValues": {
+                "cost": 1,
+                "damage": 16,
+                "executeThreshold": 0.35,
+                "executeDamage": 32
+              },
+              "description": "造成 {damage} 伤害，若目标气血低于 35%，则改为 {executeDamage} 伤害。",
+              "upgraded": false,
+              "baseName": "开膛",
+              "text": "造成 16 伤害，若目标气血低于 35%，则改为 32 伤害。"
+            }
+          ]
+        },
+        {
+          "id": "iron",
+          "name": "外家横练",
+          "theme": "硬抗 / 钝器反击",
+          "keyword": "铁骨",
+          "summary": "先用架势硬吃一轮，再把骨头一节一节砸碎。",
+          "killerLine": "你要站着挨，然后顶着血气把人打塌。",
+          "starterSummary": "起手：3 张铁牛耕地、2 张沉马硬架、2 张抱架反砸，靠连皮带骨收拳。",
+          "pressureLabel": "高",
+          "complexityLabel": "稳",
+          "accent": "#7a8793",
+          "fill": "rgba(24, 28, 32, 0.96)",
+          "previewCards": [
+            {
+              "id": "iron_plow",
+              "name": "铁牛耕地",
+              "nameUpgraded": "铁牛耕地+",
+              "style": "iron",
+              "cost": 1,
+              "upgradeRule": "damage_block",
+              "damage": 6,
+              "block": 4,
+              "upgradedValues": {
+                "damage": 8,
+                "block": 6
+              },
+              "description": "造成 {damage} 伤害，获得 {block} 架势。",
+              "upgraded": false,
+              "baseName": "铁牛耕地",
+              "text": "造成 6 伤害，获得 4 架势。"
+            },
+            {
+              "id": "iron_bar",
+              "name": "铁门闩",
+              "nameUpgraded": "铁门闩+",
+              "style": "iron",
+              "cost": 2,
+              "upgradeRule": "block",
+              "block": 15,
+              "bonusBlockIfBlocked": 5,
+              "upgradedValues": {
+                "block": 18,
+                "bonusBlockIfBlocked": 5
+              },
+              "description": "获得 {block} 架势。若本回合已有架势，额外获得 {bonusBlockIfBlocked} 架势。",
+              "upgraded": false,
+              "baseName": "铁门闩",
+              "text": "获得 15 架势。若本回合已有架势，额外获得 5 架势。"
+            },
+            {
+              "id": "iron_bone_break",
+              "name": "连皮带骨",
+              "nameUpgraded": "连皮带骨+",
+              "style": "iron",
+              "cost": 1,
+              "upgradeRule": "damage",
+              "damageFromCurrentBlock": true,
+              "ironBoneDamage": 4,
+              "upgradedValues": {
+                "ironBoneDamage": 7
+              },
+              "description": "造成等于当前架势值的伤害。若触发铁骨，额外造成 {ironBoneDamage} 伤害。",
+              "upgraded": false,
+              "baseName": "连皮带骨",
+              "text": "造成等于当前架势值的伤害。若触发铁骨，额外造成 4 伤害。"
+            }
+          ]
+        },
+        {
+          "id": "dirty",
+          "name": "下三滥",
+          "theme": "阴毒 / 街头黑手",
+          "keyword": "溃烂",
+          "summary": "不讲规矩，先废手脚，再让伤口慢慢烂进去。",
+          "killerLine": "你靠的是脏手段，不是江湖体面。",
+          "starterSummary": "起手：3 张阴手捅刀、2 张撒石灰、2 张断筋，先把人拖进溃烂线。",
+          "pressureLabel": "中高",
+          "complexityLabel": "阴狠",
+          "accent": "#5f7d4f",
+          "fill": "rgba(22, 30, 20, 0.96)",
+          "previewCards": [
+            {
+              "id": "dirty_hidden_blade",
+              "name": "阴手捅刀",
+              "nameUpgraded": "阴手捅刀+",
+              "style": "dirty",
+              "cost": 1,
+              "upgradeRule": "status",
+              "damage": 4,
+              "fester": 3,
+              "upgradedValues": {
+                "damage": 4,
+                "fester": 4
+              },
+              "description": "造成 {damage} 伤害，施加 {fester} 层溃烂。",
+              "upgraded": false,
+              "baseName": "阴手捅刀",
+              "text": "造成 4 伤害，施加 3 层溃烂。"
+            },
+            {
+              "id": "dirty_lime_throw",
+              "name": "撒石灰",
+              "nameUpgraded": "撒石灰+",
+              "style": "dirty",
+              "cost": 1,
+              "upgradeRule": "status",
+              "blind": 2,
+              "upgradedValues": {
+                "cost": 0
+              },
+              "description": "施加 {blind} 层迷眼。下回合伤害减半。",
+              "upgraded": false,
+              "baseName": "撒石灰",
+              "text": "施加 2 层迷眼。下回合伤害减半。"
+            },
+            {
+              "id": "dirty_tendon_cut",
+              "name": "断筋",
+              "nameUpgraded": "断筋+",
+              "style": "dirty",
+              "cost": 1,
+              "upgradeRule": "status",
+              "damage": 3,
+              "crippleTurns": 2,
+              "upgradedValues": {
+                "damage": 3,
+                "crippleTurns": 3
+              },
+              "description": "造成 {damage} 伤害，残废 {crippleTurns} 回合。",
+              "upgraded": false,
+              "baseName": "断筋",
+              "text": "造成 3 伤害，残废 2 回合。"
+            }
+          ]
+        },
+        {
+          "id": "combo",
+          "name": "贴身短打",
+          "theme": "距离 / 连续压制",
+          "keyword": "连环",
+          "summary": "挤进三步之内，靠碎快动作把人打到还不了手。",
+          "killerLine": "你要黏上去，连着三四手把人气打断。",
+          "starterSummary": "起手：3 张闪身刺、3 张卸骨手、2 张寸拳连珠，尽快把连环拉起来。",
+          "pressureLabel": "高",
+          "complexityLabel": "偏难",
+          "accent": "#b8862b",
+          "fill": "rgba(38, 28, 14, 0.96)",
+          "previewCards": [
+            {
+              "id": "combo_dash",
+              "name": "闪身刺",
+              "nameUpgraded": "闪身刺+",
+              "style": "combo",
+              "cost": 1,
+              "comboTag": true,
+              "upgradeRule": "draw",
+              "damage": 3,
+              "draw": 1,
+              "upgradedValues": {
+                "damage": 3,
+                "draw": 2
+              },
+              "description": "造成 {damage} 伤害，抽 {draw} 张牌。",
+              "upgraded": false,
+              "baseName": "闪身刺",
+              "text": "造成 3 伤害，抽 1 张牌。"
+            },
+            {
+              "id": "combo_bone_hand",
+              "name": "卸骨手",
+              "nameUpgraded": "卸骨手+",
+              "style": "combo",
+              "cost": 0,
+              "comboTag": true,
+              "upgradeRule": "draw",
+              "block": 3,
+              "draw": 1,
+              "upgradedValues": {
+                "block": 3,
+                "draw": 2
+              },
+              "description": "获得 {block} 架势，抽 {draw} 张牌。",
+              "upgraded": false,
+              "baseName": "卸骨手",
+              "text": "获得 3 架势，抽 1 张牌。"
+            },
+            {
+              "id": "combo_chain_punch",
+              "name": "寸拳连珠",
+              "nameUpgraded": "寸拳连珠+",
+              "style": "combo",
+              "cost": 1,
+              "comboTag": true,
+              "upgradeRule": "multi_hit",
+              "damage": 2,
+              "hits": 4,
+              "upgradedValues": {
+                "damage": 2,
+                "hits": 5
+              },
+              "description": "造成 {damage} 伤害，连续 {hits} 次。",
+              "upgraded": false,
+              "baseName": "寸拳连珠",
+              "text": "造成 2 伤害，连续 4 次。"
+            }
+          ]
+        }
+      ],
+      "creditRows": [
+        {
+          "role": "策划蓝本",
+          "value": "DESIGN-DOCUMENT-v3.4"
+        },
+        {
+          "role": "项目协作",
+          "value": "用户 + Codex"
+        },
+        {
+          "role": "视觉层",
+          "value": "本地程序化美术包"
+        },
+        {
+          "role": "音频层",
+          "value": "Web Audio 程序化配乐与音效"
+        },
+        {
+          "role": "验证环境",
+          "value": "系统 Edge / Chrome"
+        }
+      ]
+    },
+    "player": {
+      "hp": 79,
+      "maxHp": 80,
+      "poisonTurns": 0,
+      "energy": 0,
+      "maxEnergy": 3,
+      "block": 0,
+      "gold": 120,
+      "relics": [],
+      "removeServiceCount": 0,
+      "deckSize": 12,
+      "chosenStyle": "blade",
+      "masterDeckNames": [
+        "劈砍",
+        "抹脖子",
+        "招架",
+        "抹脖子",
+        "舍身一刀",
+        "劈砍",
+        "招架",
+        "劈砍",
+        "招架",
+        "劈砍",
+        "抹脖子",
+        "招架"
+      ]
+    },
+    "combat": {
+      "hand": [
+        {
+          "id": "card_1_劈砍",
+          "name": "劈砍",
+          "definitionId": "basic_strike",
+          "sourceCard": {
+            "id": "basic_strike",
+            "name": "劈砍",
+            "nameUpgraded": "劈砍+",
+            "style": "basic",
+            "cost": 1,
+            "upgradeRule": "damage",
+            "damage": 6,
+            "upgradedValues": {
+              "damage": 9
+            },
+            "description": "造成 {damage} 伤害。",
+            "upgraded": false,
+            "baseName": "劈砍",
+            "text": "造成 6 伤害。"
+          },
+          "style": "basic",
+          "baseCost": 1,
+          "cost": 1,
+          "text": "造成 6 伤害。",
+          "artPath": null,
+          "comboTag": false,
+          "comboDiscounted": false,
+          "damage": 6,
+          "relicDiscounted": false,
+          "playable": false
+        },
+        {
+          "id": "card_3_招架",
+          "name": "招架",
+          "definitionId": "basic_defend",
+          "sourceCard": {
+            "id": "basic_defend",
+            "name": "招架",
+            "nameUpgraded": "招架+",
+            "style": "basic",
+            "cost": 1,
+            "upgradeRule": "block",
+            "block": 5,
+            "upgradedValues": {
+              "block": 8
+            },
+            "description": "获得 {block} 架势。",
+            "upgraded": false,
+            "baseName": "招架",
+            "text": "获得 5 架势。"
+          },
+          "style": "basic",
+          "baseCost": 1,
+          "cost": 1,
+          "text": "获得 5 架势。",
+          "artPath": null,
+          "comboTag": false,
+          "comboDiscounted": false,
+          "block": 5,
+          "relicDiscounted": false,
+          "playable": false
+        }
+      ],
+      "drawPileCount": 7,
+      "discardPileCount": 3,
+      "enemies": [
+        {
+          "id": "routed_qing_soldier_1",
+          "templateId": "routed_qing_soldier",
+          "name": "溃逃清兵",
+          "kind": "normal",
+          "behavior": "simple",
+          "maxHp": 25,
+          "hp": 0,
+          "block": 0,
+          "baseAttack": 6,
+          "intent": "attack",
+          "intentLabel": "劈砍",
+          "intentValue": 6,
+          "intentData": {
+            "damage": 6,
+            "baseDamage": 6
+          },
+          "debuffs": {
+            "flaw": 0,
+            "fester": 0,
+            "blind": 0,
+            "crippleTurns": 0
+          },
+          "buffs": {
+            "fervor": 0
+          },
+          "ai": {
+            "cycleIndex": 0,
+            "pendingFervor": false,
+            "hitTakenThisTurn": false,
+            "guardChiefPhase": "high",
+            "phaseCycleIndex": 0
+          }
+        }
+      ],
+      "turn": 1,
+      "comboCount": 3,
+      "comboDiscountUses": 0,
+      "seeded": true,
+      "selectedCardId": null,
+      "inspectCardId": null,
+      "inspectPresentation": {
+        "cardId": "card_5_舍身一刀",
+        "progress": 0.2857142857142857,
+        "targetVisible": false
+      },
+      "goldGranted": 20,
+      "ui": {
+        "overlay": null
+      },
+      "playedCards": [
+        {
+          "name": "抹脖子",
+          "style": "blade"
+        },
+        {
+          "name": "抹脖子",
+          "style": "blade"
+        },
+        {
+          "name": "舍身一刀",
+          "style": "blade"
+        }
+      ],
+      "lastPlayedCardName": "舍身一刀",
+      "lastPlayedCardStyle": "blade",
+      "lastKillCardName": "舍身一刀",
+      "lastKillCardStyle": "blade",
+      "nemesisRecorded": false,
+      "rewardState": {
+        "relicResolved": false,
+        "cardResolved": false,
+        "completed": false,
+        "lastRelicChoice": null,
+        "lastCardChoice": null
+      },
+      "presentation": {
+        "pendingScene": null,
+        "transitionMs": 0,
+        "enemyLayoutHoldMs": 0,
+        "enemyLayoutEnemyIds": null
+      },
+      "cardSerial": 6,
+      "cardLibrary": {
+        "劈砍": {
+          "id": "basic_strike",
+          "name": "劈砍",
+          "nameUpgraded": "劈砍+",
+          "style": "basic",
+          "cost": 1,
+          "upgradeRule": "damage",
+          "damage": 6,
+          "upgradedValues": {
+            "damage": 9
+          },
+          "description": "造成 {damage} 伤害。",
+          "upgraded": false,
+          "baseName": "劈砍",
+          "text": "造成 6 伤害。"
+        },
+        "抹脖子": {
+          "id": "blade_strike",
+          "name": "抹脖子",
+          "nameUpgraded": "抹脖子+",
+          "style": "blade",
+          "cost": 1,
+          "upgradeRule": "damage",
+          "damage": 9,
+          "flaw": 3,
+          "upgradedValues": {
+            "damage": 12,
+            "flaw": 3
+          },
+          "description": "造成 {damage} 伤害，施加 {flaw} 层破绽。",
+          "upgraded": false,
+          "baseName": "抹脖子",
+          "text": "造成 9 伤害，施加 3 层破绽。"
+        },
+        "招架": {
+          "id": "basic_defend",
+          "name": "招架",
+          "nameUpgraded": "招架+",
+          "style": "basic",
+          "cost": 1,
+          "upgradeRule": "block",
+          "block": 5,
+          "upgradedValues": {
+            "block": 8
+          },
+          "description": "获得 {block} 架势。",
+          "upgraded": false,
+          "baseName": "招架",
+          "text": "获得 5 架势。"
+        },
+        "舍身一刀": {
+          "id": "blade_sacrifice",
+          "name": "舍身一刀",
+          "nameUpgraded": "舍身一刀+",
+          "style": "blade",
+          "cost": 1,
+          "upgradeRule": "self_damage_down",
+          "consumeFlaw": true,
+          "damagePerFlaw": 3,
+          "selfDamage": 1,
+          "upgradedValues": {
+            "damagePerFlaw": 3,
+            "selfDamage": 0
+          },
+          "description": "消耗所有破绽，每层造成 {damagePerFlaw} 伤害，自己固定扣除 {selfDamage} 气血。",
+          "upgraded": false,
+          "baseName": "舍身一刀",
+          "text": "消耗所有破绽，每层造成 3 伤害，自己固定扣除 1 气血。"
+        }
+      },
+      "drawPileNames": [
+        "劈砍",
+        "招架",
+        "劈砍",
+        "招架",
+        "劈砍",
+        "抹脖子",
+        "招架"
+      ],
+      "discardPileNames": [
+        "抹脖子",
+        "抹脖子",
+        "舍身一刀"
+      ],
+      "enemySerial": 2,
+      "encounterId": "street_intro",
+      "encounterName": "乱军缺口",
+      "nodeType": "street",
+      "actNumber": 1,
+      "nemesisEntryId": null,
+      "nemesisName": null,
+      "nemesisTitle": null,
+      "nemesisLevel": null,
+      "nemesisAdaptation": null,
+      "nemesisFirearmStage": "none",
+      "nemesisScaledHP": null,
+      "nemesisScaledAttack": null,
+      "nemesisFirearmDamage": null,
+      "rngSeed": 1348994505,
+      "lastAction": "敌人倒地不起，搏杀胜利。",
+      "lastEnemyAction": "",
+      "result": "victory",
+      "relicState": {
+        "combatStartApplied": true,
+        "combatEndApplied": true,
+        "sleeveTriggerUsed": false,
+        "lastSleeveTriggerBonus": 0,
+        "lastBandageHeal": 0,
+        "cheatCuffUsed": false,
+        "lastCheatCuffCardName": null
+      },
+      "lastPlayedCardId": "card_5_舍身一刀",
+      "lastTargetId": "routed_qing_soldier_1",
+      "feedbackToken": 3
+    },
+    "runReport": null,
+    "nemesis": {
+      "pool": [],
+      "nextId": 1,
+      "currentRunEntryIds": []
+    },
+    "reward": {
+      "mode": "card",
+      "title": "战后搜得",
+      "subtitle": "得了 20 大洋，还可从 3 式里带走一式。",
+      "cardOptions": [
+        {
+          "id": "blade_life_trade",
+          "name": "换命扑斩",
+          "nameUpgraded": "换命扑斩+",
+          "style": "blade",
+          "cost": 2,
+          "upgradeRule": "self_damage_down",
+          "damage": 20,
+          "selfDamage": 1,
+          "upgradedValues": {
+            "damage": 20,
+            "selfDamage": 0
+          },
+          "description": "造成 {damage} 伤害，自己固定扣除 {selfDamage} 气血。",
+          "upgraded": false,
+          "baseName": "换命扑斩",
+          "text": "造成 20 伤害，自己固定扣除 1 气血。"
+        },
+        {
+          "id": "blade_double_edge",
+          "name": "连环抹线",
+          "nameUpgraded": "连环抹线+",
+          "style": "blade",
+          "cost": 1,
+          "upgradeRule": "multi_hit",
+          "damage": 3,
+          "hits": 3,
+          "flaw": 1,
+          "upgradedValues": {
+            "damage": 3,
+            "hits": 4,
+            "flaw": 1
+          },
+          "description": "造成 {damage} 伤害，连续 {hits} 次，并施加 {flaw} 层破绽。",
+          "upgraded": false,
+          "baseName": "连环抹线",
+          "text": "造成 3 伤害，连续 3 次，并施加 1 层破绽。"
+        },
+        {
+          "id": "blade_rain_cut",
+          "name": "疾雨三刀",
+          "nameUpgraded": "疾雨三刀+",
+          "style": "blade",
+          "cost": 1,
+          "upgradeRule": "multi_hit",
+          "damage": 3,
+          "hits": 4,
+          "flaw": 1,
+          "upgradedValues": {
+            "damage": 3,
+            "hits": 5,
+            "flaw": 1
+          },
+          "description": "造成 {damage} 伤害，连续 {hits} 次，并施加 {flaw} 层破绽。",
+          "upgraded": false,
+          "baseName": "疾雨三刀",
+          "text": "造成 3 伤害，连续 4 次，并施加 1 层破绽。"
+        }
+      ],
+      "relicOptions": [],
+      "options": [
+        {
+          "id": "blade_life_trade",
+          "name": "换命扑斩",
+          "nameUpgraded": "换命扑斩+",
+          "style": "blade",
+          "cost": 2,
+          "upgradeRule": "self_damage_down",
+          "damage": 20,
+          "selfDamage": 1,
+          "upgradedValues": {
+            "damage": 20,
+            "selfDamage": 0
+          },
+          "description": "造成 {damage} 伤害，自己固定扣除 {selfDamage} 气血。",
+          "upgraded": false,
+          "baseName": "换命扑斩",
+          "text": "造成 20 伤害，自己固定扣除 1 气血。"
+        },
+        {
+          "id": "blade_double_edge",
+          "name": "连环抹线",
+          "nameUpgraded": "连环抹线+",
+          "style": "blade",
+          "cost": 1,
+          "upgradeRule": "multi_hit",
+          "damage": 3,
+          "hits": 3,
+          "flaw": 1,
+          "upgradedValues": {
+            "damage": 3,
+            "hits": 4,
+            "flaw": 1
+          },
+          "description": "造成 {damage} 伤害，连续 {hits} 次，并施加 {flaw} 层破绽。",
+          "upgraded": false,
+          "baseName": "连环抹线",
+          "text": "造成 3 伤害，连续 3 次，并施加 1 层破绽。"
+        },
+        {
+          "id": "blade_rain_cut",
+          "name": "疾雨三刀",
+          "nameUpgraded": "疾雨三刀+",
+          "style": "blade",
+          "cost": 1,
+          "upgradeRule": "multi_hit",
+          "damage": 3,
+          "hits": 4,
+          "flaw": 1,
+          "upgradedValues": {
+            "damage": 3,
+            "hits": 5,
+            "flaw": 1
+          },
+          "description": "造成 {damage} 伤害，连续 {hits} 次，并施加 {flaw} 层破绽。",
+          "upgraded": false,
+          "baseName": "疾雨三刀",
+          "text": "造成 3 伤害，连续 4 次，并施加 1 层破绽。"
+        }
+      ],
+      "skipLabel": "拂袖而去",
+      "lastChoice": null,
+      "lastRelicChoice": null,
+      "goldAward": 20,
+      "entryNodeType": "street",
+      "entryNodeLabel": "喋血街头",
+      "entryEncounterName": "乱军缺口",
+      "entryKillCardName": "舍身一刀",
+      "entryVictoryTitle": "搏杀得手",
+      "entryVictorySubtitle": "街头已清，顺手收起能带走的东西。",
+      "entrySummary": "街头收尾要利索，到手 20 大洋，再挑一式带走。",
+      "trophyLabel": "此战所得",
+      "hoverActivated": false,
+      "hoveredOptionIndex": null,
+      "hoverPointerX": 640,
+      "hoverPointerY": 360,
+      "presentation": {
+        "introMs": 0,
+        "introDurationMs": 760,
+        "cardStaggerMs": 86
+      },
+      "reviewHoverIndex": null,
+      "reviewHoverMs": 0
+    },
+    "rest": null,
+    "shop": null,
+    "event": null,
+    "events": {
+      "seenIds": [],
+      "nextSeed": 1900,
+      "history": []
+    },
+    "map": null,
+    "nemesisIntro": null,
+    "arrival": null,
+    "campaign": {
+      "version": 1,
+      "battles": [
+        {
+          "act": 1,
+          "nodeId": "opening",
+          "type": "street",
+          "name": "乱军缺口",
+          "result": "victory",
+          "turns": 1,
+          "hp": 79,
+          "entryId": null,
+          "gold": 20
+        }
+      ],
+      "cardsPlayed": 3
+    },
+    "reviewReceipt": null,
+    "reviewPanel": null,
+    "reviewJourney": null
+  }
+}

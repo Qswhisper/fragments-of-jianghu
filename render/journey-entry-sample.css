@@ -1,0 +1,44 @@
+/* Cinematic choices: light, typography and spacing carry the controls. */
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry { color: #c8c2b4; }
+.cinematic-eyebrow { font: clamp(13px,1.12cqw,21px)/1.4 'KGame Sans',sans-serif; color: #a19a8b; letter-spacing: .22em; }
+.cinematic-heading { font: clamp(27px,2.65cqw,50px)/1.35 'KGame Ink',serif; color: #d9d0bd; letter-spacing: .12em; }
+.cinematic-selection { background: var(--school-accent,#97584a); transition: top .3s cubic-bezier(.16,1,.3,1),background .3s; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-school { padding-left: 2.82cqw; color: #98998f; animation: cinematic-reveal .55s .13s both; transition: color .22s; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-school::before { content: none; }
+.cinematic-entry .entry-school .school-name,.cinematic-entry .entry-school.selected .school-name { font: clamp(25px,2.5cqw,47px)/1.45 'KGame Ink',serif; letter-spacing: .08em; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-school.selected { color: #e4d6bd; }
+.cinematic-entry .school-hint { display: none; }
+.cinematic-entry .cinematic-number { position: absolute; left: 0; top: 30%; font: clamp(12px,1cqw,19px)/1.4 Georgia,serif; color: #73796f; letter-spacing: .06em; }
+.cinematic-entry .cinematic-kind { position: absolute; right: .1cqw; top: 26%; font: clamp(13px,1.12cqw,21px)/1.5 'KGame Ink',serif; color: #777e73; letter-spacing: .15em; transition: color .22s; }
+.cinematic-entry .entry-school.selected .cinematic-number,.cinematic-entry .entry-school.selected .cinematic-kind { color: var(--school-ink,#b69b76); }
+#entry-ui.cinematic-entry .entry-school:hover { transform: none; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-school:hover .school-name { color: #bfc1b0; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-school.selected:hover .school-name { color: #f0dfbe; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-school::after { left: 2.82cqw; bottom: 6%; height: 1px; clip-path: none; background: linear-gradient(90deg,#ac9875,#ac987500); transition: width .2s; }
+.cinematic-detail { color: #b2afa1; font: clamp(16px,1.4cqw,26px)/1.65 'KGame Ink',serif; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-back,:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-loadout,:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-start { background: transparent; background-image: none; box-shadow: none; filter: none; clip-path: none; padding: 0; text-align: left; animation: cinematic-reveal .55s .2s both; transition: color .18s; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-back { font: clamp(16px,1.4cqw,26px)/1.4 'KGame Ink',serif; color: #a8a797; padding-left: 3.1cqw; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-back::before { content: ''; position: absolute; width: 1.75cqw; height: 1px; left: 0; top: 50%; background: currentColor; margin: 0; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-back::after { content: ''; position: absolute; width: .6cqw; height: .6cqw; border-left: 1px solid currentColor; border-bottom: 1px solid currentColor; left: 0; top: calc(50% - .3cqw); transform: rotate(45deg); }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-loadout { font: clamp(16px,1.4cqw,26px)/1.4 'KGame Ink',serif; color: #aaa793; white-space: nowrap; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-loadout::before { content: none; }
+.cinematic-small-arrow { margin-left: .5cqw; color: #8f947f; display: inline-block; transition: translate .2s,color .2s; }
+.cinematic-entry .entry-loadout:hover .cinematic-small-arrow { color: #dbccac; translate: 2px -2px; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-start { color: #e1d1b4; letter-spacing: .16em; font-family: 'KGame Ink',serif; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry .entry-start::before { content: none; }
+.cinematic-entry .entry-start::after { content: ''; position: absolute; left: 0; top: 59%; width: 100%; height: 1px; background: linear-gradient(90deg,#b6a07c99,#b6a07c22); transition: opacity .2s; opacity: .7; }
+.cinematic-start-label { position: absolute; left: 0; top: 0; font-size: clamp(29px,2.75cqw,52px); line-height: 1.25; }
+.cinematic-start-note { position: absolute; top: 72%; left: 0; font: clamp(13px,1.1cqw,21px)/1.3 'KGame Ink',serif; letter-spacing: .09em; color: #938f7e; }
+.cinematic-forward { position: absolute; right: .65cqw; top: 28%; width: 3.3cqw; height: 1px; background: currentColor; transition: translate .22s; }
+.cinematic-forward::after { content: ''; position: absolute; right: 0; top: -.36cqw; width: .73cqw; height: .73cqw; border-right: 1px solid currentColor; border-top: 1px solid currentColor; transform: rotate(45deg); }
+.cinematic-entry .entry-start:hover .cinematic-forward { translate: .35cqw 0; }
+.cinematic-entry .entry-start:hover::after,.cinematic-entry .entry-start:focus-visible::after { opacity: 1; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-entry button:hover,:is(#entry-ui,.journey-motion-ghost).cinematic-entry button:focus-visible { color: #f0dfbe; background: transparent; filter: none; outline: none; }
+.cinematic-entry .entry-loadout:focus-visible { text-decoration: underline; text-underline-offset: .35em; }
+.cinematic-entry .entry-back:focus-visible .cinematic-back-label { text-decoration: underline; text-underline-offset: .35em; }
+.cinematic-entry .entry-start:focus-visible .cinematic-forward { translate: .35cqw 0; }
+.cinematic-entry button:active { opacity: .72; }
+.cinematic-eyebrow,.cinematic-heading,.cinematic-detail { animation: cinematic-reveal .55s .08s both; }
+@keyframes cinematic-reveal { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
+.motion-reduced .cinematic-entry * { animation: none !important; transition: none !important; }
+@media(prefers-reduced-motion:reduce) { .cinematic-entry * { animation: none !important; transition: none !important; } }

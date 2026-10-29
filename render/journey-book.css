@@ -1,0 +1,101 @@
+/* Travel book: one material language for inventory, pause and records. */
+#journey-dialog { width:min(1100px,94vw); padding:24px 30px; color:#362d24; background:linear-gradient(100deg,#b6a58aee,#d0c2a7f5 38%,#b8a689f5); border:0; border-left:12px solid #292923; box-shadow:0 22px 90px #000d,inset 1px 0 #9a8869; }
+#journey-dialog::before { content:''; position:absolute; inset:0; pointer-events:none; opacity:.16; background:url('../assets/ui/combat_card_torn_rice_paper_gpt4ovip_transparent_01.png') center/cover; mix-blend-mode:multiply; }
+#journey-dialog { overflow:hidden; }
+#journey-dialog header,#dialog-content { position:relative; }
+#dialog-content { max-height:calc(88dvh - 116px);overflow:auto;padding:0 10px 12px 0;scrollbar-color:#846d51 transparent;scrollbar-width:thin; }
+#journey-dialog header { border-bottom:1px solid #79654c66; padding-bottom:16px; }
+#journey-dialog h1 { font-size:30px; letter-spacing:.12em; color:#34291f; }
+#journey-dialog h2 { color:#3c2f23; font-family:'KGame Ink',serif; font-size:24px; }
+#journey-dialog h3 { color:#4b3928; font-size:16px; margin:20px 0 8px; }
+#journey-dialog p { color:#4c4031; line-height:1.85; }
+#journey-dialog a { color:#793d2c; text-decoration:underline; text-underline-offset:3px; }
+#journey-dialog a:hover,#journey-dialog a:focus-visible { color:#572719; }
+#journey-dialog .meta { color:#7b4837; }
+#journey-dialog button,#journey-dialog select { color:#493726; background:#d3c3a33d; border-color:#7b644f66; border-radius:0; }
+#journey-dialog button:hover,#journey-dialog button:focus-visible { color:#7c3028; background:#e1cba65e; outline:1px solid #833d2e; }
+#journey-dialog #close-dialog,#journey-dialog #back-dialog { background:transparent; border:0; }
+#journey-dialog .entry { border-top:1px solid #79654c66; background:transparent; }
+#journey-dialog.pause-root { width:min(850px,92vw); padding:24px 36px 36px; }
+#journey-dialog.pause-root header { position:absolute; inset:8px 10px auto auto; border:0; padding:0; background:transparent; z-index:4; }
+#journey-dialog.pause-root header h1 { position:absolute; width:1px; height:1px; overflow:hidden; }
+#journey-dialog.pause-root #close-dialog { min-width:44px; min-height:44px; }
+#journey-dialog.pause-root .pause-layout { padding-top:16px; }
+#journey-dialog.pause-root #dialog-content { max-height:calc(88dvh - 72px); }
+#journey-dialog.pause-root h1 { visibility:hidden; }
+.pause-layout { display:grid; grid-template-columns:1.25fr 1fr; gap:48px; }
+.pause-lead { padding:8px 10px 0 4px; }
+.pause-kicker { color:#806449; letter-spacing:.3em; font:16px 'KGame Ink',serif; }
+#journey-dialog .pause-lead h2 { font-size:42px; letter-spacing:.12em; margin:18px 0 20px; }
+#journey-dialog #resume-journey { display:block; margin-top:35px; padding:12px 34px; color:#dbc7a4; background:#34342d; border:0; font:26px 'KGame Ink',serif; letter-spacing:.15em; box-shadow:3px 4px 9px #35271640; }
+#journey-dialog #resume-journey::before { content:'行'; color:#dab896; background:#803b2e; display:inline-grid; place-items:center; width:25px; height:25px; font-size:18px; margin-right:18px; rotate:-4deg; }
+.pause-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; border-left:1px solid #80694d66; padding-left:32px; margin:0; }
+#journey-dialog .pause-actions button { padding:12px 4px; border:0; border-bottom:1px solid #8b70524d; font:23px 'KGame Ink',serif; text-align:left; background:transparent; }
+#journey-dialog #return-main-menu { grid-column:1/-1; font-size:17px; margin-top:16px; color:#70533d; border:0; }
+.book-summary { display:flex; justify-content:space-between; gap:20px; padding:18px 0; color:#715b41; font-size:14px; }
+.opening-preparation { border-top:1px solid #79654c66; margin-bottom:20px; }
+#journey-dialog .opening-preparation p { margin:8px 0; font-size:14px; }
+.opening-preparation details { font-size:14px; margin:10px 0; }
+#journey-dialog .opening-preparation button,#journey-dialog .prepare-opening { min-height:44px; padding:8px 12px; margin-top:12px; font-size:15px; }
+.entry-save-note { font:clamp(12px,1.1cqw,21px)/1 'KGame Sans',sans-serif;color:#a6a392; }
+#journey-dialog .book-summary::after { content:'向下滚动查看更多';color:#7b4837;font-size:13px; }
+.deck-book { display:grid; grid-template-columns:minmax(0,1fr) 235px; gap:35px; align-items:start; }
+.card-shelf { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:24px 20px; padding:5px 7px 25px; }
+#journey-dialog .book-card { position:relative; border:0; padding:0; background:transparent; box-shadow:2px 5px 7px #33251670; line-height:0; }
+.book-card canvas { width:100%; height:auto; display:block; }
+.card-accessible-name { position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%); }
+#journey-dialog .book-card.selected { outline:2px solid #873e2f; outline-offset:4px; }
+.card-count { position:absolute; right:-5px; bottom:-9px; font:14px/1.6 'KGame Sans',sans-serif; padding:2px 12px; color:#d6c3a1; background:#33332b; box-shadow:1px 2px 4px #0006; }
+.card-detail { border-left:1px solid #80694d66; padding-left:25px; position:sticky; top:0; }
+.card-detail canvas { width:100%; height:auto; display:block; box-shadow:2px 4px 8px #49352055; }
+.card-detail:focus-visible { outline:1px solid #833d2e; outline-offset:3px; }
+#journey-dialog .card-detail h2 { font-size:22px; margin:16px 0 9px; }
+#journey-dialog .card-detail p { font-size:14px; margin-bottom:0; }
+.book-relics { border-top:1px solid #79654c66; margin-top:20px; }
+.relic-entry { display:flex; gap:20px; align-items:center; }
+.relic-entry img { width:70px; height:80px; object-fit:contain; }
+#journey-dialog .relic-entry h3 { margin:8px 0 0; }.relic-entry p { margin:5px 0; font-size:14px; }
+.route-chapters { grid-template-columns:1fr!important; gap:8px; counter-reset:chapter; }
+.route-chapters .entry { padding-left:65px!important; position:relative; }
+.route-chapters .entry::before { counter-increment:chapter; content:'0' counter(chapter); position:absolute; left:3px; top:20px; font:36px 'KGame Ink',serif; color:#88664c; }
+.nemesis-record { display:grid; grid-template-columns:250px minmax(0,1fr); gap:34px; padding:25px 0; border-bottom:1px solid #79654c66; }
+.nemesis-record > img { width:100%; height:360px; object-fit:contain; object-position:center top; filter:saturate(.65) brightness(.85); mask-image:linear-gradient(#000 75%,transparent); }
+#journey-dialog .nemesis-record h2 { margin:13px 0 10px; font-size:32px; }
+.record-stamp { display:inline-block; padding:3px 8px; border:1px solid #8b3c2a; color:#883d2e; font:15px 'KGame Ink',serif; rotate:-3deg; }
+.memory-history { padding-left:23px; color:#57432f; font-size:14px; line-height:2; }
+.help-chapter { position:relative; padding-left:60px; margin:24px 0; }.help-chapter h2 { margin:0 0 9px; }
+.chapter-number { position:absolute; left:3px; top:0; font:32px 'KGame Ink',serif; color:#88664c; }
+#journey-dialog input[type=range],#journey-dialog input[type=checkbox] { accent-color:#7f3d2e; }
+#journey-dialog .range-controls output { color:#6b4e37; }
+#journey-dialog[data-panel="settings"],#journey-dialog[data-panel="credits"] { width:min(480px,92vw); padding:26px 30px; }
+#journey-dialog .enemy-history summary { color:#793d2c; }
+@media(max-height:500px){#journey-dialog[data-panel="settings"],#journey-dialog[data-panel="credits"]{padding:14px 24px}}
+@media(max-width:850px){.deck-book{grid-template-columns:minmax(0,1fr) 185px;gap:23px}.card-shelf{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 16px}.card-detail{padding-left:18px}}
+@media(max-width:600px){#journey-dialog{padding:18px;border-left-width:6px}.pause-layout{grid-template-columns:1fr;gap:22px}.pause-actions{border-left:0;padding-left:0}.deck-book{grid-template-columns:minmax(0,1fr) 135px;gap:16px}.card-shelf{grid-template-columns:repeat(2,minmax(0,1fr))}.nemesis-record{grid-template-columns:120px minmax(0,1fr);gap:20px}.nemesis-record>img{height:240px}}
+
+/* Keep the selected identity and its actions reachable beside a long shelf. */
+@media(max-height:500px) {
+  .card-detail { max-height:calc(88dvh - 128px); overflow:auto; overscroll-behavior:contain; scrollbar-color:#846d51 transparent; scrollbar-width:thin; padding-right:8px; padding-bottom:8px; }
+  .card-detail canvas { width:56px; float:right; margin:0 0 8px 8px; }
+  #journey-dialog .card-detail h2 { font-size:20px; margin:0 0 9px; }
+  #journey-dialog .card-detail p { clear:both; }
+}
+
+/* A short PC window needs the same complete pause choices as a phone. */
+@media(max-height:500px) and (min-width:601px) {
+  #journey-dialog.pause-root { padding:12px 22px; }
+  .pause-root .pause-layout { gap:24px; }
+  .pause-root .pause-lead { padding:0; }
+  .pause-root .pause-kicker { font-size:12px; }
+  #journey-dialog .pause-lead h2 { font-size:26px; margin:8px 0; }
+  #journey-dialog .pause-lead p { font-size:14px; line-height:1.5; margin:8px 0; }
+  #journey-dialog #resume-journey { margin-top:8px; padding:8px 18px; font-size:22px; min-height:44px; }
+  .pause-root .pause-actions { gap:4px 12px; padding-left:16px; }
+  #journey-dialog .pause-actions button { font-size:18px; min-height:44px; padding:8px 4px; }
+  #journey-dialog #return-main-menu { margin-top:0; }
+}
+
+/* Keep the accepted integrated opening scene; give its primary entrance weight. */
+:is(#entry-ui,.journey-motion-ghost).cinematic-menu .entry-menu-button.primary { padding-left:4.7cqw;background:linear-gradient(90deg,#30372ee8,#30372e99 76%,#30372e00);clip-path:polygon(0 6%,29% 0,98% 4%,100% 93%,67% 100%,0 96%); }
+:is(#entry-ui,.journey-motion-ghost).cinematic-menu .entry-menu-button.primary::before { content:'行';left:1.25cqw;top:50%;transform:translateY(-50%);width:2.1cqw;height:2.1cqw;display:grid;place-items:center;rotate:-4deg;background:#843b2f;color:#dbc4a4;font:1.5cqw 'KGame Ink',serif; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-menu .entry-menu-button:not(.primary) { font-size:clamp(21px,1.9cqw,36px);color:#b7b09f; }

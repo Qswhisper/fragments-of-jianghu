@@ -1,0 +1,37 @@
+{
+  "name": "fragments-of-jianghu",
+  "version": "1.0.0",
+  "releaseVersion": "1.0",
+  "description": "江湖残卷：单机武侠卡牌构筑游戏",
+  "private": true,
+  "scripts": {
+    "build:release": "node scripts/build-release.mjs",
+    "package:offline": "node scripts/build-release.mjs && node scripts/package-offline.mjs",
+    "package:android": "node scripts/build-android.mjs",
+    "test": "node scripts/verify.mjs rules",
+    "test:realistic": "node scripts/verify.mjs realistic",
+    "test:journey": "node scripts/verify.mjs journey",
+    "test:mobile-combat": "node tests/mobile-combat-layout.mjs",
+    "test:material-cache": "node tests/material-layer-cache.mjs",
+    "assets:setup": "node scripts/setup-assets.mjs",
+    "test:paper-chain": "node tests/paper-chain.mjs --mobile"
+  },
+  "keywords": [],
+  "author": "Qswhisper",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "playwright": "^1.58.2"
+  },
+  "buildRevision": "1.0.37",
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Qswhisper/fragments-of-jianghu.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Qswhisper/fragments-of-jianghu/issues"
+  }
+}

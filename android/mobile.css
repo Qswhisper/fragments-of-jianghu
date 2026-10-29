@@ -1,0 +1,47 @@
+/* Android-only touch controls; the original 16:9 composition remains intact. */
+body { -webkit-user-select:none; user-select:none; overscroll-behavior:none; }
+#open-pause { width:44px; height:44px; }
+#journey-dialog { max-height:94dvh; }
+#journey-dialog header { position:sticky; top:-1px; z-index:3; background:#c9b895; padding:8px 0; }
+#journey-dialog #close-dialog,#journey-dialog #back-dialog { min-height:44px; min-width:44px; }
+#journey-dialog p { font-size:16px; }
+#journey-dialog input[type=range] { min-height:44px; }
+#mobile-read { width:min(570px,88vw); max-height:86dvh; padding:14px 22px; background:#b9a88b; color:#352b20; border:1px solid #78674d; box-shadow:0 10px 36px #0008; }
+#mobile-read header { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+#mobile-read header { position:sticky; top:-14px; z-index:2; background:#b9a88b; margin-bottom:12px; }
+#mobile-read h2 { color:#3c2f23; font-size:19px; margin:8px 0; }
+#mobile-read header h2 { font-size:21px; }
+#mobile-read button { min-height:44px; color:#3c2f23; background:#aa947040; }
+#mobile-read p { color:#3c2f23; font-size:16.5px; line-height:1.65; margin:8px 0; }
+#mobile-read .read-row { border-bottom:1px solid #79654c66; padding:10px 0; }
+#mobile-read, #mobile-read * { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+#mobile-read .read-card { float:left; width:116px; height:auto; margin:0 22px 14px 0; }
+#mobile-read.has-card .read-row { margin-left:138px; min-height:132px; border:0; }
+#mobile-read footer { clear:both; padding-top:10px; border-top:1px solid #79654c66; font-size:13px; line-height:1.6; }
+#mobile-read[open] { animation:read-arrive .26s cubic-bezier(.18,.8,.25,1) both; }
+#mobile-read.read-depart { animation:read-depart .16s ease-in both; }
+#mobile-read[open]::backdrop { background:#0007; animation:backdrop-arrive .22s ease-out both; }
+#mobile-read.read-depart::backdrop { animation:read-backdrop-depart .16s ease-in both; }
+@keyframes read-arrive { from {opacity:0; transform:translate(var(--read-x,0),var(--read-y,8px)) scale(.965);} to {opacity:1;transform:none;} }
+@keyframes read-depart { from {opacity:1;transform:none;} to {opacity:0;transform:translate(var(--read-x,0),var(--read-y,8px)) scale(.975);} }
+@keyframes read-backdrop-depart { to {background:transparent;} }
+@media(max-height:500px) {
+  #journey-dialog { padding:12px 20px; }
+  #journey-dialog.pause-root { padding:12px 22px; }
+  .pause-layout { gap:24px; }
+  .pause-lead { padding:0; }
+  .pause-kicker { font-size:12px; }
+  #journey-dialog .pause-lead h2 { font-size:26px; margin:8px 0; }
+  #journey-dialog .pause-lead p { font-size:14px; line-height:1.5; margin:8px 0; }
+  #journey-dialog #resume-journey { margin-top:8px; padding:8px 18px; font-size:22px; min-height:44px; }
+  .pause-actions { gap:4px 12px; padding-left:16px; }
+  #journey-dialog .pause-actions button { font-size:18px; min-height:44px; padding:8px 4px; }
+  #journey-dialog #return-main-menu { margin-top:0; }
+  .card-shelf { gap:16px; }
+  #entry-ui.cinematic-menu .entry-menu-button { font-size:clamp(15px,2.5cqw,24px); }
+  #entry-ui.cinematic-entry .school-name { font-size:clamp(16px,2.5cqw,25px); }
+  #entry-ui .cinematic-kind { font-size:clamp(10px,1.12cqw,15px); }
+  #entry-ui .cinematic-heading { font-size:clamp(18px,2.65cqw,28px); }
+  #entry-ui .cinematic-detail { font-size:clamp(12px,1.4cqw,17px); }
+  #entry-ui .cinematic-start-label { font-size:clamp(20px,2.75cqw,29px); }
+}

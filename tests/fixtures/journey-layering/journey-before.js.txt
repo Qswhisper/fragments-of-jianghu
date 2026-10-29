@@ -1,0 +1,341 @@
+/* Optional realistic reward/rest review. Rule actions delegate to the existing scenes. */
+(function () {
+  'use strict';
+  const reward=G.scenes.reward,rest=G.scenes.rest,S=G.scenes.restShared,A=G.render.assets;
+  const base={rewardUpdate:reward.update,restUpdate:rest.update,restPrepare:rest.prepareState,rewardLayout:reward.getLayout,restLayout:S.getLayout};
+  const copy=x=>JSON.parse(JSON.stringify(x)),box=(x,y,width,height)=>({x,y,width,height});
+  function contains(p,b){
+    if(!p||!b)return false;
+    if(b.quad){let inside=false;for(let i=0,j=b.quad.length-1;i<b.quad.length;j=i++){const a=b.quad[i],c=b.quad[j];if((a[1]>p.y)!==(c[1]>p.y)&&p.x<(c[0]-a[0])*(p.y-a[1])/(c[1]-a[1])+a[0])inside=!inside;}return inside;}
+    if(b.rotation){const x=p.x-b.x-b.width/2,y=p.y-b.y-b.height/2,c=Math.cos(b.rotation),s=Math.sin(b.rotation);return Math.abs(x*c+y*s)<=b.width/2&&Math.abs(y*c-x*s)<=b.height/2;}
+    return p.x>=b.x&&p.x<=b.x+b.width&&p.y>=b.y&&p.y<=b.y+b.height;
+  }
+  // This optional entry owns the journey; the look selector compares combat only.
+  const active=()=>!!G.render.realisticJourney;
+  const onPaper=(x,y,width,height)=>({...box(x,y,width,height),paper:true});
+  const B={deck:box(1080,48,154,40),restDeck:box(1080,48,154,40),
+    close:box(1134,48,100,40),prev:onPaper(282,474,112,38),next:onPaper(474,484,112,38),
+    upgradePrev:onPaper(282,474,112,38),upgradeNext:onPaper(474,484,112,38)};
+  Object.defineProperties(B,{
+    confirm:{enumerable:true,get:()=>rewardScreenConfirmBox(G.main?.getState().reward)},
+    cancel:{enumerable:true,get:()=>G.main?.getState().reviewReceipt?B.deck:onPaper(294,474,154,38)},
+    accept:{enumerable:true,get:()=>{
+      const r=G.main?.getState().reviewReceipt;
+      return r&&!r.cardName?(r.kind==='reward'?box(428,214,190,44):box(72,262,190,44)):onPaper(896,482,190,38);
+    }}
+  });
+  const folioQuads={left:[[302,125],[670,139],[650,491],[206,467]],right:[[724,137],[1090,150],[1112,505],[720,485]]};
+  function mapPoint(q,u,v){return [q[0][0]*(1-u)*(1-v)+q[1][0]*u*(1-v)+q[2][0]*u*v+q[3][0]*(1-u)*v,q[0][1]*(1-u)*(1-v)+q[1][1]*u*(1-v)+q[2][1]*u*v+q[3][1]*(1-u)*v];}
+  function pageBox(q,u,v,w,h){const quad=[[u,v],[u+w,v],[u+w,v+h],[u,v+h]].map(([a,b])=>mapPoint(q,a,b)),xs=quad.map(p=>p[0]),ys=quad.map(p=>p[1]);return {...box(Math.min(...xs),Math.min(...ys),Math.max(...xs)-Math.min(...xs),Math.max(...ys)-Math.min(...ys)),quad};}
+  const stackBoxes=S.getUpgradeStackBoxes;
+  function rewardLayout(count){
+    const L=base.rewardLayout(count),w=count===4?172:204,gap=count===4?26:42,start=772-(count*w+(count-1)*gap)/2;
+    L.cards=Array.from({length:count},(_,i)=>({...box(start+i*(w+gap),count===3?[154,192,128][i]:156+(i%2)*35,w,count===4?294:306),rotation:count===3?[-.105,.038,.086][i]:[-.09,.04,-.032,.08][i]}));
+    L.skip=box(1114,106,120,38);return L;
+  }
+  function rewardConfirmBox(r){
+    const b=r&&Number.isInteger(r.reviewSelectedIndex)?rewardLayout(r.options.length).cards[r.reviewSelectedIndex]:null;
+    if(!b)return box(864,566,170,38);
+    const offset=b.height/2-29,cx=b.x+b.width/2-Math.sin(b.rotation)*offset,cy=b.y+b.height/2+Math.cos(b.rotation)*offset;
+    return {...onPaper(cx-(b.width-36)/2,cy-19,b.width-36,38),rotation:b.rotation};
+  }
+  function rewardScreenConfirmBox(r){
+    const b=rewardConfirmBox(r);if(!r||!Number.isInteger(r.reviewSelectedIndex))return b;
+    const v=rewardView(r),cx=v.x+(b.x+b.width/2-v.x)*v.scale,cy=v.y+(b.y+b.height/2-v.y)*v.scale;
+    return {...b,...box(cx-b.width*v.scale/2,cy-b.height*v.scale/2,b.width*v.scale,b.height*v.scale)};
+  }
+  function restLayout(){return {...base.restLayout(),heal:box(54,270,498,294),upgrade:box(690,270,516,294),healLabel:box(156,278,250,68),upgradeLabel:box(848,304,260,68),back:box(1114,106,120,38)};}
+  function upgradeBoxes(state){
+    const stacks=S.buildUpgradeStacks(state.rest.deckEntries).slice((state.rest.reviewUpgradePage||0)*4,(state.rest.reviewUpgradePage||0)*4+4);
+    return stacks.map((s,i)=>({...s,...pageBox(folioQuads.left,.04,.17+i*.185,.91,.16)}));
+  }
+  // Only this optional entry changes layout; original rule hit boxes remain captured above.
+  reward.getLayout=rewardLayout;S.getLayout=restLayout;
+  const assetPaths=['assets/ui/journey_reward_combat_paint_v2_20261001.png',
+    'assets/ui/journey_rest_combat_paint_v2_20261001.png','assets/ui/combat_card_torn_rice_paper_gpt4ovip_transparent_01.png','assets/ui/journey_folio_combat_paint_v2_20261001.png',
+    ...Object.keys(G.relics.definitions).map(id=>'assets/ui/shop_relic_'+id+'_gpt15all_01.png')];
+  let cancelRequested=false;
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&active()&&['reward','rest'].includes(G.main?.getState().scene)){e.preventDefault();cancelRequested=true;}});
+  window.addEventListener('contextmenu',e=>{if(e.target.id==='game-canvas'&&active()&&['reward','rest'].includes(G.main?.getState().scene)){e.preventDefault();cancelRequested=true;}});
+  function invoke(fn,state,input,clicks){
+    const consume=G.main.consumeClicks;G.main.consumeClicks=()=>{const q=clicks;clicks=[];return q;};
+    try{return fn(state,input);}finally{G.main.consumeClicks=consume;}
+  }
+  function text(ctx,value,x,y,size=18,color='#d9c9ad',align='left'){
+    ctx.save();ctx.shadowColor=/^#[0-7]/i.test(color)?'transparent':'#060808';ctx.shadowBlur=/^#[0-7]/i.test(color)?0:2;ctx.shadowOffsetY=1;
+    G.render.realisticCombat.ui.ink(ctx,value,x,y,size,color,align);ctx.restore();
+  }
+  function button(ctx,b,label,enabled=true){
+    const p=G.main.getPointer(),m=ctx.getTransform().inverse(),pointer={x:m.a*p.x+m.c*p.y+m.e,y:m.b*p.x+m.d*p.y+m.f},hover=enabled&&contains(pointer,b);
+    ctx.save();ctx.globalAlpha=enabled?1:.38;
+    const color=b.paper?(hover?'#81392b':'#271f19'):(hover?'#fff0d4':'#c7baa6');
+    text(ctx,label,b.x+b.width/2,b.y+b.height/2,16,color,'center');
+    if(hover){ctx.strokeStyle=b.paper?'#81392b':'#bc9e72';ctx.beginPath();ctx.moveTo(b.x+22,b.y+b.height-5);ctx.lineTo(b.x+b.width-22,b.y+b.height-5);ctx.stroke();}ctx.restore();
+  }
+  function paper(ctx,b){
+    ctx.save();ctx.beginPath();ctx.moveTo(b.x+6,b.y+3);ctx.lineTo(b.x+b.width*.31,b.y);ctx.lineTo(b.x+b.width*.33,b.y+2);ctx.lineTo(b.x+b.width-5,b.y+1);
+    ctx.lineTo(b.x+b.width,b.y+b.height*.61);ctx.lineTo(b.x+b.width-3,b.y+b.height*.64);ctx.lineTo(b.x+b.width-2,b.y+b.height-4);
+    ctx.lineTo(b.x+b.width*.28,b.y+b.height);ctx.lineTo(b.x+3,b.y+b.height-3);ctx.lineTo(b.x,b.y+b.height*.24);ctx.closePath();ctx.clip();
+    ctx.fillStyle='#b6ac96';ctx.fillRect(b.x,b.y,b.width,b.height);
+    const entry=A.getImageEntry('assets/ui/combat_card_torn_rice_paper_gpt4ovip_transparent_01.png');
+    if(entry.loaded){const img=entry.image;ctx.globalAlpha*=.43;ctx.filter='saturate(.4)';ctx.drawImage(img,img.width*.16,img.height*.19,img.width*.68,img.height*.6,b.x,b.y,b.width,b.height);}
+    ctx.restore();
+  }
+  function veil(ctx){ctx.fillStyle='rgba(5,8,10,.58)';ctx.fillRect(0,0,1280,720);}
+  function wrap(ctx,value,x,y,width,size=14,color='#453727',maxLines=5){
+    ctx.save();ctx.font='600 '+size+'px '+G.render.ui.getBodyFontFamily();ctx.fillStyle=color;ctx.textBaseline='top';
+    const tokens=String(value||'').match(/\d+(?:\.\d+)?%?|[a-zA-Z]+|[^\n]|\n/g)||[],lines=[];let line='';
+    for(const token of tokens){if(token==='\n'||(line&&ctx.measureText(line+token).width>width&&!/^[，。、；：！？）】》]/.test(token))){lines.push(line);line=token==='\n'?'':token;}else line+=token;}
+    if(line)lines.push(line);lines.slice(0,maxLines).forEach((s,i)=>ctx.fillText(i===maxLines-1&&lines.length>maxLines?s.slice(0,-1)+'…':s,x,y+i*(size+6)));ctx.restore();
+  }
+  function resolvedCard(entry){
+    const def=G.cards.getCardByName(entry.name)||entry,c={...def,...entry},manifest=window.KGAME_CARD_ART_MANIFEST.cards;
+    let id=c.id;if(!manifest[id])id=c.consumeFlaw?'blade_sacrifice':c.flaw?'blade_quick_cut':c.fester||c.blind?'dirty_lime_throw':c.block&&!c.damage?'basic_defend':c.hits>1?'combo_chain_punch':'basic_strike';
+    return {c,art:manifest[id]};
+  }
+  function originalArt(ctx,entry,b){
+    const {art}=resolvedCard(entry),path=typeof art==='string'?art:art?.path;
+    if(!path)return;ctx.save();ctx.beginPath();ctx.rect(b.x,b.y,b.width,b.height);ctx.clip();A.drawImageCover(ctx,path,b.x,b.y,b.width,b.height);ctx.restore();
+  }
+  // Use the same card renderer, original art, fonts, paper and seals as the accepted combat.
+  function combatCard(ctx,entry,b){
+    const {c}=resolvedCard(entry),scale=b.width/150;
+    ctx.save();ctx.translate(b.x,b.y);ctx.scale(scale,scale);
+    G.render.woodcut.card(ctx,{...c,sourceCard:c,x:0,y:0,width:150,height:b.height/scale,layoutMode:'detail',playable:true,disableBaseShadow:true,shadowBlur:3,shadowOffsetX:2,shadowOffsetY:3});ctx.restore();
+  }
+  function pageContents(ctx,entry,b,label){
+    if(label)text(ctx,label,b.x+36,b.y+17,16,'#302b26');
+    const height=b.height-(label?46:16),width=Math.min(b.width-68,height*150/218);
+    combatCard(ctx,entry,box(b.x+(b.width-width)/2,b.y+(label?36:8),width,height));
+  }
+  function sheet(ctx,entry,b,index=0,selected=false,relic=false){
+    const local=box(-b.width/2,-b.height/2,b.width,b.height);
+    ctx.save();ctx.translate(b.x+b.width/2,b.y+b.height/2);ctx.rotate(b.rotation||0);
+    if(relic){ctx.save();ctx.shadowColor='#05060688';ctx.shadowBlur=4;ctx.shadowOffsetX=3;ctx.shadowOffsetY=4;paper(ctx,local);ctx.restore();relicContents(ctx,entry,local);}
+    else combatCard(ctx,entry,local);
+    if(selected){
+      const action=onPaper(local.x+18,local.y+b.height-48,b.width-36,38);
+      text(ctx,'取',action.x+14,action.y+19,18,'#823f2f');
+      button(ctx,action,relic?'收下旧物':'带走此式');
+    }
+    ctx.restore();
+  }
+  function warpPage(ctx,layer,q){
+    const w=layer.width,h=layer.height;
+    function triangle(s,d){
+      const [p0,p1,p2]=s,[t0,t1,t2]=d,dx1=p1[0]-p0[0],dy1=p1[1]-p0[1],dx2=p2[0]-p0[0],dy2=p2[1]-p0[1],det=dx1*dy2-dx2*dy1;
+      const a=((t1[0]-t0[0])*dy2-(t2[0]-t0[0])*dy1)/det,c=((t2[0]-t0[0])*dx1-(t1[0]-t0[0])*dx2)/det,b=((t1[1]-t0[1])*dy2-(t2[1]-t0[1])*dy1)/det,f=((t2[1]-t0[1])*dx1-(t1[1]-t0[1])*dx2)/det;
+      // Slightly overlap clip edges so opaque black card art has no antialias seams.
+      const centre=[d.reduce((sum,p)=>sum+p[0],0)/3,d.reduce((sum,p)=>sum+p[1],0)/3],clip=d.map(p=>{const dx=p[0]-centre[0],dy=p[1]-centre[1],length=Math.hypot(dx,dy);return [p[0]+dx/length*.65,p[1]+dy/length*.65];});
+      ctx.save();ctx.beginPath();clip.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.clip();ctx.transform(a,b,c,f,t0[0]-a*p0[0]-c*p0[1],t0[1]-b*p0[0]-f*p0[1]);ctx.drawImage(layer,0,0);ctx.restore();
+    }
+    ctx.save();
+    for(let row=0;row<6;row++){const v=row/6,n=(row+1)/6,s=[[0,v*h],[w,v*h],[w,n*h],[0,n*h]],d=[[0,v],[1,v],[1,n],[0,n]].map(([u,t])=>mapPoint(q,u,t));triangle([s[0],s[1],s[2]],[d[0],d[1],d[2]]);triangle([s[0],s[2],s[3]],[d[0],d[2],d[3]]);}
+    ctx.restore();
+  }
+  function folioPage(ctx,side,paint){const layer=document.createElement('canvas');layer.width=420;layer.height=440;paint(layer.getContext('2d'),box(0,0,420,440));warpPage(ctx,layer,folioQuads[side]);}
+  function sceneHeader(ctx,state,title,subtitle,kind='folio'){
+    const x=kind==='rest'?72:kind==='reward'?428:270,y=kind==='folio'?68:84;
+    text(ctx,title,x,y,kind==='folio'?20:28,'#dccdb3');if(subtitle)text(ctx,subtitle,x,y+33,13,'#aa9e8b');stats(ctx,state);
+  }
+  function rewardView(r){const b=rewardLayout(r.options.length).cards[r.reviewHoverIndex],t=Math.max(0,Math.min(1,((r.reviewHoverMs||0)-1000)/220));return t>0&&b?{scale:1+.28*(1-Math.pow(1-t,3)),x:b.x+b.width/2,y:b.y+b.height/2}:{scale:1,x:0,y:0};}
+  function rewardPoint(r,p){const v=rewardView(r);return p&&!contains(p,B.deck)&&!contains(p,rewardLayout(r.options.length).skip)?{x:v.x+(p.x-v.x)/v.scale,y:v.y+(p.y-v.y)/v.scale}:p;}
+  function rewardStage(ctx,r){const v=rewardView(r);ctx.translate(v.x,v.y);ctx.scale(v.scale,v.scale);ctx.translate(-v.x,-v.y);stage(ctx,'reward');}
+  const layers={};
+  function stage(ctx,kind){
+    const path=kind==='reward'?assetPaths[0]:kind==='folio'?assetPaths[3]:assetPaths[1],entry=A.getImageEntry(path);
+    if(!entry.loaded){ctx.fillStyle='#11161a';ctx.fillRect(0,0,1280,720);return;}
+    if(!layers[kind]){
+      const layer=document.createElement('canvas');layer.width=1280;layer.height=720;const c=layer.getContext('2d');
+      c.save();c.filter='saturate(.65) brightness(.82)';A.drawImageCover(c,path,0,0,1280,720);c.restore();layers[kind]=layer;
+    }
+    ctx.drawImage(layers[kind],0,0);
+  }
+  function stats(ctx,state){
+    const p=state.player;text(ctx,'气血 '+p.hp+'/'+p.maxHp+'   ·   大洋 '+p.gold+'   ·   行囊 '+p.masterDeckNames.length+' 张',48,689,12,'#a79d8c');
+  }
+  function note(ctx,value,x,y,max=42){(String(value).match(new RegExp('.{1,'+max+'}','g'))||[]).slice(0,2).forEach((line,i)=>text(ctx,line,x,y+i*24,13,'#aa9c87'));}
+  function deckGroups(state){
+    const groups=[];for(const name of state.player.masterDeckNames){let item=groups.find(g=>g.name===name);if(!item){item={name,count:0,card:G.cards.getCardByName(name)};groups.push(item);}item.count++;}return groups;
+  }
+  function deckRows(state){const page=state.reviewPanel.page||0;return deckGroups(state).slice(page*8,page*8+8).map((g,i)=>({...g,index:page*8+i,box:pageBox(folioQuads.left,.04,.15+i*.101,.91,.084)}));}
+  function renderDeck(ctx,state){
+    const groups=deckGroups(state),panel=state.reviewPanel;stage(ctx,'folio');
+    folioPage(ctx,'left',(c,b)=>{
+      text(c,'行囊招录',18,28,29,'#292622');
+      deckRows(state).forEach((g,i)=>{const y=440*(.15+i*.101);text(c,g.name,20,y+20,23,'#292622');text(c,'× '+g.count,390,y+20,20,'#39362e','right');if(panel.index===g.index){c.strokeStyle='#8d5039';c.lineWidth=1;c.beginPath();c.moveTo(20,y+36);c.lineTo(388,y+36);c.stroke();}});
+    });
+    const selected=groups[panel.index]||groups[0];if(selected?.card)folioPage(ctx,'right',(c,b)=>pageContents(c,selected.card,b,'行囊中的招式'));
+    sceneHeader(ctx,state,'行囊',state.player.masterDeckNames.length+' 张 · '+groups.length+' 式');
+    button(ctx,B.close,'收起');
+    button(ctx,B.prev,'上一页',panel.page>0);button(ctx,B.next,'下一页',(panel.page+1)*8<groups.length);
+    text(ctx,(panel.page+1)+' / '+Math.ceil(groups.length/8),438,505,13,'#292622','center');
+  }
+  function updateDeck(state,click,cancel){
+    if(cancel||contains(click,B.close)){state.reviewPanel=null;return state;}
+    const p=state.reviewPanel,groups=deckGroups(state);
+    if(contains(click,B.prev)&&p.page>0){p.page--;p.index=p.page*8;}
+    else if(contains(click,B.next)&&(p.page+1)*8<groups.length){p.page++;p.index=p.page*8;}
+    else{const row=deckRows(state).find(r=>contains(click,r.box));if(row)p.index=row.index;}
+    return state;
+  }
+  function openDeck(state){state.reviewPanel={type:'deck',page:0,index:0};return state;}
+  rest.prepareState=function(state){
+    const next=base.restPrepare(state);
+    if(active()&&state.rest?.nodeId===next.rest.nodeId){
+      next.rest.reviewUpgradePage=Math.min(state.rest.reviewUpgradePage||0,Math.max(0,Math.ceil(S.buildUpgradeStacks(next.rest.deckEntries).length/4)-1));
+      if(next.rest.mode==='upgrade'&&Number.isInteger(state.rest.reviewUpgradeIndex)&&next.rest.deckEntries[state.rest.reviewUpgradeIndex]?.canUpgrade)next.rest.reviewUpgradeIndex=state.rest.reviewUpgradeIndex;
+      else next.rest.reviewUpgradeIndex=null;
+      // Main prepares scene state after every update; keep the live dwell across those frames.
+      next.rest.reviewHoveredStack=next.rest.mode==='upgrade'?state.rest.reviewHoveredStack:null;
+      next.rest.reviewHoverMs=next.rest.mode==='upgrade'?(state.rest.reviewHoverMs||0):0;
+    }
+    return next;
+  };
+  function receipt(state,previous,title,lines,kind){
+    const cardName=title==='已收入行囊'?previous.reward.options[previous.reward.reviewSelectedIndex]?.name:title==='再练一式'?state.player.masterDeckNames[previous.rest.reviewUpgradeIndex]:null;
+    state.scene=kind;state[kind]=copy(previous[kind]);state.reviewPanel=null;
+    state.reviewReceipt={title,lines,kind,cardName,lockMs:240};if(kind==='rest'){state.rest.mode='result';state.rest.reviewUpgradeIndex=null;}return state;
+  }
+  function continueReceipt(state){
+    const kind=state.reviewReceipt.kind;state.reviewReceipt=null;state.reviewPanel=null;
+    if(state.reviewJourney?.mode==='sequence'){
+      if(kind==='reward'){state.reward=null;state.rest=null;state.scene='rest';return rest.prepareState(state);}
+      if(state.reviewJourney.leg===0){state.reviewJourney.leg=1;return G.realisticReview.beginBattle(state,'street_foreign_scout');}
+      state.rest.mode='result';state.reviewReceipt={kind:'complete',title:'暂得喘息',lines:['刀伤裹好，招式也多了几分火候。','城门以外，仍有未了的恩怨。']};return state;
+    }
+    state.reward=null;state.rest=null;state.scene='map';return G.scenes.map.prepareState(state);
+  }
+  function receiptInput(state,click,cancel,input){
+    state.reviewReceipt.lockMs=Math.max(0,(state.reviewReceipt.lockMs||0)-(input?.deltaMs||0));
+    if(state.reviewPanel)return updateDeck(state,click,cancel);
+    if(contains(click,B.cancel))return openDeck(state);
+    if(contains(click,B.accept)&&state.reviewReceipt.lockMs===0){
+      if(state.reviewReceipt.kind==='complete'){G.realisticReview.restart();return G.main.getState();}
+      return continueReceipt(state);
+    }
+    return state;
+  }
+  function renderReceipt(ctx,state){
+    const r=state.reviewReceipt,entry=r.cardName&&G.cards.getCardByName(r.cardName);
+    if(entry){stage(ctx,'folio');folioPage(ctx,'left',(c,b)=>pageContents(c,entry,b,'这一程的所得'));folioPage(ctx,'right',c=>{text(c,'行路小记',26,30,29,'#453629');r.lines.forEach((line,i)=>wrap(c,line,26,100+i*120,364,22,'#493a2b',4));});}
+    else stage(ctx,r.kind==='reward'?'reward':'rest');
+    sceneHeader(ctx,state,r.title,entry?'招式已记入行囊。':null,entry?'folio':r.kind==='reward'?'reward':'rest');
+    if(!entry){const x=r.kind==='reward'?428:72;r.lines.forEach((line,i)=>wrap(ctx,line,x,158+i*42,460,17,'#c1b8aa',2));}
+    button(ctx,B.cancel,'查看牌组');button(ctx,B.accept,state.reviewReceipt.kind==='complete'?'再走一遍':state.reviewReceipt.kind==='reward'&&state.reviewJourney?.mode==='sequence'?'去破庙歇脚':'继续上路',!state.reviewReceipt.lockMs);
+  }
+  reward.update=function(state,input){
+    if(!active())return base.rewardUpdate(state,input);
+    let next=copy(state);const clicks=G.main.consumeClicks(),click=clicks[0],cancel=cancelRequested;cancelRequested=false;
+    if(next.reviewReceipt)return receiptInput(next,click,cancel,input);
+    if(next.reviewPanel)return updateDeck(next,click,cancel);
+    next=invoke(base.rewardUpdate,next,input,[]);const r=next.reward,L=reward.getLayout(r.options.length);
+    const hoverIndex=r.hoverActivated?L.cards.findIndex(b=>contains(rewardPoint(r,G.main.getPointer()),b)):-1,hover=hoverIndex<0?null:hoverIndex;r.hoveredOptionIndex=hover;
+    if(r.reviewHoverIndex!==hover){r.reviewHoverIndex=hover;r.reviewHoverMs=0;}
+    else if(Number.isInteger(hover))r.reviewHoverMs=(r.reviewHoverMs||0)+(input?.deltaMs||0);
+    if(cancel){r.reviewSelectedIndex=null;return next;}
+    if(!click)return next;
+    if(contains(click,B.deck))return openDeck(next);
+    const selected=Number.isInteger(r.reviewSelectedIndex)?r.options[r.reviewSelectedIndex]:null;
+    if(selected&&contains(rewardPoint(r,click),rewardConfirmBox(r))){
+      const b=base.rewardLayout(r.options.length).cards[r.reviewSelectedIndex];
+      const result=invoke(base.rewardUpdate,next,{deltaMs:0},[{x:b.x+4,y:b.y+4}]);
+      if(result.scene==='reward'){result.reward.reviewSelectedIndex=null;return result;}
+      return receipt(result,next,'已收入行囊',['招式【'+selected.name+'】已加入牌组。','牌组 '+next.player.masterDeckNames.length+' → '+result.player.masterDeckNames.length+' 张；此战大洋已结入行囊。'],'reward');
+    }
+    const index=L.cards.findIndex(b=>contains(rewardPoint(r,click),b));
+    if(index>=0){r.presentation.introMs=0;r.reviewSelectedIndex=index;return next;}
+    if(contains(click,L.skip)){
+      const b=base.rewardLayout(r.options.length).skip;
+      const result=invoke(base.rewardUpdate,next,{deltaMs:0},[{x:b.x+4,y:b.y+4}]);
+      if(result.scene==='reward'){result.reward.reviewSelectedIndex=null;return result;}
+      return receipt(result,next,'拂袖而去',['未取招式，牌组保持 '+result.player.masterDeckNames.length+' 张。','已获得的战斗大洋保留。'],'reward');
+    }
+    return next;
+  };
+  rest.update=function(state,input){
+    if(!active())return base.restUpdate(state,input);
+    let next=copy(state);const clicks=G.main.consumeClicks(),click=clicks[0],cancel=cancelRequested;cancelRequested=false;
+    if(next.reviewReceipt)return receiptInput(next,click,cancel,input);
+    if(next.reviewPanel)return updateDeck(next,click,cancel);
+    next=invoke(base.restUpdate,next,input,[]);const r=next.rest,L=S.getLayout();
+    const hovered=r.mode==='upgrade'&&!Number.isInteger(r.reviewUpgradeIndex)?upgradeBoxes(next).find(b=>contains(G.main.getPointer(),b))?.deckIndex:null;
+    if(r.reviewHoveredStack!==hovered){r.reviewHoveredStack=hovered;r.reviewHoverMs=0;}
+    else if(Number.isInteger(hovered))r.reviewHoverMs=(r.reviewHoverMs||0)+(input?.deltaMs||0);
+    if(cancel){if(Number.isInteger(r.reviewUpgradeIndex))r.reviewUpgradeIndex=null;else r.mode='choice';return next;}
+    if(!click)return next;
+    if(contains(click,B.restDeck))return openDeck(next);
+    if(Number.isInteger(r.reviewUpgradeIndex)){
+      if(contains(click,B.cancel)){r.reviewUpgradeIndex=null;return next;}
+      if(!contains(click,B.accept))return next;
+      const entry=r.deckEntries[r.reviewUpgradeIndex],b=stackBoxes(S.buildUpgradeStacks(r.deckEntries),base.restLayout()).find(b=>b.deckIndex===entry.index);
+      const result=invoke(base.restUpdate,next,input,[{x:b.x+4,y:b.y+4}]);
+      return receipt(result,next,'再练一式',['【'+entry.deckName+'】 → 【'+result.player.masterDeckNames[entry.index]+'】','只精进同名牌中的 1 张；此次不恢复气血。'],'rest');
+    }
+    if(r.mode==='upgrade'){
+      const count=S.buildUpgradeStacks(r.deckEntries).length,page=r.reviewUpgradePage||0;
+      if(contains(click,B.upgradePrev)&&page>0){r.reviewUpgradePage=page-1;return next;}
+      if(contains(click,B.upgradeNext)&&(page+1)*4<count){r.reviewUpgradePage=page+1;return next;}
+      const b=upgradeBoxes(next).find(b=>contains(click,b));
+      if(b){r.reviewUpgradeIndex=b.deckIndex;return next;}
+    }
+    if(r.mode==='choice'&&(contains(click,L.heal)||contains(click,L.healLabel))&&next.player.hp>=next.player.maxHp){r.note='气血已满。可以再练一式，或歇脚后上路。';return next;}
+    if(r.mode==='choice'&&contains(click,L.back)){next.scene='map';next.map=next.map||{};next.map.note='歇过脚，继续上路。';return receipt(next,state,'歇脚上路',['没有疗伤或精进；气血和牌组保持。'],'rest');}
+    const action=r.mode==='choice'?(contains(click,L.heal)||contains(click,L.healLabel)?'heal':contains(click,L.upgrade)||contains(click,L.upgradeLabel)?'upgrade':null):contains(click,L.back)?'back':null;
+    if(!action)return next;
+    const original=base.restLayout()[action],result=invoke(base.restUpdate,next,input,[{x:original.x+4,y:original.y+4}]);
+    if(result.scene==='map')return receipt(result,next,'伤口已裹好',['恢复 '+(result.player.hp-next.player.hp)+' 点气血：'+next.player.hp+' → '+result.player.hp+'。','此次歇脚已用来疗伤，不再精进招式。'],'rest');
+    return result;
+  };
+  function renderReward(state,ctx){
+    const r=state.reward,L=reward.getLayout(r.options.length);
+    if(state.reviewPanel){renderDeck(ctx,state);return;}if(state.reviewReceipt){renderReceipt(ctx,state);return;}
+    ctx.save();rewardStage(ctx,r);
+    r.options.forEach((entry,i)=>{ctx.save();ctx.globalAlpha=1-Math.min(.55,(r.presentation?.introMs||0)/1400);sheet(ctx,entry,L.cards[i],i,r.reviewSelectedIndex===i,r.mode==='relic');ctx.restore();});
+    ctx.restore();
+    const selected=Number.isInteger(r.reviewSelectedIndex)?r.options[r.reviewSelectedIndex]:null;
+    sceneHeader(ctx,state,r.mode==='relic'?'战后旧物':'战后拾遗','此战 +'+r.goldAward+' 大洋 · '+(selected?'在所选残页上确认':'挑一式带走'),'reward');
+    button(ctx,B.deck,'翻看行囊');
+    button(ctx,L.skip,r.mode==='relic'?'放弃旧物':'拂袖而去');
+  }
+  function relicContents(ctx,entry,b){
+    const path='assets/ui/shop_relic_'+entry.id+'_gpt15all_01.png',image=A.getImageEntry(path);
+    if(image.loaded){const img=image.image,scale=Math.min((b.width-40)/img.width,140/img.height),w=img.width*scale,h=img.height*scale;ctx.save();ctx.filter='saturate(.35)';ctx.globalCompositeOperation='multiply';ctx.globalAlpha*=.8;ctx.drawImage(img,b.x+(b.width-w)/2,b.y+18+(140-h)/2,w,h);ctx.restore();}
+    else text(ctx,entry.icon||'旧',b.x+b.width/2,b.y+80,44,'#4a3626','center');
+    text(ctx,entry.name,b.x+18,b.y+180,23,'#35281d');wrap(ctx,entry.description||entry.text,b.x+18,b.y+215,b.width-36,16,'#463624',5);
+  }
+  function renderRest(state,ctx){
+    const r=state.rest,L=S.getLayout(),stacks=S.buildUpgradeStacks(r.deckEntries);
+    if(state.reviewPanel){renderDeck(ctx,state);return;}if(state.reviewReceipt){renderReceipt(ctx,state);return;}
+    if(Number.isInteger(r.reviewUpgradeIndex)){
+      const entry=r.deckEntries[r.reviewUpgradeIndex],up=G.cards.getCardByName(G.cards.upgradeDeckCardAt([entry.deckName],0).upgradedName);
+      stage(ctx,'folio');folioPage(ctx,'left',(c,b)=>pageContents(c,entry,b,'原有招式'));folioPage(ctx,'right',(c,b)=>pageContents(c,up,b,'精进之后'));
+      sceneHeader(ctx,state,'再练一式','只精进一张，此次不疗伤。');button(ctx,B.restDeck,'翻看行囊');
+      button(ctx,B.cancel,'再想想');button(ctx,B.accept,'确认精进');return;
+    }
+    if(r.mode==='upgrade'){
+      stage(ctx,'folio');const rows=upgradeBoxes(state);
+      folioPage(ctx,'left',c=>{text(c,'今夜练哪一式',18,28,28,'#493529');rows.forEach((row,i)=>{const y=440*(.17+i*.185);originalArt(c,row.entry,box(18,y+6,82,54));text(c,row.entry.name,116,y+24,24,'#423225');text(c,'耗气 '+row.entry.cost+' · 同名 '+row.count,116,y+55,17,'#72593f');if(r.reviewHoveredStack===row.deckIndex){c.strokeStyle='#916443';c.beginPath();c.moveTo(116,y+69);c.lineTo(391,y+69);c.stroke();}});});
+      const focused=r.reviewHoverMs>1000&&rows.find(row=>row.deckIndex===r.reviewHoveredStack);
+      folioPage(ctx,'right',(c,b)=>{if(focused)pageContents(c,focused.entry,b,'细读此式');else{text(c,'旧招重练',28,40,30,'#463629');wrap(c,'一式千锤，才有刀口上的分寸。',28,118,350,24,'#5f4b36',3);wrap(c,'同名多张时，只练其中一张。',28,254,350,21,'#725b40',3);}});
+      sceneHeader(ctx,state,'残灯练招','悬停细读，点选看精进效果。');button(ctx,B.restDeck,'翻看行囊');
+      if(stacks.length>4){const page=r.reviewUpgradePage||0,pages=Math.ceil(stacks.length/4);
+      button(ctx,B.upgradePrev,'上一页',page>0);button(ctx,B.upgradeNext,'下一页',page+1<pages);text(ctx,(page+1)+' / '+pages,438,505,13,'#292622','center');
+      }
+      button(ctx,L.back,'先不练了');
+    }else{
+      stage(ctx,'rest');const heal=Math.min(r.healAmount,state.player.maxHp-state.player.hp),choices=[{b:L.heal,label:L.healLabel,title:'裹伤',value:heal?'恢复 '+heal+' 气血':'气血已满',enabled:heal>0},{b:L.upgrade,label:L.upgradeLabel,title:'练招',value:stacks.length?S.getUpgradableCount(r.deckEntries)+' 张可精进':'无可精进招式',enabled:stacks.length>0}];
+      sceneHeader(ctx,state,'破庙暂歇',r.note&&!/^破庙风冷/.test(r.note)?r.note:'裹伤或练招，今晚只选一件。','rest');
+      choices.forEach(c=>{
+        const hover=contains(G.main.getPointer(),c.b)||contains(G.main.getPointer(),c.label),x=c.label.x+12;ctx.save();ctx.globalAlpha=c.enabled?1:.52;
+        if(hover&&c.enabled){const glow=ctx.createRadialGradient(c.b.x+c.b.width/2,440,28,c.b.x+c.b.width/2,440,210);glow.addColorStop(0,'rgba(222,190,132,.10)');glow.addColorStop(1,'rgba(222,190,132,0)');ctx.fillStyle=glow;ctx.fillRect(c.b.x,c.b.y,c.b.width,c.b.height);}
+        text(ctx,c.title,x,c.label.y+21,29,hover&&c.enabled?'#fff0d5':'#dfcfb5');
+        G.render.realisticCombat.ui.infoSlip(ctx,x,c.label.y+43,Math.min(184,c.value.length*14+18),c.value,c.enabled?'neutral':'muted',13);
+        ctx.restore();
+      });
+      button(ctx,B.restDeck,'翻看行囊');
+      button(ctx,L.back,'歇脚上路');
+    }
+  }
+  G.render.realisticJourney={renderReward,renderRest,assetPaths,boxes:B,deckRows,upgradeBoxes,reset:()=>{cancelRequested=false;}};
+})();

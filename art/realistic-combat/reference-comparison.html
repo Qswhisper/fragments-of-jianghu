@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>指定截图 · 堂木 UI 对照</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;background:#10100f;color:#d4c8b4;font:15px/1.7 "Microsoft YaHei",sans-serif}
+  main{max-width:1800px;margin:auto;padding:24px}h1{font-size:24px;margin:0}h2{font-size:17px;margin:30px 0 10px}p{color:#a69c8d;margin:8px 0 20px}a{color:#d6b98a}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}figure{margin:0;min-width:0}figcaption{padding:7px 0;color:#aa9b84;font-size:13px}img{display:block;width:100%}
+  .detail{position:relative;overflow:hidden;background:#070808;max-width:520px;margin:auto}.detail img{position:absolute;max-width:none}
+  .details .pair{max-width:1080px}button{background:#2c261f;color:#d4c8b4;border:1px solid #5a4b38;padding:6px 14px;font:inherit;cursor:pointer}
+  @media(max-width:800px){main{padding:12px}.pair{grid-template-columns:1fr}.details .pair{grid-template-columns:1fr 1fr}}
+</style>
+<main>
+  <h1>指定截图 · 堂木 UI 对照</h1>
+  <p>基准直接读取你选定目录中的原图。本轮采用分立旧木签：去掉抽弃牌数字底色，恢复双方信息牌木纹与磨损细边，区分基础信息、流派与异常状态。两边牌组与战斗状态不同。<a href="index.html">进入可操作样段</a></p>
+  <h2>战斗页（2）／教官场景</h2>
+  <div class="pair">
+    <figure><figcaption>你选定的原图 · 战斗页（2）</figcaption><img id="reference" src="../../../阵线游戏截图/残卷游戏截图/战斗页%20(2).png" alt="用户选定的战斗页二"></figure>
+    <figure><figcaption>本轮实机 · 回合 2 · 江湖把子</figcaption><img id="revision" src="../../docs/review-baseline/combat-combo.png" alt="分立旧木签实机画面"></figure>
+  </div>
+  <section class="details"><h2>同位置局部放大</h2><p>左：原图；右：本轮。保持相同放大比例，不调整原图颜色。</p><div id="details"></div></section>
+  <h2>战斗页（3）／多人布局</h2>
+  <div class="pair">
+    <figure><figcaption>你选定的原图 · 战斗页（3）</figcaption><img src="../../../阵线游戏截图/残卷游戏截图/战斗页%20(3).png" alt="用户选定的战斗页三"></figure>
+    <figure><figcaption>本轮实机 · 三敌布局样段</figcaption><img src="../../docs/review-baseline/combat-triple.png" alt="本轮三敌布局"></figure>
+  </div>
+</main>
+<script>
+  // Show unmodified images through equal viewports; no baked crops or recoloring.
+  for (const [name,x,y,w,h] of [['玩家信息木签',35,518,255,150],['敌方信息木签',990,435,280,145],['抽牌木签',30,660,90,110],['回合牌',625,14,190,78],['精疲力竭',1105,625,210,104]]) {
+    const title=document.createElement('h2');title.textContent=name;document.querySelector('#details').append(title);
+    const pair=document.createElement('div');pair.className='pair';
+    for (const id of ['reference','revision']) {
+      const frame=document.createElement('div');frame.className='detail';frame.style.width='100%';frame.style.aspectRatio=w+'/'+h;
+      const img=document.createElement('img');img.src=document.getElementById(id).src;img.alt=name+' · '+(id==='reference'?'原图':'本轮');
+      img.style.width=1440/w*100+'%';img.style.left=-x/w*100+'%';img.style.top=-y/h*100+'%';frame.append(img);pair.append(frame);
+    }
+    document.querySelector('#details').append(pair);
+  }
+</script>
+</html>

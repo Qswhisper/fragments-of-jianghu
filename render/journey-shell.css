@@ -1,0 +1,50 @@
+:root { color-scheme: dark; font-family: "KGame Sans", sans-serif; color: #d8c9b1; background: #0b0f12; }
+* { box-sizing: border-box; }
+body { margin: 0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+#game-shell { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+#game-canvas { display: block; max-width: 100%; max-height: 100%; outline: none; background: #11161a; }
+button, select { font: inherit; color: #d8c9b1; background: #23251f; border: 1px solid #514735; border-radius: 2px; padding: 8px 14px; cursor: pointer; }
+button:hover, button:focus-visible { background: #3a3226; outline: 1px solid #b19769; }
+#open-pause { position: absolute; width: 44px; height: 44px; padding: 0; z-index: 2; border: 0; background: linear-gradient(#0b0e10a6,#0b0e10a6) center/38px 38px no-repeat; color: #b5aa96; font-size: 23px; }
+[hidden] { display: none !important; }
+dialog { width: min(940px, 94vw); max-height: 88dvh; padding: 24px; background: #161b1e; border: 1px solid #62513c; color: #d8c9b1; box-shadow: 0 12px 80px #000b; }
+dialog::backdrop { background: #000a; }
+dialog header { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid #40392e; padding-bottom: 14px; }
+dialog header h1 { flex: 1; }
+#close-dialog { background: transparent; border: 0; font-size: 27px; padding: 0 8px; }
+#back-dialog { background: transparent; border: 0; padding-left: 0; }
+dialog.pause-root { width: min(440px,88vw); padding: 28px 38px; }
+dialog.pause-root header { border: 0; }
+dialog.pause-root h1 { visibility: hidden; }
+.pause-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; margin-bottom: 14px; }
+.pause-actions button { background: transparent; border: 0; padding: 6px 0; font: 25px 'KGame Ink',serif; }
+.pause-actions button:hover { color: #eed8b7; outline: none; }
+h1 { font: 28px "KGame Ink", serif; margin: 0; } h2 { font-size: 19px; color: #dec9a7; }
+p { line-height: 1.8; color: #b8ad9c; }
+.dialog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 16px; margin-top: 16px; }
+.entry { background: #202524; padding: 16px; border-left: 2px solid #746346; }
+.entry h2 { margin-top: 0; } .entry p:last-child { margin-bottom: 0; }
+.meta { color: #ad8e64; font-size: 13px; } .settings-row { display: flex; justify-content: space-between; gap: 20px; align-items: center; margin: 22px 0; }
+.settings-row input[type=range] { width: 220px; }
+.actions { display: flex; gap: 16px; flex-wrap: wrap; margin: 24px 0 4px; }
+@media(max-width:600px) { dialog { padding: 14px; } .settings-row { flex-wrap: wrap; } .range-controls { max-width: 100%; } .settings-row input[type=range] { width: min(220px,55vw); } }
+
+dialog[data-panel="settings"], dialog[data-panel="credits"] { width: min(480px,92vw); padding: 26px 32px; }
+dialog[data-panel="settings"] .settings-row { display: grid; grid-template-columns: 96px 1fr; gap: 16px; margin: 18px 0; min-height: 32px; }
+dialog[data-panel="settings"] .range-controls { display: grid; grid-template-columns: 1fr 42px; gap: 10px; align-items: center; }
+dialog[data-panel="settings"] input[type=range] { width: 100%; min-width: 0; margin: 0; accent-color: #bea781; }
+dialog[data-panel="settings"] select { width: 100%; padding: 6px 8px; }
+dialog[data-panel="settings"] input[type=checkbox] { justify-self: start; width: 20px; height: 20px; accent-color: #bea781; }
+dialog[data-panel="settings"] output { text-align: right; font-variant-numeric: tabular-nums; }
+dialog[data-panel="credits"] p { margin: 14px 0; }
+@media(max-height:500px) { dialog[data-panel="settings"],dialog[data-panel="credits"] { padding: 14px 24px; } dialog[data-panel="settings"] .settings-row { margin: 9px 0; } dialog[data-panel="settings"] .actions { margin-top: 12px; } }
+@media(max-width:380px) { dialog[data-panel="settings"] { padding: 14px; } dialog[data-panel="settings"] .settings-row { grid-template-columns: 80px 1fr; gap: 10px; } }
+.enemy-history summary { cursor: pointer; color: #c9af89; padding: 12px 0; border-top: 1px solid #64564166; }
+.enemy-history p { margin: 12px 0; }
+
+/* Tactile controls: immediate pressure, a short release, stable hit geometry. */
+button { transition: color 120ms, background-color 120ms, box-shadow 120ms, scale 90ms; }
+button:enabled:active { scale: .985; }
+.motion-reduced button { transition: none !important; }
+.motion-reduced button:active { scale: 1; }
+@media (prefers-reduced-motion: reduce) { button { transition: none !important; } button:active { scale: 1; } }

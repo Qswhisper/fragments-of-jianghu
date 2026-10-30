@@ -2470,6 +2470,7 @@ G.scenes = G.scenes || {};
   }
 
   function updateHoverInspection(state, input) {
+    if (G.contextHelp && G.contextHelp.enabled) { resetHoverInspection(); return state.combat.inspectCardId ? clearInspectedCard(state) : state; }
     if (state.combat.result !== "active" || state.combat.selectedCardId ||
         (state.combat.ui && state.combat.ui.overlay) || G.render.animations.getCardDrag("combat") ||
         (G.scenes.combat.feedback && G.scenes.combat.feedback.isBusy())) {

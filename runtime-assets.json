@@ -1,12 +1,12 @@
 {
   "schema": 1,
   "release": "1.0",
-  "buildRevision": "1.0.43",
-  "tag": "v1.0.43",
+  "buildRevision": "1.0.44",
+  "tag": "v1.0.44",
   "archive": {
-    "fileName": "Fragments-of-Jianghu-1.0.43-PC.zip",
-    "bytes": 1839288051,
-    "sha256": "a3607b2eaf6f494eff45df116c55f55adce93190cd84b2fe11da05645c3c0b36"
+    "fileName": "Fragments-of-Jianghu-1.0.44-PC.zip",
+    "bytes": 1839296719,
+    "sha256": "37885302df190db84af36f5c276da858e7a8298209b53759e7e39c18f3bebf85"
   },
   "files": [
     {
@@ -2931,8 +2931,8 @@
     },
     {
       "path": "assets/cards/woodcut-20260929-sources.json",
-      "bytes": 3641,
-      "sha256": "b2a8f7c778c6aca44b7e62dc424288666b52cfd607edab402df66b70ad1d3bac"
+      "bytes": 3651,
+      "sha256": "9a3a24d9ea03ea8adb56a6d0ee1eaf2dede601d4b0bbaf30cdf2808dedce06c2"
     },
     {
       "path": "assets/fonts/SOURCE.md",
@@ -3161,8 +3161,8 @@
     },
     {
       "path": "assets/journey/clarity-20261001/sources-prompts.json",
-      "bytes": 14014,
-      "sha256": "adba66d1a7c0635a3e9a962a6da9994d7eff9d487ae01aa820bc3bf4cc420ab5"
+      "bytes": 14084,
+      "sha256": "3a4686084c6d638bd17d1213bf80b4daae85f67607515f4cb87d935f010a3d1a"
     },
     {
       "path": "assets/journey/entry-20261002/preparation-blade-v1.png",
@@ -3476,8 +3476,8 @@
     },
     {
       "path": "assets/journey/layered-20261001/sources-prompts.json",
-      "bytes": 13629,
-      "sha256": "4709ff5ee323b1be0d7734f28c233d7e2cdd662c60b38b32424544a45186c333"
+      "bytes": 13711,
+      "sha256": "7ce28c8fb8aa16f05a17462f055779a62e8ab02cf2aabbd4231f63785f69d263"
     },
     {
       "path": "assets/journey/material-light-20261002/inputs/26264e806f46.png",
@@ -3591,8 +3591,8 @@
     },
     {
       "path": "assets/journey/material-light-20261002/sources-prompts.json",
-      "bytes": 43026,
-      "sha256": "594e983d1449e20ecf5df1da5feb1014c5dffc0223624348ef7eb5907d5d3aed"
+      "bytes": 43201,
+      "sha256": "590a7a43a2f3355fd9560e35b7eda5047ede42b297061602e5574cd8a55959f4"
     },
     {
       "path": "assets/journey/opening-20261002/SOURCE-v2.json",
@@ -3616,8 +3616,8 @@
     },
     {
       "path": "assets/journey/redesign-20261005/SOURCE.json",
-      "bytes": 31387,
-      "sha256": "30701720ebeeb9f1049ec66d13bc6a61e711bdeee07689ac4a7709e5efe6e67f"
+      "bytes": 31507,
+      "sha256": "2715efffc974d9a5277b113052f2b265154ad80ad80a5970d7de6d2d5635cf09"
     },
     {
       "path": "assets/journey/redesign-20261005/arrival-alley.png",
@@ -5151,13 +5151,13 @@
     },
     {
       "path": "assets/woodcut/flavor-correction-sources.json",
-      "bytes": 11086,
-      "sha256": "243b518125f255f509a6a2a2d6a474d023e791aff12c7f05474318333b6ea30f"
+      "bytes": 11121,
+      "sha256": "e4873446a9969260298d7d9e7f1278fdff79ccd0f0a1791c59eaa905bd3e6d9d"
     },
     {
       "path": "assets/woodcut/gunfight-sources.json",
-      "bytes": 7398,
-      "sha256": "a9071b614d9e99390ac16f21f8d88733559bbc2f06ddd6865aa647837cf47e97"
+      "bytes": 7433,
+      "sha256": "93e18ac1139eb3baa8fdd92ce6857e7de462a4ea0a67515914f99f90e7add213"
     },
     {
       "path": "assets/woodcut/immersion-sources.json",

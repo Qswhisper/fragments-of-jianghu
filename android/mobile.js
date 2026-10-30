@@ -16,6 +16,7 @@
   function line(title,text,isRule=false,mechanics=false){const row=document.createElement('article');row.className='read-row'+(isRule?' rule-note':'');const h=document.createElement('h2'),p=document.createElement('p');h.textContent=title;p.textContent=text;if(isRule)G.render.ui.appendMechanicText(h,title);if(isRule||mechanics)G.render.ui.appendMechanicText(p,text);row.append(h,p);read.append(row);}
   function enemyPreparation(enemy){return G.nemesis.getAdaptationMeta(enemy.currentAdaptation,enemy.nemesisLevel);}
   function inspect(target){
+    if(G.contextHelp?.inspectTouch(target,readOrigin))return;
     if(read.open)return;
     const state=s();wasPaused=G.main.isPaused();G.main.setPaused(true);read.replaceChildren();
     const header=document.createElement('header'),heading=document.createElement('h2'),done=document.createElement('button');heading.textContent=target.heading||(target.card?'招式详情':'对手详情');done.textContent=state.scene==='combat'?'返回交锋':'返回原处';done.onclick=()=>closeRead();header.append(heading,done);read.append(header);
@@ -111,9 +112,10 @@
   for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,cancelHold);
   function save(){const state=s();if(state.scene!=='title'&&!(state.scene==='combat'&&state.combat.result==='defeat')&&!state.map?.completed)G.storage.saveRun(state);}
   window.KGameAndroid={
-    pause(){cancelHold();if(closing){clearTimeout(departure);closing=false;closeRead(true);}save();if(!read.open&&!document.getElementById('journey-dialog').open&&!document.getElementById('open-pause').hidden)document.getElementById('open-pause').click();G.main.setPaused(true);},
-    resume(){G.main.setPaused(read.open||document.getElementById('journey-dialog').open);},
+    pause(){cancelHold();G.contextHelp?.close();if(closing){clearTimeout(departure);closing=false;closeRead(true);}save();if(!read.open&&!document.getElementById('journey-dialog').open&&!document.getElementById('open-pause').hidden)document.getElementById('open-pause').click();G.main.setPaused(true);},
+    resume(){G.main.setPaused(read.open||G.contextHelp?.isOpen()||document.getElementById('journey-dialog').open);},
     back(){
+      if(G.contextHelp?.back())return true;
       save();if(read.open){closeRead();return true;}
       const dialog=document.getElementById('journey-dialog');if(dialog.open){dialog.dispatchEvent(new Event('cancel',{cancelable:true}));return true;}
       const state=s();if(state.scene==='combat'&&(G.render.animations.getCardDrag('combat')||state.combat.selectedCardId||state.combat.inspectCardId||state.combat.ui?.overlay?.visible)){escape();return true;}

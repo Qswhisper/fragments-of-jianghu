@@ -1,24 +1,9 @@
-# 1.0.43
+# 江湖残卷 1.0.44
 
-江湖残卷 1.0.43，支持 Windows、Android 与 PC 浏览器离线游玩。
+战斗、临时费用与黑市商品启用新版悬停／长按说明。说明采用墨黑底、原有宋体正文与墨字标题，减少重复卡面和遮挡；费用来源、条件、价格和余额优先显示。
 
-## 本次更新
+鼠标停留出现，继续停留或点“锁定”固定说明；下划词可继续查询，Esc逐层返回。手机长按唤出，点词条查询，返回逐层退出；长按松手不会误按新出现的按钮，也不会因此出牌或购买。
 
-- 完善卷间剧情、人物联系及事件后续，明确终章后的本局结算入口。
-- 精简卡牌说明，改善悬停细读与手机阅读排版。
-- 优化下三滥起手，调整撒石灰与断筋。
-- 提供自带运行环境的 Windows 完整离线安装包。
+保留原规则、原存档、已认可美术和音频。Android versionCode100206，沿用原签名，可覆盖升级；各平台存档独立。Windows x64完整离线安装包未作数字签名；浏览器版请解压完整目录，并保持旧路径与浏览器配置以继续存档。
 
-## 下载与安装
-
-| 平台 | 完整游戏包 | 安装方式 |
-| --- | --- | --- |
-| Windows x64 | [Windows.exe](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.43/Fragments-of-Jianghu-1.0.43-Windows.exe) | 运行安装程序，自带运行环境 |
-| Android 8+ | [Android.apk](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.43/Fragments-of-Jianghu-1.0.43-Android.apk) | 横屏游玩；已有版本可覆盖安装 |
-| PC 浏览器 | [PC.zip](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.43/Fragments-of-Jianghu-1.0.43-PC.zip) | 完整解压，用 Chrome 或 Edge 打开 `play.html` |
-
-[SHA256 校验文件](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.43/SHA256SUMS.txt) · [游戏介绍与画面](https://github.com/Qswhisper/fragments-of-jianghu#readme)
-
-进度保存在本机，各平台存档独立。Android 更新请覆盖安装；浏览器版请保留原路径、浏览器及用户配置。Windows 安装包目前未作数字签名。
-
-页面下方的 Source code 为开发源码，运行前需按[构建说明](https://github.com/Qswhisper/fragments-of-jianghu/blob/codex/release-1.0/docs/BUILDING.md)恢复资源。
+包含Android APK、Windows安装EXE、PC离线ZIP及SHA256SUMS。浏览器鼠标/触摸与包内验证不能替代实体手机或真人听感验收。

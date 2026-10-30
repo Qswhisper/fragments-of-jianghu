@@ -1,0 +1,38 @@
+/* Only the opt-in reader: a small ink note beside its source. */
+#context-help[hidden] { display:none; }
+#context-help { --help-scale:1; position:fixed; inset:0; pointer-events:none; z-index:30; font-family:'KGame Song',serif; }
+#context-help .help-panel { position:absolute; pointer-events:auto; font-size:clamp(16px,calc(18px * var(--help-scale)),21px); }
+.help-panel { position:relative; isolation:isolate; box-sizing:border-box; color:#dfd3bd; background:#151613; border:1px solid #75634b; box-shadow:0 6px 22px #0009; padding:14px 18px 10px; overflow:auto; scrollbar-width:thin; scrollbar-color:#79664c transparent; }
+.help-panel::before { content:''; position:absolute; z-index:-1; inset:0; pointer-events:none; background:url('../assets/ui/combat_card_torn_rice_paper_gpt4ovip_transparent_01.png') 50% 48%/147% 167%; opacity:.035; mix-blend-mode:luminosity; }
+.help-header { display:flex; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid #8a77524d; padding-bottom:8px; margin-bottom:3px; }
+.help-header h2 { color:#efdec0; font:1.35em 'KGame Ink',serif; margin:0; letter-spacing:.04em; }
+.help-controls { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.help-panel button { font-family:inherit; cursor:pointer; border-radius:0; }
+.help-action { font-size:13px; color:#b4a58b; border:0; background:transparent; padding:6px 3px; }
+.help-close { font-size:22px; line-height:1; padding:3px 4px; }
+.help-panel button:hover { color:#fff0d0; background:transparent; }
+.help-panel button:focus-visible { color:#fff0d0; outline:1px dotted #c5ab7a; outline-offset:2px; }
+.help-rows { margin:0; min-width:0; }
+.help-row { padding:9px 0; border-bottom:1px solid #8a775230; }
+.help-row:last-child { border:0; }
+.help-row dt { color:#b6a68a; margin-bottom:4px; font-size:.85em; }
+.help-row dd { margin:0; line-height:1.65; white-space:pre-line; overflow-wrap:break-word; text-wrap:pretty; }
+.help-primary dt { color:#ebcf9f; font-size:1.04em; }
+.help-primary dd { color:#efe3ce; }
+.help-detail .help-row { border:0; padding:6px 0; }
+.help-panel .help-term { display:inline; padding:0; min-height:0; font:inherit; line-height:inherit; color:#d8b57c; background:transparent; border:0; border-bottom:1px dotted #bb986099; }
+.help-dwell { color:#a5967d; font-size:12px; text-align:right; margin-top:3px; position:relative; padding-top:6px; }
+.help-dwell::before { content:''; position:absolute; right:0; top:0; width:54px; height:1px; background:#aa8b56; transform-origin:left; animation:help-lock .72s linear; }
+.help-locked .help-dwell::before { display:none; }
+.help-trail { color:#b19e80; margin:0 0 8px; font-size:13px; overflow-wrap:anywhere; }
+@keyframes help-lock { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+#context-help-touch { width:min(500px,94vw); max-height:calc(100dvh - 24px); padding:0; border:0; background:transparent; color:#dfd3bd; font-family:'KGame Song',serif; }
+#context-help-touch::backdrop { background:#08090855; }
+#context-help-touch .help-panel { max-height:calc(100dvh - 24px); font-size:18px; padding:8px 20px 12px; }
+#context-help-touch .help-header { position:sticky; top:-8px; background:#151613; z-index:1; padding-top:4px; padding-bottom:4px; }
+#context-help-touch .help-action { min-height:44px; min-width:44px; font-size:16px; }
+#context-help-touch .help-close { font-size:25px; }
+#context-help-touch .help-term { display:inline-flex; align-items:center; min-height:44px; padding:0 2px; }
+#context-help-touch .help-trail { padding-top:6px; margin-bottom:2px; }
+#context-help-touch .help-row { padding:7px 0; }
+@media (prefers-reduced-motion:reduce) { .help-dwell::before { animation:none; } }

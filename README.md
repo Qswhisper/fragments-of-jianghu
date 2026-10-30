@@ -18,13 +18,13 @@
 
 ## 下载与安装
 
-当前版本：**1.0.43**。
+当前版本：**1.0.44**。
 
 | 平台 | 下载 | 安装方式 |
 | --- | --- | --- |
-| Windows x64 | [完整安装包 EXE](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.43/Fragments-of-Jianghu-1.0.43-Windows.exe) | 运行安装程序，自带运行环境 |
-| Android 8+ | [安装包 APK](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.43/Fragments-of-Jianghu-1.0.43-Android.apk) | 安装后横屏游玩；更新时覆盖安装 |
-| PC 浏览器 | [完整离线包 ZIP](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.43/Fragments-of-Jianghu-1.0.43-PC.zip) | 解压完整目录，用 Chrome 或 Edge 打开 `play.html` |
+| Windows x64 | [完整安装包 EXE](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.44/Fragments-of-Jianghu-1.0.44-Windows.exe) | 运行安装程序，自带运行环境 |
+| Android 8+ | [安装包 APK](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.44/Fragments-of-Jianghu-1.0.44-Android.apk) | 安装后横屏游玩；更新时覆盖安装 |
+| PC 浏览器 | [完整离线包 ZIP](https://github.com/Qswhisper/fragments-of-jianghu/releases/download/v1.0.44/Fragments-of-Jianghu-1.0.44-PC.zip) | 解压完整目录，用 Chrome 或 Edge 打开 `play.html` |
 
 游戏可离线运行，进度保存在本机，各平台存档独立。浏览器版升级时请保留原文件路径、浏览器及用户配置；卸载或清除应用数据会影响进度。Windows 安装包目前未作数字签名。
 
@@ -71,7 +71,7 @@
 | --- | --- |
 | [![焦土中的旧旗与操练册](docs/media/event-act2_buried_flag.png)](docs/media/event-act2_buried_flag.png) | [![雨夜电报局的取舍](docs/media/event-act4_telegraph_station.png)](docs/media/event-act4_telegraph_station.png) |
 
-以上为 1.0.43 版本游戏画面，可点击查看原图。
+以上为 1.0.43 版本游戏画面（本次沿用原场景美术），可点击查看原图。
 
 ## 开发
 

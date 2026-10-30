@@ -33,7 +33,7 @@ try{
   });assert.equal(topology,100);checks.push('100 generated routes: all nodes reachable, forward edges and gate paths');
   await click((await titleLayout()).menuButtons[0]);await click((await titleLayout()).startButton);await finishArrival(p);const base=await state();
   for(const [button,name] of [['#open-help','玩法'],['#open-route','行程'],['#open-deck','招式'],['#open-nemesis','旧仇']]){
-    await openTool(button);assert.ok(await p.locator('dialog').isVisible());const t=(await state()).timeMs;await p.waitForTimeout(200);assert.equal((await state()).timeMs,t);assert.match(await p.locator('dialog h1').textContent(),new RegExp(name));await p.keyboard.press('Escape');assert.ok(await p.locator('dialog.pause-root').isVisible());await p.keyboard.press('Escape');assert.equal(await p.locator('dialog').isVisible(),false);
+    await openTool(button);assert.ok(await p.locator('#journey-dialog').isVisible());const t=(await state()).timeMs;await p.waitForTimeout(200);assert.equal((await state()).timeMs,t);assert.match(await p.locator('dialog h1').textContent(),new RegExp(name));await p.keyboard.press('Escape');assert.ok(await p.locator('dialog.pause-root').isVisible());await p.keyboard.press('Escape');assert.equal(await p.locator('#journey-dialog').isVisible(),false);
   }checks.push('Pause hierarchy: help/route/deck/nemesis children freeze time; Escape returns to menu then resumes');
   await p.click('#open-pause');await p.getByRole('button',{name:'返回主菜单',exact:true}).click();assert.equal((await state()).scene,'title');assert.equal((await state()).title.continueAvailable,true);await click((await titleLayout()).menuButtons[1]);assert.equal((await state()).scene,'combat');assert.deepEqual((await state()).combat.hand,base.combat.hand);checks.push('Save -> main menu -> Continue keeps the actual hand and current encounter');
   const identities=await p.evaluate(()=>{
@@ -72,7 +72,7 @@ try{
   }checks.push('Actual pointer enemy turns at tiers 3/4/5: gun preparation vs real shot HP damage and fatal feedback');
   await p.evaluate(base=>{base.nemesis=G.main.getState().nemesis;base.scene='combat';base.combat=G.scenes.combat.prepareState(base).combat;base.combat.result='defeat';base.player.hp=0;G.main.replaceState(base);},base);
   await click({x:600,y:380,width:80,height:40});assert.equal((await state()).title.mode,'report');assert.equal(await p.evaluate(()=>G.storage.hasRunSave()),false);assert.ok((await state()).nemesis.pool.length>0);await shot('defeat-report');await click((await titleLayout()).reportButtons[1]);assert.equal((await state()).title.mode,'styles');checks.push('Defeat clears active run, preserves old enemies, and retry returns to styles');
-  await p.setViewportSize({width:960,height:600});await shot('small-styles');let b=await p.locator('#game-canvas').boundingBox();assert.ok(b.x>=0&&b.y>=0&&b.y+b.height<=600);await click((await titleLayout()).startButton);await finishArrival(p);await openTool('#open-nemesis');await shot('small-old-enemies');assert.ok(await p.locator('dialog').isVisible());await p.click('#close-dialog');
+  await p.setViewportSize({width:960,height:600});await shot('small-styles');let b=await p.locator('#game-canvas').boundingBox();assert.ok(b.x>=0&&b.y>=0&&b.y+b.height<=600);await click((await titleLayout()).startButton);await finishArrival(p);await openTool('#open-nemesis');await shot('small-old-enemies');assert.ok(await p.locator('#journey-dialog').isVisible());await p.click('#close-dialog');
   await p.setViewportSize({width:390,height:844});await openTool('#open-help');await shot('narrow-help');assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);checks.push('960px canvas and narrow-screen dialogs fit without horizontal overflow');
   await p.click('#close-dialog');await p.setViewportSize({width:1280,height:758});
   await p.evaluate(base=>{base.combat.result='victory';base.scene='combat';base.reward=null;base.reviewReceipt=null;base.reviewPanel=null;G.main.replaceState(G.scenes.reward.prepareState(base));},base);
@@ -88,4 +88,5 @@ try{
 }catch(e){if(p)await shotFailure();await fs.writeFile(new URL('summary.json',out),JSON.stringify({passed:false,checks,errors,failure:e.stack},null,2));console.error(e);process.exitCode=1;}
 finally{await browser.close();}
 async function shotFailure(){await p.screenshot({path:fileURLToPath(new URL('failure.png',out))}).catch(()=>{});}
+
 

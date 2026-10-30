@@ -1,6 +1,6 @@
 {
   "name": "kgame",
-  "version": "1.0.43",
+  "version": "1.0.44",
   "releaseVersion": "1.0",
   "description": "江湖残卷：单机武侠卡牌构筑游戏",
   "private": true,
@@ -18,7 +18,8 @@
     "test:windows": "node tests/windows-protocol.mjs",
     "assets:setup": "node scripts/setup-assets.mjs",
     "test:narrative": "node tests/narrative-immersion.mjs --cinematic",
-    "test:paper-chain": "node tests/paper-chain.mjs --mobile"
+    "test:paper-chain": "node tests/paper-chain.mjs --mobile",
+    "test:context-help": "node tests/context-help.mjs --production"
   },
   "keywords": [],
   "author": "Qswhisper",
@@ -27,7 +28,7 @@
   "devDependencies": {
     "playwright": "^1.58.2"
   },
-  "buildRevision": "1.0.43",
+  "buildRevision": "1.0.44",
   "engines": {
     "node": ">=20"
   }

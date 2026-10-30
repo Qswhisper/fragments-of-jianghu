@@ -8,6 +8,9 @@ import {projectRoot,assertManagedPath} from './project-paths.mjs';
 const debug=process.argv.includes('--debug');
 const reuseIndex=process.argv.indexOf('--reuse-web');
 const reuseWeb=reuseIndex>=0?path.resolve(process.argv[reuseIndex+1]):null;
+const deliveryIndex=process.argv.indexOf('--delivery-dir');
+const deliveryRelative=deliveryIndex>=0?process.argv[deliveryIndex+1]:'output/android-package';
+if(!deliveryRelative||!path.resolve(projectRoot,deliveryRelative).startsWith(path.join(projectRoot,'output')+path.sep))throw Error('Android delivery must be inside workspace/output.');
 const sdk=process.env.ANDROID_HOME||process.env.ANDROID_SDK_ROOT||path.join(os.homedir(),'AppData/Local/Android/Sdk');
 const javaHome=process.env.JAVA_HOME;
 if(!javaHome)throw Error('JAVA_HOME must point to JDK 17 or newer.');
@@ -99,7 +102,7 @@ try{await fs.access(key);await fs.access(passfile);}catch{
   await fs.writeFile(passfile,randomBytes(32).toString('hex')+'\n',{flag:'wx'});
   run(j('keytool'),['-genkeypair','-keystore',key,'-storetype','PKCS12','-alias','kgame-playtest','-keyalg','RSA','-keysize','3072','-validity','10000','-dname','CN=KGame Local Playtest,O=KGame,C=CN','-storepass:file',passfile,'-keypass:file',passfile]);
 }
-const delivery=await assertManagedPath('output/android-package');await fs.mkdir(delivery,{recursive:true});
+const delivery=await assertManagedPath(path.relative(projectRoot,path.resolve(projectRoot,deliveryRelative)));await fs.mkdir(delivery,{recursive:true});
 const apk=path.join(debug?build:delivery,'江湖残卷_'+version+'正式版'+(debug?'-debug':'')+'.apk');
 try { await fs.access(apk); throw Error('Refusing to overwrite delivery: '+apk); } catch(e) { if(e.code!=='ENOENT')throw e; }
 const signedApk=path.join(build,'signed.apk');

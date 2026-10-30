@@ -45,7 +45,7 @@ G.scenes = G.scenes || {};
       keyword: "溃烂",
       summary: "不讲规矩，先废手脚，再让伤口慢慢烂进去。",
       killerLine: "你靠的是脏手段，不是江湖体面。",
-      starterSummary: "起手：3 张阴手捅刀、2 张撒石灰、2 张断筋，先把人拖进溃烂线。",
+      starterSummary: "起手以阴手捅刀、毒钉叠溃烂，阴沟翻身护身抽牌，撒石灰争出拖伤的时间。",
       pressureLabel: "中高",
       complexityLabel: "阴狠",
       accent: "#5f7d4f",

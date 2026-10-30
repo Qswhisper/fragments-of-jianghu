@@ -884,6 +884,7 @@ G.scenes = G.scenes || {};
       );
       nextState.scene = "map";
       if (G.journeyNarrative) G.journeyNarrative.finish(nextState, "victory");
+      if (G.journeyPassage) G.journeyPassage.open(nextState, currentActNumber);
       return nextState;
     }
 
@@ -892,6 +893,7 @@ G.scenes = G.scenes || {};
     nextState.map.clearedActs = pushUnique(nextState.map.clearedActs, currentActNumber);
     nextState.map.note = note + " 【" + currentActMeta.title + "】已破，转入【" + nextActMeta.title + "】。";
     nextState.scene = "map";
+    if (G.journeyPassage) G.journeyPassage.open(nextState, currentActNumber);
     return ensureMapState(nextState);
   }
 
@@ -961,6 +963,12 @@ G.scenes = G.scenes || {};
 
     if (clicks.length === 0) {
       return state;
+    }
+
+    if (G.journeyPassage && G.journeyPassage.active(nextState)) {
+      if (G.render.journeyOpening.passageWaiting(nextState) || G.render.journeyMotion?.debug().transition) return nextState;
+      var passageButton = G.render.journeyOpening.passageLayout().next;
+      return clicks.some(function (point) { return point.x >= passageButton.x && point.x <= passageButton.x + passageButton.width && point.y >= passageButton.y && point.y <= passageButton.y + passageButton.height; }) ? G.journeyPassage.finish(nextState) : nextState;
     }
 
     if (nextState.map.completed) {

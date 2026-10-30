@@ -3,7 +3,7 @@
   'use strict';
   const A=G.render.assets,ui=document.getElementById('entry-ui');
   const paths={menu:'assets/journey/entry-20261002/title-empty-v1.png',styles:'assets/journey/entry-20261002/preparation-blade-v1.png'};
-  const hints={blade:'以伤换命，叠破绽后斩杀。',iron:'蓄架势，硬接后反击。',dirty:'迷眼、断筋，让伤势恶化。',combo:'连环出手，贴身压制。'};
+  const hints={blade:'叠破绽，再用杀招收尾。',iron:'架势达到10，触发铁骨反击。',dirty:'迷眼减伤，溃烂逐回合耗敌。',combo:'先出3张牌，接连环招式减费。'};
   Object.values(paths).forEach(p=>A.getImageEntry(p));
   const oldRender=G.scenes.title.render,oldUpdate=G.scenes.title.update;let signature='',firstReveal=null;
   function waiting(s){const mode=s.scene==='title'&&s.title?.mode;return !!paths[mode]&&!A.getImageEntry(paths[mode]).loaded;}
@@ -66,7 +66,7 @@
   }
   G.render.journeyEntry={layout,paths,render,waiting,saveNote};
   G.scenes.title.render=function(s,ctx){if(!render(s,ctx))oldRender(s,ctx);};
-  Object.entries(G.scenes).filter(([name])=>name!=='title').forEach(([,scene])=>{const draw=scene.render;if(draw)scene.render=function(s,ctx){ui.hidden=true;signature='';G.journeyShell?.syncUI(s);draw(s,ctx);};});
+  Object.entries(G.scenes).filter(([name])=>name!=='title').forEach(([,scene])=>{const draw=scene.render;if(draw)scene.render=function(s,ctx){if(!G.journeyPassage?.active(s))ui.hidden=true;signature='';G.journeyShell?.syncUI(s);draw(s,ctx);};});
   G.scenes.title.update=function(s,input){if(waiting(s)){G.main.consumeClicks();return s;}const next=oldUpdate(s,input);if(next.scene==='title'&&['settings','credits'].includes(next.title.mode)&&G.journeyShell){const mode=next.title.mode;next.title.mode='menu';if(mode==='settings')G.journeyShell.openSettings();else G.journeyShell.openCredits();}return next;};
   window.addEventListener('keydown',e=>{
     if(document.getElementById('journey-dialog').open||!G.main)return;
@@ -79,4 +79,3 @@
     }
   });
 })();
-

@@ -19,7 +19,7 @@
   function fit(){const c=document.getElementById('game-canvas').getBoundingClientRect(),s=document.getElementById('game-shell').getBoundingClientRect();Object.assign(ui.style,{left:c.left-s.left+'px',top:c.top-s.top+'px',width:c.width+'px',height:c.height+'px'});}
   G.render.journeyEntry.layout=function(base){return {...baseLayout(base),styleRail:{x:852,y:192,width:354,height:72,gap:4,horizontal:false},backButton:{x:58,y:40,width:142,height:46},startButton:{x:1048,y:612,width:158,height:72}};};
   function build(s){
-    ui.replaceChildren();ui.classList.add('cinematic-entry');ui.classList.remove('cinematic-menu','cinematic-arrival');selected='';const L=G.scenes.title.getLayout(),boxes=G.scenes.title.getStyleBoxes(L);
+    ui.replaceChildren();ui.classList.add('cinematic-entry');ui.classList.remove('cinematic-menu','cinematic-arrival','cinematic-passage');selected='';const L=G.scenes.title.getLayout(),boxes=G.scenes.title.getStyleBoxes(L);
     label('选择流派','cinematic-heading',{x:852,y:98,width:354,height:48});
     label('武艺仍在，重整此行招式','cinematic-kind',{x:852,y:151,width:354,height:24});
     const marker=label('','cinematic-selection',{x:835,y:211,width:3,height:24});marker.setAttribute('aria-hidden','true');
@@ -31,7 +31,7 @@
     const back=action('返回','entry-back',L.backButton,'back');back.append(node('span','返回','cinematic-back-label'));
   }
   function buildMenu(s){
-    ui.replaceChildren();ui.classList.add('cinematic-entry','cinematic-menu');ui.classList.remove('cinematic-arrival');selected='';
+    ui.replaceChildren();ui.classList.add('cinematic-entry','cinematic-menu');ui.classList.remove('cinematic-arrival','cinematic-passage');selected='';
     label('江湖残卷','entry-title',{x:78,y:114,width:470,height:94});label('1.0 正式版','entry-subtitle entry-version',{x:88,y:214,width:340,height:38});
     const copy=['踏入九城','再续前路','设置','制作与鸣谢'];
     G.scenes.title.getLayout().menuButtons.forEach((b,i)=>{if(i===1&&!s.title.continueAvailable)return;const callback=i===2?()=>G.journeyShell.openSettings():i===3?()=>G.journeyShell.openCredits():null;const e=action(copy[i],'entry-menu-button'+(i===0?' primary':''),b,b.id,callback);e.append(node('span',copy[i]));if(i===0){const arrow=node('span','','cinematic-forward');arrow.setAttribute('aria-hidden','true');e.append(arrow);}});
@@ -57,9 +57,9 @@
   const waiting=s=>s.scene==='arrival'&&!G.render.assets.getImageEntry(arrivalPaths[s.arrival?.stage||'gate']).loaded;
   function buildArrival(s){
     const gate=s.arrival.stage==='gate',focused=ui.contains(document.activeElement)?document.activeElement.dataset.entryFocus:null;
-    ui.replaceChildren();ui.classList.add('cinematic-entry','cinematic-arrival');ui.classList.remove('cinematic-menu');
-    label(gate?'雨夜入城':'泥巷拦路','cinematic-heading',{x:778,y:172,width:430,height:64});
-    const prose=label('','cinematic-story-body',{x:780,y:258,width:430,height:260});
+    ui.replaceChildren();ui.classList.add('cinematic-entry','cinematic-arrival');ui.classList.remove('cinematic-menu','cinematic-passage');
+    label(gate?'雨夜入城':'泥巷拦路','cinematic-heading',{x:740,y:146,width:470,height:64});
+    const prose=label('','cinematic-story-body',{x:742,y:230,width:466,height:305});
     G.journeyNarrative.arrival(s,s.arrival.stage).split('\n').filter(Boolean).forEach((line,i)=>{const paragraph=node('p',line);if(gate&&i===0)paragraph.textContent=line.replace('死士，','死士，\n');prose.append(paragraph);});
     const L=arrivalLayout();primary(gate?'循缺口入城':'迎上拦路人',L.next,'arrival-next');
     if(focused==='arrival-next'||focused==='start')ui.querySelector('[data-entry-focus="arrival-next"]').focus({preventScroll:true});
@@ -73,7 +73,33 @@
     const shade=ctx.createLinearGradient(630,0,1280,0);shade.addColorStop(0,'rgba(5,9,12,0)');shade.addColorStop(.38,'rgba(5,9,12,.45)');shade.addColorStop(1,'rgba(5,9,12,.55)');ctx.fillStyle=shade;ctx.fillRect(630,0,650,720);
     ui.hidden=false;const mode='arrival:'+s.arrival.stage;if(builtMode!==mode||!ui.classList.contains('cinematic-arrival')){buildArrival(s);builtMode=mode;}
   };
-  G.render.journeyOpening={inspectBox,descriptions,arrivalPaths,waiting};
+  const passageLayout=()=>{
+    const phone=!!window.KGAME_MOBILE||document.getElementById('game-canvas').getBoundingClientRect().width<900;
+    const x=phone?698:742,width=phone?510:466;
+    return {phone,heading:{x:x-2,y:142,width,height:74},body:{x,y:240,width,height:316},next:{x,y:586,width,height:88}};
+  };
+  const passageWaiting=s=>{const p=G.journeyPassage.describe(s);return !!p&&!G.render.assets.getImageEntry(p.art).loaded;};
+  function renderPassage(s,ctx){
+    const p=G.journeyPassage.describe(s);if(!p)return;
+    const L=passageLayout();
+    G.journeyShell?.syncUI(s);fit();
+    ctx.fillStyle='#101618';ctx.fillRect(0,0,1280,720);
+    if(passageWaiting(s)){ui.hidden=true;builtMode='';return;}
+    G.render.assets.drawImageCover(ctx,p.art,0,0,1280,720);
+    const shade=ctx.createLinearGradient(620,0,1280,0);shade.addColorStop(0,'rgba(5,9,12,0)');shade.addColorStop(.30,'rgba(5,9,12,.34)');shade.addColorStop(1,'rgba(5,9,12,.58)');ctx.fillStyle=shade;ctx.fillRect(620,0,660,720);
+    ui.hidden=false;
+    const mode='passage:'+p.act+':'+(s.mission?.storyRevision||0)+':'+L.phone;
+    if(builtMode===mode&&ui.classList.contains('cinematic-arrival'))return;
+    ui.replaceChildren();ui.classList.add('cinematic-entry','cinematic-arrival','cinematic-passage');ui.classList.remove('cinematic-menu');
+    ui.style.setProperty('--story-body-size',L.phone?'2.03125cqw':'1.71875cqw');
+    ui.style.setProperty('--story-action-size',L.phone?'2.8125cqw':'2.65625cqw');
+    label(p.title,'cinematic-heading',L.heading);
+    const prose=label('','cinematic-story-body',L.body);
+    p.body.split('\n').filter(Boolean).forEach(line=>prose.append(node('p',line)));
+    primary(p.button,L.next,'passage-next');builtMode=mode;
+  }
+  window.addEventListener('keydown',e=>{if(e.defaultPrevented||e.repeat||!['Enter',' '].includes(e.key)||e.target.closest?.('button,input,select,textarea')||document.getElementById('journey-dialog').open||!G.journeyPassage?.active(G.main?.getState()))return;e.preventDefault();const b=passageLayout().next;G.main.queueSceneClick({x:b.x+b.width/2,y:b.y+b.height/2});});
+  G.render.journeyOpening={inspectBox,descriptions,arrivalPaths,waiting,passageLayout,passageWaiting,renderPassage};
   G.render.journeyEntrySample=G.render.journeyOpening;
 })();
 

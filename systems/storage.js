@@ -195,7 +195,8 @@ G.storage = G.storage || {};
   // not the player's deck, battle progress or a pending transaction's identity.
   function refreshBalancedCards(state) {
     var changed = {blade_sacrifice:true,blade_double_edge:true,blade_break_wrist:true,
-      dirty_low_kick:true,dirty_boot_heart:true,iron_rebound_arm:true,combo_close_step:true};
+      dirty_low_kick:true,dirty_boot_heart:true,dirty_lime_throw:true,dirty_tendon_cut:true,
+      iron_rebound_arm:true,combo_close_step:true};
     function refresh(card) {
       if (!card || !changed[card.id]) return card;
       var current = G.cards.getCardByName(card.name);

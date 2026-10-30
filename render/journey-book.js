@@ -41,7 +41,7 @@
     if(selected?.card){
       W.text(ctx,'当前招式',903,142,14,'#594c3b');card(ctx,selected.card,{x:901,y:170,width:211,height:316});
       W.text(ctx,'同名 '+selected.count+' 张'+(G.cards.isUpgraded(selected.name)?' · 已精进':''),1007,518,17,'#4b3c2c','center');
-      W.wrap(ctx,selected.card.text,865,548,292,16,'#4b3c2c',3);
+      W.wrap(ctx,selected.card.text,865,548,292,16,'#4b3c2c',3,G.render.ui.mechanicPalette.paper);
     }
     const pages=Math.max(1,Math.ceil(all.length/8));
     W.text(ctx,'点选卡牌细读',90,621,15,'#64513b');W.text(ctx,(panel.page+1)+' / '+pages,504,621,16,'#64513b','center');

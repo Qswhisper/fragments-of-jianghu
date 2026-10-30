@@ -13,18 +13,17 @@
   }
   read.addEventListener('cancel',e=>{e.preventDefault();closeRead();});
   read.addEventListener('contextmenu',e=>e.preventDefault());
-  function line(title,text){const row=document.createElement('article');row.className='read-row';const h=document.createElement('h2'),p=document.createElement('p');h.textContent=title;p.textContent=text;row.append(h,p);read.append(row);}
+  function line(title,text,isRule=false,mechanics=false){const row=document.createElement('article');row.className='read-row'+(isRule?' rule-note':'');const h=document.createElement('h2'),p=document.createElement('p');h.textContent=title;p.textContent=text;if(isRule)G.render.ui.appendMechanicText(h,title);if(isRule||mechanics)G.render.ui.appendMechanicText(p,text);row.append(h,p);read.append(row);}
   function enemyPreparation(enemy){return G.nemesis.getAdaptationMeta(enemy.currentAdaptation,enemy.nemesisLevel);}
   function inspect(target){
     if(read.open)return;
     const state=s();wasPaused=G.main.isPaused();G.main.setPaused(true);read.replaceChildren();
     const header=document.createElement('header'),heading=document.createElement('h2'),done=document.createElement('button');heading.textContent=target.heading||(target.card?'招式详情':'对手详情');done.textContent=state.scene==='combat'?'返回交锋':'返回原处';done.onclick=()=>closeRead();header.append(heading,done);read.append(header);
     if(target.previewCard){const preview=document.createElement('canvas');preview.className='read-card';preview.width=264;preview.height=390;G.render.journeyBook.card(preview.getContext('2d'),target.previewCard,{x:8,y:8,width:248,height:374});read.append(preview);}
-    if(target.rows)target.rows.forEach(r=>line(r.title,r.text));
-    else if(target.card){const c=target.card,t=G.cards.getCardByName(c.name)||c;line(c.name+' · 体力 '+(c.cost??t.cost)+(c.playable?'':' · 暂不可出'),t.text||c.text||'');}
-    else {const e=target.enemy,intent=G.render.woodcut.enemyIntent(e),preparation=enemyPreparation(e);line(e.name+' · 气血 '+e.hp+'/'+e.maxHp,[intent.title,intent.note].filter(Boolean).join(' · '));line('架势 '+(e.block||0),G.scenes.combat.getEnemyStatusChips(e,false).map(c=>c.text).join(' · ')||'无额外状态');if(preparation)line('对手的准备',preparation.name+'：'+preparation.description);}
-    if(state.scene==='combat')line('气血 '+state.player.hp+'/'+state.player.maxHp+' · 架势 '+state.player.block+' · 体力 '+state.player.energy,'点牌后点目标出招；再点同一张牌或按手机返回键取消。长按手牌或对手查看详情。');
-    else {const footer=document.createElement('footer');footer.textContent='气血 '+state.player.hp+'/'+state.player.maxHp+' · 大洋 '+state.player.gold+'　｜　返回后再作选择';read.append(footer);}
+    if(target.rows)target.rows.forEach(r=>line(r.title,r.text,!!r.lines,!!r.mechanics));
+    else if(target.card){const c=target.card,t=G.cards.getCardByName(c.name)||c;line(c.name+' · 体力 '+(c.cost??t.cost)+(c.playable?'':' · 暂不可出'),t.text||c.text||'',false,true);G.cards.getRuleNotes(c,state).forEach(r=>line(r.title,r.text,true));}
+    else {const e=target.enemy,intent=G.render.woodcut.enemyIntent(e),preparation=enemyPreparation(e);line(e.name+' · 气血 '+e.hp+'/'+e.maxHp,[intent.title,intent.note].filter(Boolean).join(' · '),false,true);line('架势 '+(e.block||0),G.scenes.combat.getEnemyStatusChips(e,false).map(c=>c.text).join(' · ')||'无额外状态',false,true);if(preparation)line('对手的准备',preparation.name+'：'+preparation.description);}
+    const footer=document.createElement('footer');footer.textContent='气血 '+state.player.hp+'/'+state.player.maxHp+(state.scene==='combat'?' · 架势 '+state.player.block+' · 体力 '+state.player.energy:' · 大洋 '+state.player.gold);read.append(footer);
     read.classList.toggle('has-card',!!target.previewCard);read.classList.remove('read-depart');read.showModal();
     G.audio.playUiCue('open');
     const b=read.getBoundingClientRect(),origin=readOrigin||{x:innerWidth/2,y:innerHeight/2};read.style.setProperty('--read-x',Math.max(-60,Math.min(60,(origin.x-b.x-b.width/2)*.18))+'px');read.style.setProperty('--read-y',Math.max(-35,Math.min(35,(origin.y-b.y-b.height/2)*.18))+'px');
@@ -33,11 +32,11 @@
   function cancelHold(){if(hold)clearTimeout(hold.timer);hold=null;}
   function inside(p,b){return p.x>=(b.hitX??b.x)&&p.x<=(b.hitX??b.x)+(b.hitWidth??b.width)&&p.y>=(b.hitY??b.y)&&p.y<=(b.hitY??b.y)+(b.hitHeight??b.height);}
   function combatReadTarget(state,point){
-    const L=G.scenes.combat.debugGetLayout(),row=(title,text)=>({title,text});
+    const L=G.scenes.combat.debugGetLayout(),row=(title,text,mechanics=false)=>({title,text,mechanics});
     if(L.combatDetails&&inside(point,L.combatDetails)){
-      const rows=[row('玩家状态',G.scenes.combat.getPlayerStatusChips(state,state.player).map(c=>c.text).join(' · ')||'无额外状态')];
+      const rows=[{...row('玩家状态',G.scenes.combat.getPlayerStatusChips(state,state.player).map(c=>c.text).join(' · ')||'无额外状态'),mechanics:true}];
       if(state.combat.lastAction)rows.push(row('最近行动',state.combat.lastAction));
-      state.combat.enemies.filter(e=>e.hp>0).forEach(e=>{const intent=G.render.woodcut.enemyIntent(e),preparation=enemyPreparation(e);rows.push(row(e.name+' · 气血 '+e.hp+'/'+e.maxHp+' · 架势 '+(e.block||0),[intent.title,intent.note,preparation?preparation.name+'：'+preparation.description:'',...G.scenes.combat.getEnemyStatusChips(e,false).map(c=>c.text)].filter(Boolean).join(' · ')));});
+      state.combat.enemies.filter(e=>e.hp>0).forEach(e=>{const intent=G.render.woodcut.enemyIntent(e),preparation=enemyPreparation(e);rows.push(row(e.name+' · 气血 '+e.hp+'/'+e.maxHp+' · 架势 '+(e.block||0),[intent.title,intent.note,preparation?preparation.name+'：'+preparation.description:'',...G.scenes.combat.getEnemyStatusChips(e,false).map(c=>c.text)].filter(Boolean).join(' · '),true));});
       const relics=(state.player.relics||[]).map(r=>typeof r==='string'?G.relics.definitions[r]:r).filter(Boolean);
       rows.push(...(relics.length?relics.map(r=>row('旧物 · '+r.name,r.description||r.text||'')):[row('随身旧物','目前没有旧物。')]));
       return {heading:'战况与旧物',rows};
@@ -45,7 +44,7 @@
     for(const [key,label,names] of [['drawPile','抽牌堆',state.combat.drawPileNames],['discardPile','弃牌堆',state.combat.discardPileNames]]){
       if(inside(point,L[key])){
         const groups=new Map();(names||[]).forEach(name=>groups.set(name,(groups.get(name)||0)+1));
-        const rows=groups.size?[...groups].map(([name,count])=>row(name+' × '+count,G.cards.getCardByName(name)?.text||'')):[row(label,'目前为空。')];
+        const rows=groups.size?[...groups].map(([name,count])=>({...row(name+' × '+count,G.cards.getCardByName(name)?.text||''),mechanics:true})):[row(label,'目前为空。')];
         if(key==='drawPile'&&names?.length)rows.unshift(row('抽牌顺序 · 下一张到堆底',names.join(' → ')));
         if(key==='discardPile')rows.unshift(row('重新抽取','本回合打出的招式，下回合起才能重新抽到。'));
         return {heading:label+' · '+(names||[]).length+' 张',rows};
@@ -54,13 +53,13 @@
     return null;
   }
   function journeyTarget(state,point){
-    const row=(title,text)=>({title,text}),details=(heading,rows)=>({heading,rows});
-    const cardRow=c=>row(c.name+' · 体力 '+c.cost,c.text||G.cards.getCardByName(c.name)?.text||'');
-    if(state.reviewPanel){const rows=G.render.journeyBook.groups(state.player.masterDeckNames);return details('行囊招录',rows.map(r=>row(r.name+' · '+r.count+' 张',r.card?.text||'')));}
+    const row=(title,text,mechanics=false)=>({title,text,mechanics}),details=(heading,rows)=>({heading,rows});
+    const cardRow=c=>row(c.name+' · 体力 '+c.cost,c.text||G.cards.getCardByName(c.name)?.text||'',true);
+    if(state.reviewPanel){const rows=G.render.journeyBook.groups(state.player.masterDeckNames);return details('行囊招录',rows.map(r=>row(r.name+' · '+r.count+' 张',r.card?.text||'',true)));}
     if(state.scene==='reward'){
       if(state.reviewReceipt)return details(state.reviewReceipt.title,state.reviewReceipt.lines.map(t=>row('此战所得',t)));
       const r=state.reward,options=r.options.map((o,i)=>({o,b:G.render.realisticJourney.cardBox(r,i)})),hit=options.find(v=>inside(point,v.b));
-      const rows=(hit?[hit]:options).map(({o})=>row(o.name+(r.mode==='card'?' · 体力 '+o.cost:''),o.text||o.description||''));
+      const rows=(hit?[hit]:options).flatMap(({o})=>[row(o.name+(r.mode==='card'?' · 体力 '+o.cost:''),o.text||o.description||'',r.mode==='card'),...(hit&&r.mode==='card'?G.cards.getRuleNotes(o,state):[])]);
       if(!hit&&['gate','elite','nemesis'].includes(r.sourceNodeType||state.combat.nodeType))rows.unshift(row('这一战',r.entryVictorySubtitle||G.nemesis.getVictoryCopy(state.combat.nodeType,state).subtitle));
       return details('战后拾遗',rows);
     }
@@ -73,13 +72,13 @@
       const selected=s.purchaseSelection;
       if(selected)goods=[(selected.type==='relic'?s.relicOffers:s.cardOffers)[selected.index]];
       else {for(const [list,boxes] of [[s.cardOffers,G.scenes.shop.getCardBoxes(L)],[s.relicOffers,G.scenes.shop.getRelicBoxes(L)]]){const i=boxes.findIndex(b=>inside(point,b));if(i>=0)goods.push(list[i]);}if(!goods.length)goods=[...s.cardOffers,...s.relicOffers];}
-      return {...details('黑市商品',goods.map(o=>row(o.name+' · '+(o.sold?'已售出':o.price+' 大洋'),o.text||o.description||''))),previewCard:goods.length===1&&G.cards.getCardByName(goods[0].name)?goods[0]:null};
+      return {...details('黑市商品',goods.flatMap(o=>[row(o.name+' · '+(o.sold?'已售出':o.price+' 大洋'),o.text||o.description||'',!!G.cards.getCardByName(o.name)),...(goods.length===1&&G.cards.getCardByName(o.name)?G.cards.getRuleNotes(o,state):[])])),previewCard:goods.length===1&&G.cards.getCardByName(goods[0].name)?goods[0]:null};
     }
     if(state.scene==='event'){const e=state.event;return details(e.title,[row('沿途见闻',e.body),...(e.mode==='choice'?e.choices.map(c=>row(c.label,G.events.getChoicePreview(state,c.id))):[row(e.selectedChoiceLabel,e.resultText),row('所得与代价',(e.resultSummary||[]).join(' · '))])]);}
     if(state.scene==='rest'){
       const r=state.rest;if(state.reviewReceipt)return details(state.reviewReceipt.title,state.reviewReceipt.lines.map(t=>row('歇脚所得',t)));
       if(r.mode==='upgrade'){const boxes=G.render.realisticJourney.upgradeBoxes(state),hit=boxes.find(b=>inside(point,b)),entry=r.deckEntries[r.reviewUpgradeIndex]||hit?.entry;
-        const entries=entry?[entry]:boxes.map(b=>b.entry);return details('精进比较',entries.flatMap(e=>{const next=G.cards.getCardByName(G.cards.upgradeDeckCardAt([e.name],0).upgradedName);return [cardRow(e),row(next.name+' · 精进后',next.text)];}));}
+        const entries=entry?[entry]:boxes.map(b=>b.entry);return details('精进比较',entries.flatMap(e=>{const next=G.cards.getCardByName(G.cards.upgradeDeckCardAt([e.name],0).upgradedName);return [cardRow(e),row(next.name+' · 精进后体力 '+next.cost,next.text,true),...(entry?G.cards.getRuleNotes(next,state):[])];}));}
       return details('破庙暂歇',[row('温酒裹伤','恢复 '+Math.min(r.healAmount,state.player.maxHp-state.player.hp)+' 气血：'+state.player.hp+' → '+Math.min(state.player.maxHp,state.player.hp+r.healAmount)+'/'+state.player.maxHp),row('残灯练招','精进一张招式，此次不疗伤。可先查看原式与精进后的效果。')]);
     }
     if(state.scene==='map'){

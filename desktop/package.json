@@ -1,0 +1,14 @@
+{
+  "name": "fragments-of-jianghu-desktop",
+  "version": "1.0.43",
+  "productName": "江湖残卷",
+  "description": "江湖残卷 Windows 离线版",
+  "author": "Qswhisper",
+  "license": "MIT",
+  "private": true,
+  "main": "app/main.cjs",
+  "devDependencies": {
+    "electron": "45.1.0",
+    "electron-builder": "26.18.0"
+  }
+}

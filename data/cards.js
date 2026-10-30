@@ -249,11 +249,12 @@ G.cards = G.cards || {};
       style: "dirty",
       cost: 1,
       upgradeRule: "status",
-      blind: 2,
+      blind: 1,
+      block: 6,
       // Blind strength is fixed for one enemy turn. Upgrade the action budget,
       // rather than adding a layer that cannot change its combat effect.
       upgradedValues: { cost: 0 },
-      description: "施加 {blind} 层迷眼。敌人本轮攻击伤害减半。"
+      description: "获得 {block} 架势，施加迷眼。敌人本轮攻击伤害减半。"
     },
     dirty_tendon_cut: {
       id: "dirty_tendon_cut",
@@ -264,8 +265,9 @@ G.cards = G.cards || {};
       upgradeRule: "status",
       damage: 3,
       crippleTurns: 2,
+      draw: 1,
       upgradedValues: { damage: 3, crippleTurns: 3 },
-      description: "造成 {damage} 伤害，残废 {crippleTurns} 回合。"
+      description: "造成 {damage} 伤害，残废 {crippleTurns} 回合，抽 {draw} 张牌。"
     },
     // 【下三滥】首发牌表（15 张）
     dirty_low_kick: {
@@ -837,17 +839,17 @@ G.cards = G.cards || {};
     ],
     dirty: [
       "阴手捅刀",
-      "阴手捅刀",
-      "阴手捅刀",
+      "阴沟翻身",
+      "毒钉暗甩",
       "撒石灰",
-      "撒石灰",
-      "断筋",
+      "阴手捅刀",
       "断筋",
       "毒钉暗甩",
-      "毒钉暗甩",
+      "阴手捅刀",
       "贴地扬灰",
-      "绊脚阴腿",
-      "烂口追打"
+      "烂口追打",
+      "阴沟翻身",
+      "绊脚阴腿"
     ],
     combo: [
       "闪身刺",
@@ -1221,6 +1223,31 @@ G.cards = G.cards || {};
     };
   }
 
+  // Explain the rule on deliberate inspection, without adding text to selection.
+  function getRuleNotes(card, state) {
+    var c = card || {}, source = getCardByName(c.name) || c.sourceCard || c;
+    var notes = [];
+    function note(title, lines) { notes.push({ title: title, text: lines.join("\n"), lines: lines }); }
+    var baseCost = typeof c.baseCost === "number" ? c.baseCost : source.cost;
+    if (c.relicDiscounted || c.comboDiscounted) {
+      note("临时费用", ["原费 " + baseCost + " → 当前 " + c.cost, c.relicDiscounted ? "军靴：本场第4、8、12…张免费" : "连环：本回合最多减费3次", c.relicDiscounted ? "出牌顺序改变时重算" : "回合结束后恢复原费"]);
+    }
+    if (source.flaw || source.consumeFlaw) note("破绽", ["本身不造成伤害", "由消耗破绽的招式结算", "消耗后清零"]);
+    if (source.fester || source.consumeFester || source.bonusDamageIfTargetHasFester) {
+      var festerLines = ["敌人行动前，按层数造成伤害", "先抵架势；结算后 -1 层", "层数可叠加"];
+      if (source.consumeFester) festerLines.push("本招清空层数，立即结算");
+      note("溃烂", festerLines);
+    }
+    if (source.blind) note("迷眼", ["本轮攻击伤害减半", "敌人行动后清除；不叠加"]);
+    if (source.crippleTurns) note("残废", ["攻击伤害 -25%", "持续" + source.crippleTurns + "回合；重复取较长值"]);
+    if (source.ironBoneBlock || source.ironBoneDamage) note("铁骨", ["架势达到10时触发", "本牌先加的架势也计入"]);
+    if (source.damageFromCurrentBlock) note("架势伤害", ["按出招时的架势计算", "不消耗架势"]);
+    if (source.comboTag) note("连环", ["先出3张牌，连环招式 -1费", "每回合限3次，最低0费"]);
+    if (source.block && !(source.ironBoneBlock || source.ironBoneDamage)) note("架势", ["抵挡伤害", "下回合开始时清零"]);
+    if (source.draw && !notes.length) note("抽牌", ["从牌堆顶部抽取", "已用招式下回合才能再抽"]);
+    return notes;
+  }
+  G.cards.getRuleNotes = getRuleNotes;
   G.cards.definitions = definitionsById;
   // Presentation material follows the technique, independently of its school.
   // Shared by contact sound and VFX; never used to calculate damage or draws.

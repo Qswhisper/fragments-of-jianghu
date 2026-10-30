@@ -89,13 +89,14 @@
   const sternFont=G.render.ui.getBodyFontFamily();
   const readableFont='"KGame Sans", sans-serif';
   // Center the actual ink, not the font's em box (Chinese and numerals have different bearings).
-  function ink(ctx,value,x,y,size=14,color='#dfd3bf',align='center',weight=700,font=sternFont,maxWidth) {
+  function ink(ctx,value,x,y,size=14,color='#dfd3bf',align='center',weight=700,font=sternFont,maxWidth,mechanics=false) {
     ctx.save();ctx.font=weight+' '+size+'px '+font;ctx.textAlign='left';ctx.textBaseline='alphabetic';
     const s=String(value),m=ctx.measureText(s),w=m.actualBoundingBoxLeft+m.actualBoundingBoxRight;
     const scale=maxWidth?Math.min(1,maxWidth/Math.max(1,w)):1;
     ctx.translate(x,y);ctx.scale(scale,1);ctx.fillStyle=color;
     const dx=align==='left'?m.actualBoundingBoxLeft:align==='right'?-m.actualBoundingBoxRight:(m.actualBoundingBoxLeft-m.actualBoundingBoxRight)/2;
-    ctx.fillText(s,dx,(m.actualBoundingBoxAscent-m.actualBoundingBoxDescent)/2);ctx.restore();
+    const baseline=(m.actualBoundingBoxAscent-m.actualBoundingBoxDescent)/2;
+    if(mechanics)G.render.ui.drawMechanicText(ctx,s,dx,baseline,G.render.ui.mechanicPalette.dark);else ctx.fillText(s,dx,baseline);ctx.restore();
   }
   // Match the user's 战斗页 (1–3), not the later carved-block experiments.
   const uiAssets = ['assets/ui/combat_panel_rotten_wood_plank_gpt4ovip_01.png',
@@ -183,7 +184,7 @@
       ctx.fillStyle=tone==='danger'?'rgba(139,51,39,.8)':'rgba(161,131,69,.62)';ctx.fillRect(x+2,y+3,2,12);
     }
     ctx.shadowColor='#080503';ctx.shadowBlur=1;ctx.shadowOffsetY=1;
-    ink(ctx,text,x+width/2,y+9,size,tone==='muted'?'#b7a58a':'#dfd0b7','center',700,sternFont,width-10);ctx.restore();
+    ink(ctx,text,x+width/2,y+9,size,tone==='muted'?'#b7a58a':'#dfd0b7','center',700,sternFont,width-10,true);ctx.restore();
   }
   function enemyInfo(ctx,enemy,shown,box,firing) {
     const cx=box.x+box.width/2,d=shown.intentData||{},intent=W.enemyIntent(shown);

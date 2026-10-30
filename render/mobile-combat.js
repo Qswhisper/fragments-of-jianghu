@@ -4,9 +4,9 @@
   const W=G.render.woodcut,P=G.render.realisticCombat,U=G.render.canvasUtils,A=G.render.assets;
   const ink=P.ui.ink,serif=G.render.ui.getBodyFontFamily();
   const paper='#dfd3bf',muted='#b7a58a',red='#bc5548';
-  function text(ctx,value,x,y,size=24,color=paper,align='left',width){
+  function text(ctx,value,x,y,size=24,color=paper,align='left',width,mechanics=false){
     ctx.save();ctx.filter='opacity(1)';ctx.shadowColor='#080604';ctx.shadowBlur=1;ctx.shadowOffsetY=1;
-    ink(ctx,value,x,y,size,color,align,700,serif,width);ctx.restore();
+    ink(ctx,value,x,y,size,color,align,700,serif,width,mechanics);ctx.restore();
   }
   function layer(ctx,key,b,paint){U.paintLayer(ctx,'mobile-combat:'+key,b,paint);}
   // Enemy HP/intent changes are small, frequent paints. A new whole-panel
@@ -54,7 +54,7 @@
       brush.strokeStyle='rgba(174,150,114,.28)';brush.lineWidth=1;
       brush.beginPath();brush.moveTo(x+141,b.y+57);brush.lineTo(x+141,b.y+75);brush.stroke();
       if(chips.length){brush.strokeStyle='rgba(174,150,114,.18)';brush.beginPath();brush.moveTo(x,b.y+88);brush.lineTo(x+width,b.y+88);brush.stroke();}
-      progress.forEach((chip,i)=>text(brush,chip,x,b.y+104+i*24,21,/已起|已成/.test(chip)?paper:muted,'left',width));
+      progress.forEach((chip,i)=>text(brush,chip,x,b.y+104+i*24,21,/已起|已成/.test(chip)?paper:muted,'left',width,true));
       warnings.forEach((chip,i)=>slip(brush,x,b.y+92+(progress.length+i)*24,Math.min(width,Math.max(116,chip.length*20+20)),chip,'danger',21,23));
     });
   }

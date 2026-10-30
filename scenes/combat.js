@@ -1716,12 +1716,12 @@ G.scenes = G.scenes || {};
   }
 
   function getInspectPreviewBox(layout) {
-    var width = 196;
-    var height = 264;
+    var width = 216;
+    var height = 300;
 
     return {
       x: Math.round(layout.handCenterX - width / 2),
-      y: 146,
+      y: 168,
       width: width,
       height: height,
       rotation: 0
@@ -3082,6 +3082,8 @@ G.scenes = G.scenes || {};
     var inspectVisual = getInspectPresentationState(state);
     var card = getCombatHandCardById(state, inspectVisual.cardId);
     var targetBox = getInspectPreviewBox(layout);
+    var ruleNotes = G.cards.getRuleNotes ? G.cards.getRuleNotes(card, state) : [];
+    if (!window.KGAME_MOBILE && ruleNotes.length) targetBox.x = Math.round(layout.handCenterX - (targetBox.width + 24 + 344) / 2);
     var handBoxes = getHandBoxes(layout, state.combat.hand, state.combat.selectedCardId);
     var sourceBox = findCardBoxById(handBoxes, inspectVisual.cardId) || targetBox;
     var progress = inspectVisual.progress;
@@ -3168,6 +3170,23 @@ G.scenes = G.scenes || {};
       glowBlur: selected ? (8 + settled * 6 + settleWindow * (1 + breathe * 2)) : (5 + settled * 4 + settleWindow * (0.6 + breathe * 1.4)),
       accentStroke: selected ? "#d7b27a" : "rgba(190, 166, 132, 0.42)"
     });
+    if (!window.KGAME_MOBILE && settled > 0.5 && G.cards.getRuleNotes) {
+      if (ruleNotes.length) {
+        var rowHeights = ruleNotes.map(function (note) { return note.lines.length * 25 + 28; });
+        var ruleHeight = rowHeights.reduce(function (sum, height) { return sum + height; }, 0) + 8;
+        var ruleBox = { x: targetBox.x + targetBox.width + 24, y: targetBox.y + (targetBox.height - ruleHeight) / 2, width: 344, height: ruleHeight };
+        ctx.save(); ctx.globalAlpha = settled;
+        drawCombatFlatPanel(ctx, ruleBox.x, ruleBox.y, ruleBox.width, ruleBox.height, { fill: "rgba(12,16,14,.94)", stroke: "rgba(161,143,112,.28)", innerStroke: false });
+        var rowY = ruleBox.y + 18;
+        ruleNotes.forEach(function (note, index) {
+          G.render.woodcut.text(ctx, note.title, ruleBox.x + 16, rowY + 10, 18, "#c2a77f", "left", 600);
+          note.lines.forEach(function (line, lineIndex) { G.render.woodcut.text(ctx, line, ruleBox.x + 94, rowY + 10 + lineIndex * 25, 16, "#e2d7c3", "left", 500, false, G.render.ui.mechanicPalette.dark); });
+          rowY += rowHeights[index];
+          if (index < ruleNotes.length - 1) { ctx.strokeStyle = "rgba(161,143,112,.22)"; ctx.beginPath(); ctx.moveTo(ruleBox.x + 16, rowY - 12); ctx.lineTo(ruleBox.x + ruleBox.width - 16, rowY - 12); ctx.stroke(); }
+        });
+        ctx.restore();
+      }
+    }
   }
 
   function getPlayerStyleLabel(style) {
@@ -3581,6 +3600,7 @@ G.scenes = G.scenes || {};
       weight: fontWeight,
       align: "center",
       color: color,
+      keywordColor: G.render.ui.mechanicPalette.dark,
       shadow: false
     });
     return width;

@@ -5,62 +5,62 @@ G.events = G.events || {};
   var MIN_MAX_HP = 20;
   var HISTORY_LIMIT = 20;
   var definitions = [
-    eventDef("act1_child_in_embers", 1, "灶灰里的孩子", "火梁下，孩子的哭声越来越弱。父亲被搜兵挡在街口，愿拿护身札记求你救人。墙根的钱袋伸手就能拿，退路却满是毒烟。火势只容你选一边。", [
-      choice("carry_out", "冒火背出孩子", "气血 -10，获得 1 张本流派招式", "落火灼伤肩背，孩子却还伏在你背上哭。父亲接过孩子，将护身札记塞进你手里。里头有一式本门用得上的招数。", [
+    eventDef("act1_child_in_embers", 1, "灶灰里的孩子", "火梁下，孩子的哭声渐弱。父亲被搜兵挡在街口，护身札记攥皱了也递不进来。墙根落着钱袋，另一条退路尽是毒烟。火梁已开始往下沉。", [
+      choice("carry_out", "冒火背出孩子", "气血 -10，获得 1 张本流派招式", "你用湿衣裹住孩子冲出火场，肩头灼伤。父亲接过孩子，把护身札记塞给你，又撕下衣袖替你裹伤。", [
         effect("hp", -10),
         effect("gain_card", 0, "style")
       ]),
-      choice("walk_away", "拾钱袋，穿烟巷", "最大气血 -4，获得 25 大洋", "钱袋到手，你低头钻进烟巷。毒烟灼伤肺腑，往后吐纳都短了半口气。身后的哭声，渐渐听不清了。", [
+      choice("walk_away", "拾钱袋，穿烟巷", "最大气血 -4，获得 25 大洋", "你抄起钱袋钻进烟巷，滚烫黑烟呛入肺管，往后发力总觉气短。街口汉子盯着你腰间的钱袋，不再吭声。", [
         effect("max_hp", -4),
         effect("gold", 25)
       ])
     ]),
-    eventDef("act1_execution_notice", 1, "城门示众榜", "同门被吊在城门上，衣内藏着记有旧招漏洞的札记。你可冒箭雨收殓他，或拿他的身份凭据领赏；看守正在盘查旧营余党。", [
-      choice("cut_the_rope", "冒箭收殓，取札记", "气血 -8，随机移除 1 张牌", "箭擦过肩头，你将同门放下安葬，带走衣内札记。照着记下的漏洞，你弃去一手拖慢出招的旧式。", [
+    eventDef("act1_execution_notice", 1, "城门示众榜", "城门横木上吊着旧营同门，衣襟里露出半截校招札记。弓手守着尸身，差役在下面收旧营凭据、发赏银。你认得那本札记，往日拆招时他总夹在腰间。", [
+      choice("cut_the_rope", "冒箭收殓，取札记", "气血 -8，随机移除 1 张牌", "你冒着冷箭割断绳索，将尸身拖入暗巷收殓。翻看他怀里的血册，你划去了自己常用的一式破绽招法。", [
         effect("hp", -8),
         effect("remove_random_card")
       ]),
-      choice("claim_the_bounty", "交同门凭据领赏", "获得 30 大洋，最大气血 -3", "赏银到手，看守却认出你也是旧营的人。你挨了一记伤及胸腔的枪托，忍着后患才逃出城门。", [
+      choice("claim_the_bounty", "交同门凭据领赏", "获得 30 大洋，最大气血 -3", "你交出同门凭据，按下手印。差役付了赏银，又一枪托砸中胸骨；这处暗伤，往后发力仍会牵痛。", [
         effect("gold", 30),
         effect("max_hp", -3)
       ])
     ]),
-    eventDef("act1_teahouse_poison", 1, "茶摊冷盏", "拳师被搜兵盯上，求你护他穿过巷口，事成教你一式发力。巷口刀枪未收，护送免不了受伤。桌下还藏着钱绳和一本别派招谱；若掀桌夺走，就断了求教的路。", [
-      choice("drink_anyway", "护他过巷，换取指点", "气血 -6，随机升级 1 张牌", "你护着拳师冲过巷口，臂上挨了一刀。到了僻静处，他依约看你出招，指正了一处发力。你试过，记下了。", [
+    eventDef("act1_teahouse_poison", 1, "茶摊冷盏", "拳师把茶盏放回桌上，压低声音：“搜兵盯上我了，劳你送过前巷。”巷口刀枪未收，他的钱绳和别派招谱还塞在桌下。你可护他过巷，也可掀桌夺走东西。", [
+      choice("drink_anyway", "护拳师过巷", "气血 -6，随机升级 1 张牌", "你护拳师穿过巷口，交手时受了伤。他等你喘匀气，伸手压下你的肩：“方才这一下，劲走偏了。”", [
         effect("hp", -6),
         effect("upgrade_random_card")
       ]),
-      choice("flip_the_table", "掀桌夺钱与杂招", "获得 20 大洋，获得 1 张异流派招式", "你趁他取杯踹翻桌子，隔开他的短刃，夺走钱绳和杂招册。他从棚后逃了；你没追，只带走所得。", [
+      choice("flip_the_table", "掀桌夺钱与杂招", "获得 20 大洋，获得 1 张异流派招式", "你掀桌夺走钱和招谱。拳师退到棚后，茶水流过他没来得及收回的手。", [
         effect("gold", 20),
         effect("gain_card", 0, "offstyle")
       ])
     ]),
-    eventDef("act1_river_shrine", 1, "河神小龛", "负伤拳师守着供刀与药包，请你引开搜兵，事后替你治伤。若只想取刀走人，就得伸手越过龛沿的碎瓷；他坐在那里，已无力阻拦。", [
-      choice("blood_oath", "引开搜兵，换治伤", "气血 -8，最大气血 +5", "你挨了一刀，把搜兵引过河堤。拳师替你处理旧伤，又校正了呼吸，往后能多撑几口气。", [
+    eventDef("act1_river_shrine", 1, "河神小龛", "负伤拳师靠着河神龛，药包压在膝上，供刀还横在身旁。搜兵的脚步越来越近，他指指你的旧创：“引开他们，回来我替你治。”龛沿撒着碎瓷，抄刀就走也得伤手。", [
+      choice("blood_oath", "引开搜兵，换治伤", "气血 -8，最大气血 +5", "你引开搜兵，折返时添了新伤。拳师替你清理旧创，又把新伤裹好：“这几天少使蛮劲。”", [
         effect("hp", -8),
         effect("max_hp", 5)
       ]),
-      choice("take_the_blade", "翻龛取刀", "获得旧物【缺口的厚背砍刀】，气血 -6", "你抄走供刀，从碎瓷间翻出。虎口被划开，药包留给了仍坐在龛旁的人。", [
+      choice("take_the_blade", "翻龛取刀", "获得旧物【缺口的厚背砍刀】，气血 -6", "你没应声，探手越过神龛抄走厚背砍刀。碎瓷割破掌心，拳师攥紧药囊闭上眼，任由你跃出后窗。", [
         effect("gain_relic", 0, "chipped_blade"),
         effect("hp", -6)
       ])
     ]),
-    eventDef("act2_cinder_cistern", 2, "焦土水窖", "伤兵接过你递来的水壶，攥住不肯松手。分给他们，你还得忍渴赶路；他们愿替你换药。若夺回独饮，挣扎的手就会扯到你肋下的旧创。", [
-      choice("share_water", "留下水，换药", "气血 -8，最大气血 +4", "壶底空了，你的喉头仍干得发疼。伤兵替你解下勒紧的旧绷带，清理伤处。重新包扎后，胸腹总算松快了些。", [
+    eventDef("act2_cinder_cistern", 2, "焦土水窖", "水壶递过去，伤兵喝了一口，又捧给旁边的人。他们想留些水走余下的路，药包已摊在你脚边。你可留下水换药，也可夺回独饮；争抢会牵动肋下旧创。", [
+      choice("share_water", "留下水，换药", "气血 -8，最大气血 +4", "你留下水壶。伤兵替你换好药，才去接同伴递回的水。你忍着渴意上路，他嘴唇上的裂口还没合。", [
         effect("hp", -8),
         effect("max_hp", 4)
       ]),
-      choice("drink_alone", "夺回水壶，独饮", "恢复 12 气血，最大气血 -4", "水咽下去，眼前终于不再发黑。争抢中，伤兵扯裂了你肋下旧创；深伤来不及处理，只能带着走。", [
+      choice("drink_alone", "夺回水壶，独饮", "恢复 12 气血，最大气血 -4", "你硬夺回水壶仰头喝干，撕扯间肋下旧创崩裂，伤及筋络。伤兵默默把铺盖挪开，同路脚夫也避开了你的目光。", [
         effect("hp", 12),
         effect("max_hp", -4)
       ])
     ]),
-    eventDef("act2_overturned_caravan", 2, "驿道翻车", "粮车翻沟，伤员压在挣扎的驮马旁，答应以药绷带酬谢救援。银箱也卡在断板下；车身将塌，你只能先救人解绳，或独拖沉重银箱。", [
-      choice("free_the_horse", "救伤员，替马解绳", "气血 -6，获得旧物【血绷带】", "你拖伤员离车，受了马蹄一击，再替驮马解脱。伤员把带药的绷带交给你留作急救。", [
+    eventDef("act2_overturned_caravan", 2, "驿道翻车", "驿道边粮车翻进深沟，断辕压着护车伤员，受惊的驮马还在乱踢。伤员指着腰间浸药的绷带喊你搭救；断板另一头卡着只沉重银箱，车架眼看就要散塌。", [
+      choice("free_the_horse", "救伤员，替马解绳", "气血 -6，获得旧物【血绷带】", "你扑上去割断缰绳，被乱蹬的马蹄擦伤小臂。伤员脱下药浸的血绷带，翻出干净里侧替你缠紧伤口。", [
         effect("hp", -6),
         effect("gain_relic", 0, "blood_bandage")
       ]),
-      choice("loot_the_silver", "拖走银箱", "获得 40 大洋，最大气血 -3", "银箱拖出了，断板也顶进肋下。你抱着钱离开，深处的伤却没法在路边处理。", [
+      choice("loot_the_silver", "拖走银箱", "获得 40 大洋，最大气血 -3", "你拖走银箱，塌落的断板砸伤肋下，留下内伤。伤员在沟底喊了一声，你没有回头。", [
         effect("gold", 40),
         effect("max_hp", -3)
       ])
@@ -96,23 +96,23 @@ G.events = G.events || {};
         effect("gain_card", 0, "offstyle")
       ])
     ]),
-    eventDef("act3_bridge_performance", 3, "天桥卖艺", "看客肯为带伤演练掏赏钱，桥阴的老拳师则愿替你校招调息。人群将散：挣眼前盘缠要耗血，跟拳师走就错过这一场收入。", [
+    eventDef("act3_bridge_performance", 3, "天桥卖艺", "看客围着场子等你出手，几趟硬招便能挣下盘缠。桥阴的老拳师却朝你招手：“脚下虚了，先收势。”随他校招调息，就赶不上这场赏钱；继续演练，伤口还得硬撑。", [
       choice("perform_for_coins", "忍伤卖艺挣盘缠", "气血 -8，获得 35 大洋", "几趟硬招演完，伤口又渗出血。看客渐渐散去，留下的大洋够你再走一段路。", [
         effect("hp", -8),
         effect("gold", 35)
       ]),
-      choice("hide_the_edge", "放弃赏钱，随师校招", "随机升级 1 张牌，最大气血 +2", "你放弃这一场赏钱，跟老拳师压稳脚跟、改掉多余发力。招式更顺，旧伤也不再处处牵扯呼吸。", [
+      choice("hide_the_edge", "放弃赏钱，随师校招", "随机升级 1 张牌，最大气血 +2", "你收势走入桥阴，随老拳师压稳脚跟、改掉多余发力。招式更顺，旧伤也不再处处牵扯呼吸。", [
         effect("upgrade_random_card"),
         effect("max_hp", 2)
       ])
     ]),
-    eventDef("act3_informer_confession", 3, "密探口供", "断指密探愿交护身法与追兵补给去向，求你挡住街口刀手。刀手却举出封口钱要你交人；他认得你的脸，拿钱也未必能全身退开。", [
-      choice("take_the_hit", "挡刀救人，取口供", "气血 -12，获得 1 张本流派招式，1 名宿敌阶数 -1", "你挡下追来的刀，把人拉进巷内。他交出口供和护身招式，暗线终于找到了截断追兵补给的地方。", [
+    eventDef("act3_informer_confession", 3, "密探口供", "断指密探把追兵补给去向和旧营护身谱塞向你，求你拦住街口刀手。刀手却亮出钱袋要你让开；他已认出你的脸，拿钱也未必能全身退开。", [
+      choice("take_the_hit", "挡刀救人，取口供", "气血 -12，获得 1 张本流派招式，1 名宿敌阶数 -1", "你架住来刀，将密探拖进暗巷。口供和招谱沾了血，字还认得清；暗线循口供截下了补给。", [
         effect("hp", -12),
         effect("gain_card", 0, "style"),
         effect("nemesis_shift", -1)
       ]),
-      choice("push_him_out", "交人拿钱，冒险脱身", "获得 30 大洋，最大气血 -4", "你用密探换来封口钱，刀手却仍要灭口。肋下受伤后，你从后窗脱身，把人留在街口。", [
+      choice("push_him_out", "交人拿钱，冒险脱身", "获得 30 大洋，最大气血 -4", "你收下钱袋，刀手却反手劈来。翻窗时肋下受创，往后吐纳总带着痛；袋里也滑出一张兑票。", [
         effect("gold", 30),
         effect("max_hp", -4)
       ])
@@ -121,19 +121,19 @@ G.events = G.events || {};
       choice("snuff_and_take", "轻手取镜，悄然离开", "获得旧物【锈护心镜】", "你熄灯摸开侧柜，取走锈护心镜，从巡哨的脚步声间退出。看守仍没醒。", [
         effect("gain_relic", 0, "rusty_mirror")
       ]),
-      choice("overturn_the_altar", "砸柜夺钱，惊动巡哨", "获得 30 大洋，气血 -6，1 名宿敌阶数 +1", "柜响惊醒看守，刀刃划伤你。你带走军需钱，赶来的巡哨也看清了你逃向哪条街。", [
+      choice("overturn_the_altar", "砸柜夺钱，惊动巡哨", "获得 30 大洋，气血 -6，1 名宿敌阶数 +1", "柜响惊醒看守，混战中你受了伤。你带走军需钱，赶来的巡哨也看清了你逃向哪条街。", [
         effect("gold", 30),
         effect("hp", -6),
         effect("nemesis_shift", 1)
       ])
     ]),
-    eventDef("act4_rail_spikes", 4, "铁路工钉", "工人正拆支线轨钉，要截住追兵的运械车。他们缺人手，也熟悉借力的窍门；带伤帮忙，难免扯开伤口。军需队肯出钱买钉包，但要当面盘查身份。", [
-      choice("help_the_workers", "帮工人拆轨", "气血 -10，随机升级 1 张牌，1 名宿敌阶数 -1", "轨钉松开时，你被撬杠砸伤。歇手后照着工人教的借力法试招，原先硬扛的一处顺了。支线已断，运械车过不来了。", [
+    eventDef("act4_rail_spikes", 4, "铁路工钉", "工人正拆运械支线，老工匠喊你搭手，把撬杠递来：“肩别硬扛，借腰上的劲。”带伤出力会扯开伤口。军需队也在收钉包，肯付现钱，却要当面盘查身份。", [
+      choice("help_the_workers", "帮工人拆轨", "气血 -10，随机升级 1 张牌，1 名宿敌阶数 -1", "轨钉起出时扯开了伤口。歇手后你按老工匠说的巧劲试招，发力顺了；支线已断，运械车过不来了。", [
         effect("hp", -10),
         effect("upgrade_random_card"),
         effect("nemesis_shift", -1)
       ]),
-      choice("sell_to_quartermaster", "向军需队卖钉包", "获得 45 大洋，最大气血 -3", "轨钉换了钱，押车兵却要查你的身份。胸骨被撞伤后，你忍痛逃离；这口气往后也难顺过来。", [
+      choice("sell_to_quartermaster", "向军需队卖钉包", "获得 45 大洋，最大气血 -3", "轨钉换了钱，押车兵却要查你的身份。夺路时胸骨受创，这口气往后也难顺过来。", [
         effect("gold", 45),
         effect("max_hp", -3)
       ])
@@ -149,33 +149,33 @@ G.events = G.events || {};
         effect("gain_card", 0, "reward")
       ])
     ]),
-    eventDef("act4_field_hospital", 4, "野战医院", "医院缺搬担架的人。留药帮忙，会扯开新伤，医官答应随后清创治旧患；偷吗啡能压痛赶路，却会掩住深伤，让你越走越重。", [
+    eventDef("act4_field_hospital", 4, "野战医院", "医院的担架排到了门外。医官卷着袖口喊人搭手，药盘里还放着吗啡。留下搬担架会扯伤，忙完能清创治旧患；偷药虽能压痛赶路，深伤却会继续拖重。", [
       choice("steal_morphine", "偷药压痛，带深伤走", "恢复 18 气血，最大气血 -3", "药劲暂时止痛，让你能赶路。你没处理深创，反而因痛觉被压住继续用力，留下了更重的后患。", [
         effect("hp", 18),
         effect("max_hp", -3)
       ]),
-      choice("leave_it_for_them", "忍伤搬担架，换清创", "气血 -6，最大气血 +4", "担架放下，伤口也挣开了。医官替你清创缝合；眼前仍疼，拖了许久的旧患总算能好好养。", [
+      choice("leave_it_for_them", "忍伤搬担架，换清创", "气血 -6，最大气血 +4", "担架放下，伤口也挣开了。医官洗净手替你清创缝合；眼前仍疼，拖了许久的旧患总算能好好养。", [
         effect("hp", -6),
         effect("max_hp", 4)
       ])
     ]),
-    eventDef("act4_payroll_ruts", 4, "军饷车辙", "军饷车由少年兵押着，追缉骑兵紧随其后。领头的愿交护身札记和伤药换你放行；截饷可得大笔盘缠，押车兵却已握住示警火筒。", [
+    eventDef("act4_payroll_ruts", 4, "军饷车辙", "押军饷车的少年兵停下来，领头的递出军医伤药和护身谱，只求放他们过去。后头追缉骑兵将至，另一个小兵攥着示警火筒。截下军饷能拿钱，也会招来追兵。", [
       choice("take_the_payroll", "截饷拿钱，冒示警", "获得 60 大洋，1 名宿敌阶数 +1", "你夺下军饷车，把钱用于路费。押车兵点起信号，追缉骑兵很快接上了你的去向。", [
         effect("gold", 60),
         effect("nemesis_shift", 1)
       ]),
-      choice("let_them_pass", "放行换护身法与药", "最大气血 +4，获得 1 张本流派招式", "你没拦这队孩子。领头的留下一页护身法和军医敷伤方，足够你改招、处理一处陈伤。", [
+      choice("let_them_pass", "放行换护身法与药", "最大气血 +4，获得 1 张本流派招式", "你侧身让开。领头的松了口气，放下护身谱和军医伤药；药能治陈伤，谱上的练法也刚好合用。", [
         effect("max_hp", 4),
         effect("gain_card", 0, "style")
       ])
     ]),
-    eventDef("act5_refugee_boat", 5, "难民破船", "破船将沉，孩子挤不上舷。船夫愿以护身法和伤药酬谢卸货救人；此时抢走包袱和船位能得盘缠，却须踏着断钉翻舷，把人留在水边。", [
-      choice("lift_the_child", "忍伤卸货，救孩子", "气血 -12，最大气血 +5，获得 1 张本流派招式", "你顶住推挤，让孩子先上船，再帮人卸下重物。船夫教了你护身法，又处理旧伤；你这身新伤仍得养。", [
+    eventDef("act5_refugee_boat", 5, "难民破船", "破船压得太低，孩子还挤不上舷。船夫喊你先帮着卸货，伸手指了指药包：“旧伤上船给你看，撑船卸力的法子也教你。”抢包袱和船位更快，舷边却翘着断钉。", [
+      choice("lift_the_child", "忍伤卸货，救孩子", "气血 -12，最大气血 +5，获得 1 张本流派招式", "你顶住推挤，托孩子上船，又卸下重货。船夫替你敷药治旧伤，指点卸力；新伤还疼着，孩子已靠着船篷睡了。", [
         effect("hp", -12),
         effect("max_hp", 5),
         effect("gain_card", 0, "style")
       ]),
-      choice("steal_the_last_seat", "夺包袱，抢上船", "获得 40 大洋，最大气血 -5", "你夺过装着盘缠的包袱，踩着舷边断钉翻上船。钉尖扎伤了腿，深及骨头。船已离岸，伤处还没法清理。", [
+      choice("steal_the_last_seat", "夺包袱，抢上船", "获得 40 大洋，最大气血 -5", "你夺过装着盘缠的包袱，踩着舷边断钉翻上船。钉尖扎伤了腿，深及骨头，往后发力总受牵制。", [
         effect("gold", 40),
         effect("max_hp", -5)
       ])
@@ -191,7 +191,7 @@ G.events = G.events || {};
         effect("nemesis_shift", -1)
       ])
     ]),
-    eventDef("act5_broken_tide_shrine", 5, "断潮神龛", "船夫愿教卸力步法、替你调息，换你带伤扶船入潮。另一边香柜夹在松动碎礁里；砸柜能拿盘缠，却要舍去求教并冒砸伤腿骨的险。", [
+    eventDef("act5_broken_tide_shrine", 5, "断潮神龛", "船搁在神龛下的浅滩。船夫请你搭手入潮，示范着卸力步法；歇手后能替你调息。旁边香柜夹在碎礁里，砸开能拿盘缠，却容易伤腿，也就顾不上推船求教了。", [
       choice("bleed_for_a_path", "忍伤推船，求教调息", "气血 -10，最大气血 +4，获得 1 张本流派招式", "你被船底擦伤，仍把船推入潮里。船夫教你卸力步法和调息，旧伤牵扯呼吸的毛病也轻了些。", [
         effect("hp", -10),
         effect("max_hp", 4),
@@ -203,7 +203,7 @@ G.events = G.events || {};
       ])
     ]),
     eventDef("act5_last_letter", 5, "最后一封家书", "桥洞里藏着同门的家书、练招札记和亡命怀表。你可以留下读信、对照札记，再敷药歇脚；也可以带表赶接应，但近路要赤脚涉过满是碎木的浅滩。", [
-      choice("read_then_burn", "读完家书，歇脚后焚信", "随机移除 1 张牌，最大气血 +4", "札记点出一式旧招的破绽，你决定弃去。信读完了，你在桥洞敷药歇息，等伤处松快些，才把写着姓名的纸页烧掉。", [
+      choice("read_then_burn", "读完家书，歇脚后焚信", "随机移除 1 张牌，最大气血 +4", "家书问新袄合不合身，没提催他回去。你读完信，按札记弃去一式冗招，敷药歇过脚，才烧掉写着姓名的纸页。", [
         effect("remove_random_card"),
         effect("max_hp", 4)
       ]),
@@ -524,7 +524,7 @@ G.events = G.events || {};
       // Only the .47 additions receive this editorial revision. Rebuild their
       // contextual copy, then match the already offered choice identities;
       // never replace saved effects, resources, seeds or committed receipts.
-      if (state.event.mode === "choice" && G.journeyEvents?.art[state.event.eventId] && state.event.copyRevision !== 4) {
+      if (state.event.mode === "choice" && G.journeyEvents?.art[state.event.eventId] && ![4, 6].includes(state.event.copyRevision)) {
         nextState = clone(state);
         var echo = nextState.event.consequence;
         definition = echo ? G.journeyEvents.build(nextState, echo.chain, echo.variant,
@@ -540,13 +540,13 @@ G.events = G.events || {};
               if (revised.fallbackResultText) entry.fallbackResultText = revised.fallbackResultText;
             }
           });
-          nextState.event.copyRevision = 4;
+          nextState.event.copyRevision = 6;
           return nextState;
         }
       }
       // Upgrade unresolved copy only; preserve committed results/history and
       // the save's exact effect arrays, RNG and resources.
-      if (state.event.mode === "choice" && state.event.copyRevision !== 3 && !G.journeyEvents?.art[state.event.eventId]) {
+      if (state.event.mode === "choice" && ![3, 5].includes(state.event.copyRevision) && !G.journeyEvents?.art[state.event.eventId]) {
         definition = definitions.find(function (entry) { return entry.id === state.event.eventId; });
         if (definition) {
           nextState = clone(state);
@@ -555,7 +555,7 @@ G.events = G.events || {};
             var revised = definition.choices.find(function (choice) { return choice.id === entry.id; });
             if (revised) { entry.label = revised.label; entry.resultText = revised.resultText; }
           });
-          nextState.event.copyRevision = 3;
+          nextState.event.copyRevision = 5;
           nextState.event.continueLabel = "继续赶路";
           return nextState;
         }
@@ -574,7 +574,7 @@ G.events = G.events || {};
       body: definition.body,
       choices: clone(definition.choices),
       consequence: definition.consequence ? clone(definition.consequence) : null,
-      copyRevision: G.journeyEvents?.art[definition.id] ? 4 : 3,
+      copyRevision: G.journeyEvents?.art[definition.id] ? 6 : 5,
       mode: "choice",
       selectedChoiceId: null,
       selectedChoiceLabel: null,

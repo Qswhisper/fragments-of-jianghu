@@ -14,9 +14,13 @@ body { -webkit-user-select:none; user-select:none; overscroll-behavior:none; }
 #mobile-read button { min-height:44px; color:#3c2f23; background:#aa947040; }
 #mobile-read p { color:#3c2f23; font-size:16.5px; line-height:1.65; margin:8px 0; }
 #mobile-read .read-row { border-bottom:1px solid #79654c66; padding:10px 0; }
+#mobile-read .rule-note { display:grid; grid-template-columns:74px 1fr; gap:12px; padding:14px 0; }
+#mobile-read .rule-note h2 { margin:2px 0; color:var(--kgame-keyword-paper); font-size:17px; }
+#mobile-read .rule-note p { margin:0; white-space:pre-line; line-height:1.65; }
 #mobile-read, #mobile-read * { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
 #mobile-read .read-card { float:left; width:116px; height:auto; margin:0 22px 14px 0; }
 #mobile-read.has-card .read-row { margin-left:138px; min-height:132px; border:0; }
+#mobile-read.has-card .rule-note { clear:both; margin-left:0; min-height:0; border-top:1px solid #79654c66; }
 #mobile-read footer { clear:both; padding-top:10px; border-top:1px solid #79654c66; font-size:13px; line-height:1.6; }
 #mobile-read[open] { animation:read-arrive .26s cubic-bezier(.18,.8,.25,1) both; }
 #mobile-read.read-depart { animation:read-depart .16s ease-in both; }

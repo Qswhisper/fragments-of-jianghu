@@ -6,7 +6,7 @@
   const state=()=>G.main.getState(),styleName=id=>G.scenes.title.prepareState(state()).title.options.find(o=>o.id===id)?.name||id;
   let parent=null,contentAnimation=null;
   function element(tag,text,className){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(className)e.className=className;return e;}
-  function paragraph(text,parentNode=content){parentNode.append(element('p',text));}
+  function paragraph(text,parentNode=content,mechanics=false){const p=element('p',text);if(mechanics)G.render.ui.appendMechanicText(p,text);parentNode.append(p);}
   function grid(){const g=element('div',undefined,'dialog-grid');content.append(g);return g;}
   function entry(parentNode,name,meta,lines){const e=element('article',undefined,'entry');e.append(element('h2',name),element('div',meta,'meta'));lines.forEach(line=>paragraph(line,e));parentNode.append(e);}
   function close(){contentAnimation?.cancel();contentAnimation=null;G.render.journeyMotion?.closeDialog(dialog);dialog.close();G.main.setPaused(false);G.audio.playUiCue('return');syncUI();document.getElementById('game-canvas').focus();}
@@ -66,7 +66,8 @@
       shelf.querySelectorAll('button').forEach(b=>{b.classList.toggle('selected',b===button);b.setAttribute('aria-pressed',String(b===button));});
       detail.replaceChildren(cardCanvas(row.name),element('h2',row.name),element('div','同名 '+row.count+' 张'+(G.cards.isUpgraded(row.name)?' · 已精进':''),'meta'));
       detail.scrollTop=0;
-      paragraph(row.card?.text||'',detail);
+      paragraph(row.card?.text||'',detail,true);
+      const rules=element('dl',undefined,'card-rules');G.cards.getRuleNotes(row.card,s).forEach(note=>{rules.append(element('dt',note.title));const description=element('dd');note.lines.forEach(line=>paragraph(line,description,true));rules.append(description);});if(rules.childElementCount)detail.append(rules);
       if(prep?.canPrepare(state())&&s.scene!=='title'){
         const current=state(),prepared=prep.prepare(current,row.name),opening=prep.openingOrder(prepared,names).slice(0,5),already=names.slice(0,5).includes(row.name);
         paragraph('整备后五张起手：'+opening.join('、')+'。',detail);
@@ -148,17 +149,24 @@
       const history=element('ol',undefined,'memory-history');n.history.forEach(h=>{const row=element('li','收尾招式 '+(h.playerKillCard||'未记招名')+' · '+h.turnsElapsed+' 回合 · 余下 '+Math.round(h.playerHPPercent*100)+'% 气血');if(h.escapeAccount)paragraph(h.escapeAccount,row);history.append(row);});details.append(history);body.append(details);record.append(portrait,body);g.append(record);
     });if(!pool.length&&!closed.length){content.append(element('h2','旧仇簿尚未落墨'));paragraph("败退的敌人会记住你的路数，重新准备后再追来。");}
   }
-  function help(){paragraph(G.journeyNarrative.setting);paragraph(G.journeyNarrative.purpose(state()));paragraph(G.journeyNarrative.healthMeaning);if(window.KGAME_MOBILE)paragraph("手机操作：长按手牌、对手、奖励、商店商品或旅途页面，可看大字详情，不会提交选择。再点同一张牌，或按手机返回键，可取消选中。菜单在画面右上角。");[
-    "点击手牌选中，再点击敌人出招。招架等自身招式，选中后点自己施展；再点同一张牌可取消选择。还可以把牌拖向目标。右键或 Esc 取消选择。",
-    "先看敌人的下一手，再决定进攻还是积攒架势。起手取行囊前五张，整备的一式提前；抽牌从牌堆顶部取。抽牌堆用尽后，弃牌重新排队，不是完全随机洗牌。本回合打出的招式，下回合起才能再抽到。架势来自招架、闪避、掩护与身位，不是肉身挡子弹。结束回合后，敌人依次行动；新回合恢复体力、补手牌，上一回合架势清零。动画过程中暂时不能出手。",
-    '破绽本身不造成伤害，由写明消耗破绽的招式利用。溃烂在敌人行动前造成等同层数的伤害，随后减少 1 层。迷眼使敌人本轮攻击伤害减半，行动后清除；层数不代表持续回合。残废使敌人攻击伤害降低四分之一，持续所标回合数。',
-    '铁骨：当前架势达到 10 时生效；本牌先获得的架势也计入。连环：本回合打出任意 3 张牌后，带有连环效果的后续招式少耗 1 体力，最低为 0；每回合最多减耗 3 次。',
-    '每结束一次回合算一拍。宿敌左轮准备三拍后开火，卡宾枪与步枪准备两拍；准备时仍可出招。枪击让架势抵挡减半，针对横练的枪击完全无视架势。看意图中的开火倒计时；迷眼、残废或抢先击倒可减少威胁。',
-    '奖励先点选，再点「收下旧物」或「带走此式」确认。强敌旧物与招式分两次选择，也可不取。每卷可在招式奖励时打开菜单→招式，改选公开的本门基础招；确认一式便替代本次随机选牌，取消不消耗机会。战外还可从已拥有招式中整备一式，本卷每战进入五张起手，本卷免费定一次。整备后新得招式可花20大洋换练一次，替换原起手名额；菜单→招式可预览，取消不扣钱。休息点只能疗伤或精进一次。',
-      '地图从下往上，亮起的节点才可前往。触屏先点路标查看，再点「前往此处」确认；分岔选择后不能折返。旧仇位置随路线变化；绕开当前标记不保证避战，追兵会转向前方可达的战斗节点。每卷五层，关底获胜进入下一卷；第五卷之后进入终局簿。',
-    '你取卷南下，穿过五道封锁交给革命党。奇遇会留下本局的人情、交易与行踪；后来是否重逢，要看所走路线、搜捕情况和别处的选择。有人递信、有人盘问，几段旧事也可能碰到一起。行程可回看已知消息，重走此案会重新发生这些人和事，旧仇簿继续沿用。失败由当地接应人救回，养伤后重整招式；胜利核验原件、撤离暗线，此案结束。宿敌第三次实际败退后退出追缉，交锋留档；继任者只接手报录与军械，不继承前任亲历的旧伤。装备升降不增加交锋次数。',
-    "按 P 或点击画面角落的菜单暂停，可查看招式、行程、旧仇簿和设置。Esc 返回上级；回到菜单后再按一次，继续游戏。行程自动保存，重开保留旧仇。"
-  ].forEach((line,i)=>{const headings=['出招与撤招','读懂下一手','伤势与破绽','铁骨与连环','应对火器','收获与歇脚','选择前路','此行与旧仇','暂停与续行'],chapter=element('article',undefined,'help-chapter');chapter.append(element('span',String(i+1).padStart(2,'0'),'chapter-number'),element('h2',headings[i]));paragraph(line,chapter);content.append(chapter);});}
+  function help(){
+    paragraph('先看敌人意图。出牌消耗体力，架势抵挡伤害。');
+    if(window.KGAME_MOBILE)paragraph('长按手牌或对手细读；返回键取消选牌。');
+    const chapters=[
+      ['出招与撤招',['点牌再点目标，或拖牌出招。招架点自己，攻击点敌人。','再点原牌、右键或 Esc 取消。']],
+      ['读懂下一手',['起手取行囊前五张，整备招式提前。牌堆用尽后重排弃牌；本回合用过的牌，下回合才能再抽。','结束回合后弃手牌、敌人行动。新回合恢复体力、补至五张手牌，架势清零。','玩家演出中可接牌；敌方行动与结算时不能出牌。']],
+      ['伤势与破绽',['破绽：本身无伤害，消耗后按招式造成伤害。','溃烂：敌人行动前按层数伤害，先抵架势，再减1层。可叠加；消耗后清零。','迷眼：本轮攻击减半，行动后清除，不叠加。','残废：攻击伤害减少25%，重复取较长回合，可与迷眼共存。']],
+      ['铁骨与连环',['铁骨：架势达到10时触发，本牌先加的架势也计入。','连环：先出任意3张牌，后续连环招式少耗1体力；每回合限3次，最低0费。']],
+      ['应对火器',['一回合算一拍。宿敌左轮准备3拍，卡宾枪、步枪准备2拍。','枪击让架势抵挡减半；针对横练的枪击无视架势。看准倒计时，可用迷眼、残废或抢先击倒应对。']],
+      ['收获与歇脚',['奖励先选再确认，也可不取。强敌旧物与招式分开选择。','歇脚只能疗伤或精进一次。','菜单→招式：每卷免费整备一式，进入每战起手；新得招式可花20大洋换练一次。','本门补招每卷一次，替代当前随机选牌；取消不占次数。']],
+      ['选择前路',['地图从下往上，亮起的节点才可前往。触屏先看路标，再点「前往此处」；选路后不能折返。','绕开旧仇标记不保证避战，追兵会转往前方战斗节点。每卷五层，过关进入下一卷。']],
+      ['此行与旧仇',['奇遇选择影响后续的人和事，行程可查已知消息。','宿敌败退三次后退出，继任者接手报录与军械。重开重整牌组与行装，旧仇记录保留。']],
+      ['暂停与续行',['按 P 或点右上角菜单暂停，Esc 逐级返回。行程自动保存。']]
+    ];
+    chapters.forEach(([heading,lines],i)=>{const chapter=element('article',undefined,'help-chapter');chapter.append(element('span',String(i+1).padStart(2,'0'),'chapter-number'),element('h2',heading));lines.forEach(line=>paragraph(line,chapter));content.append(chapter);});
+    paragraph('临时费用：军靴让本场第4、8、12…张牌免费；连环减费只管本回合。招式簿与精进页显示原费。');
+    const background=element('details');background.append(element('summary','此行的来由'));paragraph(G.journeyNarrative.setting,background);paragraph(G.journeyNarrative.purpose(state()),background);paragraph(G.journeyNarrative.healthMeaning,background);content.append(background);
+  }
   function settings(s){
     const row=(label,control)=>{const r=element('label',undefined,'settings-row');r.append(element('span',label),control);content.append(r);};
     [['volume','总音量'],['musicVolume','音乐'],['sfxVolume','音效']].forEach(([key,label])=>{
@@ -201,6 +209,7 @@
   trigger.onclick=()=>open('菜单',pauseMenu);
   function runReport(s){
     const r=s.runReport;if(!r?.active)return;paragraph(r.prompt);const list=grid();
+    if(r.nextAttempt)paragraph(r.nextAttempt);
     (r.summaryRows||[]).forEach(row=>entry(list,row.label,String(row.value),[]));
     (r.detailLines||[]).filter(line=>!(/存档|宿敌池|最后留在身上的旧物/.test(line))).forEach(line=>paragraph(line));
     paragraph('随身旧物');const relics=grid();(s.player.relics||[]).forEach(id=>{const item=G.relics.getRelicById(id);entry(relics,item?.name||id,'', [item?.description||item?.text||'']);});

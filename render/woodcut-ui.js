@@ -15,13 +15,14 @@ G.render = G.render || {};
   const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
   const inside = (p, b) => p.x >= b.x && p.x <= b.x + b.width && p.y >= b.y && p.y <= b.y + b.height;
   const hovered = b => G.main && inside(G.main.getPointer(), b);
-  function text(ctx, value, x, y, size = 16, color = colors.text, align = 'left', weight = 500, title = false) {
-    if(G.render.sceneEntry?.active()&&G.render.sceneEntry.text(ctx,x,y,()=>text(ctx,value,x,y,size,color,align,weight,title)))return;
+  function text(ctx, value, x, y, size = 16, color = colors.text, align = 'left', weight = 500, title = false, keywordColor = null) {
+    if(G.render.sceneEntry?.active()&&G.render.sceneEntry.text(ctx,x,y,()=>text(ctx,value,x,y,size,color,align,weight,title,keywordColor)))return;
     ctx.save(); ctx.font = weight + ' ' + size + 'px ' + (title ? serif : font);
-    ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillText(String(value ?? ''), x, y); ctx.restore();
+    ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle';
+    if(keywordColor)G.render.ui.drawMechanicText(ctx,value,x,y,keywordColor);else ctx.fillText(String(value ?? ''), x, y);ctx.restore();
   }
-  function wrap(ctx, value, x, y, width, size = 16, color = colors.text, maxLines = 8) {
-    if(G.render.sceneEntry?.active()&&G.render.sceneEntry.text(ctx,x,y,()=>wrap(ctx,value,x,y,width,size,color,maxLines)))return;
+  function wrap(ctx, value, x, y, width, size = 16, color = colors.text, maxLines = 8, keywordColor = null) {
+    if(G.render.sceneEntry?.active()&&G.render.sceneEntry.text(ctx,x,y,()=>wrap(ctx,value,x,y,width,size,color,maxLines,keywordColor)))return;
     ctx.save(); ctx.font = '500 ' + size + 'px ' + font; ctx.textBaseline = 'top'; ctx.fillStyle = color;
     let lines;
     if(G.render.journeyTypesetting&&G.main?.getSceneName()!=='combat')lines=G.render.journeyTypesetting.lines(ctx,value,width);
@@ -33,7 +34,11 @@ G.render = G.render || {};
     }
     if (line) lines.push(line);
     }
-    lines.slice(0, maxLines).forEach((row, i) => ctx.fillText(i === maxLines - 1 && lines.length > maxLines ? row.slice(0, -1) + '…' : row, x, y + i * (size + 7)));
+    const spans=keywordColor?G.render.ui.mechanicSpans(lines.join('')):[];let offset=0;
+    lines.slice(0, maxLines).forEach((row, i) => {
+      const printed=i===maxLines-1&&lines.length>maxLines?row.slice(0,-1)+'…':row;
+      if(keywordColor){const ranges=spans.filter(r=>r.end>offset&&r.start<offset+printed.length).map(r=>({start:Math.max(0,r.start-offset),end:Math.min(printed.length,r.end-offset)}));G.render.ui.drawMechanicText(ctx,printed,x,y+i*(size+7),keywordColor,ranges);}else ctx.fillText(printed,x,y+i*(size+7));offset+=row.length;
+    });
     ctx.restore(); return Math.min(lines.length, maxLines) * (size + 7);
   }
   function panel(ctx, b, options = {}) {

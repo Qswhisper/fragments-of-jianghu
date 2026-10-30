@@ -3,6 +3,41 @@ G.render = G.render || {};
 G.render.ui = G.render.ui || {};
 
 (function () {
+  var mechanicPalette = {paper: "#5e360f", dark: "#c2a77f"};
+  function mechanicSpans(value) {
+    var spans = [], match, pattern = /破绽|溃烂|迷眼|残废|铁骨|连环|中毒/g;
+    while ((match = pattern.exec(String(value || "")))) spans.push({start: match.index, end: pattern.lastIndex});
+    return spans;
+  }
+  function drawMechanicText(ctx, value, x, y, color, spans) {
+    var text = String(value == null ? "" : value), ranges = spans || mechanicSpans(text);
+    if (!ranges.length) { ctx.fillText(text, x, y); return; }
+    ctx.save();
+    var font = ctx.font, ink = ctx.fillStyle, width = ctx.measureText(text).width;
+    var left = x - (ctx.textAlign === "center" ? width / 2 : ctx.textAlign === "right" || ctx.textAlign === "end" ? width : 0);
+    var cursor = 0;
+    ctx.textAlign = "left";
+    ranges.forEach(function (range) {
+      ctx.font = font; ctx.fillStyle = ink;
+      if (range.start > cursor) ctx.fillText(text.slice(cursor, range.start), left + ctx.measureText(text.slice(0, cursor)).width, y);
+      var start = left + ctx.measureText(text.slice(0, range.start)).width;
+      ctx.font = font.replace(/^(\d+) /, function (_, weight) { return Math.min(800, Number(weight) + 100) + " "; });
+      ctx.fillStyle = color; ctx.fillText(text.slice(range.start, range.end), start, y); cursor = range.end;
+    });
+    ctx.font = font; ctx.fillStyle = ink;
+    if (cursor < text.length) ctx.fillText(text.slice(cursor), left + ctx.measureText(text.slice(0, cursor)).width, y);
+    ctx.restore();
+  }
+  function appendMechanicText(node, value) {
+    var text = String(value == null ? "" : value), cursor = 0;
+    node.replaceChildren();
+    mechanicSpans(text).forEach(function (range) {
+      node.append(document.createTextNode(text.slice(cursor, range.start)));
+      var word = document.createElement("strong"); word.className = "mechanic-keyword"; word.textContent = text.slice(range.start, range.end); node.append(word); cursor = range.end;
+    });
+    node.append(document.createTextNode(text.slice(cursor)));
+    return node;
+  }
   function getUiBodyFontFamily() {
     return "\"KGame Song\", serif";
   }
@@ -368,7 +403,9 @@ G.render.ui = G.render.ui || {};
       ctx.shadowOffsetY = typeof opts.shadowOffsetY === "number" ? opts.shadowOffsetY : 1;
     }
 
+    var keywordOffset = 0, keywordSpans = opts.keywordColor ? mechanicSpans(lines.join("")) : [];
     for (i = 0; i < lines.length; i += 1) {
+      var rowSpans = keywordSpans.filter(function (range) { return range.end > keywordOffset && range.start < keywordOffset + lines[i].length; }).map(function (range) { return {start: Math.max(0, range.start - keywordOffset), end: Math.min(lines[i].length, range.end - keywordOffset)}; });
       drawY = y + i * lineHeight;
       if (opts.fadeOverflow && layout.truncated && i === lines.length - 1) {
         ctx.restore();
@@ -386,11 +423,14 @@ G.render.ui = G.render.ui || {};
           fadeWidth: opts.fadeWidth,
           clipHeight: Math.max(lineHeight + 3, Math.ceil((opts.size || 18) * 1.35)),
           textBaseline: "top",
-          forceFade: true
+          forceFade: true,
+          keywordColor: opts.keywordColor, keywordRanges: rowSpans
         });
         return lines.length;
       }
-      ctx.fillText(lines[i], x, drawY);
+      if (opts.keywordColor) drawMechanicText(ctx, lines[i], x, drawY, opts.keywordColor, rowSpans);
+      else ctx.fillText(lines[i], x, drawY);
+      keywordOffset += lines[i].length;
     }
 
     ctx.restore();
@@ -492,7 +532,16 @@ G.render.ui = G.render.ui || {};
       ctx.fillStyle = fadeMask;
     }
 
-    ctx.fillText(label, x, y);
+    if (opts.keywordColor) {
+      var keywordPaint = opts.keywordColor;
+      if (maxWidth > 0 && shouldFade) {
+        keywordPaint = ctx.createLinearGradient(x, y, fadeEndX, y);
+        keywordPaint.addColorStop(0, withAlpha(opts.keywordColor, 1));
+        keywordPaint.addColorStop(fadeStartRatio, withAlpha(opts.keywordColor, 1));
+        keywordPaint.addColorStop(1, withAlpha(opts.keywordColor, 0));
+      }
+      drawMechanicText(ctx, label, x, y, keywordPaint, opts.keywordRanges);
+    } else ctx.fillText(label, x, y);
 
     ctx.restore();
     return measuredWidth;
@@ -652,7 +701,8 @@ G.render.ui = G.render.ui || {};
       ctx.strokeText(text, drawX, drawY);
     }
 
-    ctx.fillText(text, drawX, drawY);
+    if (opts.keywordColor) drawMechanicText(ctx, text, drawX, drawY, opts.keywordColor);
+    else ctx.fillText(text, drawX, drawY);
     ctx.restore();
   }
 
@@ -1823,7 +1873,7 @@ G.render.ui = G.render.ui || {};
       ctx.restore();
       drawLabel(ctx, effectNote.label, effectChipX + effectChipWidth / 2, effectChipY + effectChipHeight / 2 - 0.5, {
         size: 10,
-        color: effectNotePalette.text,
+        color: mechanicSpans(effectNote.label).length ? mechanicPalette.paper : effectNotePalette.text,
         align: "center",
         shadow: false,
         weight: "700",
@@ -1874,7 +1924,7 @@ G.render.ui = G.render.ui || {};
       ctx.font = "800 " + primarySize + "px " + readableFontFamily;
       primarySize *= Math.min(1, (bodyWidth - 12) / Math.max(1, ctx.measureText(combatReadout.primary).width));
       drawLabel(ctx, combatReadout.primary, bodyX + 6, bodyY + 13, {
-        size: primarySize, color: "#25160f", weight: "800", shadow: false, fontFamily: readableFontFamily
+        size: primarySize, color: "#25160f", weight: "800", shadow: false, fontFamily: readableFontFamily, keywordColor: mechanicPalette.paper
       });
       ctx.restore();
     }
@@ -1884,6 +1934,7 @@ G.render.ui = G.render.ui || {};
     }
     drawWrappedLabel(ctx, ruleText, bodyX + 6, textStartY, bodyWidth - 12, textLineHeight, {
       size: ruleTextSize,
+      keywordColor: mechanicPalette.paper,
       journeyTypeset: readingScale > 1 || isCombatHand,
       color: isRewardLayout ? "#17100c" : "#18120f",
       maxLines: maxLines,
@@ -1938,7 +1989,7 @@ G.render.ui = G.render.ui || {};
       drawLabel(ctx, "\u8fde\u73af", comboSlipX + comboSlipWidth / 2, comboStampY + comboSlipHeight / 2 - 0.5, {
         size: 10,
         align: "center",
-        color: card.comboDiscounted ? "#611d1a" : "#4d3023",
+        color: mechanicPalette.paper,
         weight: "700",
         shadow: false,
         fontFamily: readableFontFamily
@@ -2187,6 +2238,10 @@ G.render.ui = G.render.ui || {};
   }
 
   G.render.ui.drawPanel = drawPanel;
+  G.render.ui.mechanicPalette = mechanicPalette;
+  G.render.ui.mechanicSpans = mechanicSpans;
+  G.render.ui.drawMechanicText = drawMechanicText;
+  G.render.ui.appendMechanicText = appendMechanicText;
   G.render.ui.drawHandTray = drawHandTray;
   G.render.ui.drawLabel = drawLabel;
   G.render.ui.drawBar = drawBar;

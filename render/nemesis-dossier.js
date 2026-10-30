@@ -36,7 +36,9 @@
     group(c,'nemesis-paper',60,()=>M.sheet(c,layout.paper,{tone:'#b6aa91'}));
     group(c,'nemesis-identity',110,()=>{
       text(c,source.inheritedIntel&&!source.history?.length?'追缉接续':'旧仇再会',78,112,24,'#c4a783');
-      text(c,n.name,74,182,n.name.length>10?42:52,'#eee1c7',700);text(c,'宿怨 '+n.level+' 阶',78,243,25,'#c9ab84');
+      text(c,n.name,74,182,n.name.length>10?42:52,'#eee1c7',700);text(c,'宿怨 '+n.level+' 阶',78,230,25,'#c9ab84');
+      const last=source.history?.at(-1),quote=last?.playerKillCard?'上回那记「'+last.playerKillCard+'」，我认得。这次，卷和人都得留下。':G.nemesis.getIntroLine(source);
+      lines(c,'“'+quote+'”',78,259,625,22,'#c8b89e',25);
     });
     group(c,'nemesis-threat',230,()=>preparation(c,n,source));group(c,'nemesis-actions',310,()=>{M.action(c,layout.record,'交锋记忆');fight(c);});
   }

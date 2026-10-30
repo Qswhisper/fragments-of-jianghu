@@ -144,6 +144,18 @@ G.runReport = G.runReport || {};
     return details;
   }
 
+  function nextAttempt(state) {
+    var player = state.player || {};
+    var cards = (player.masterDeckNames || []).map(function (name) { return G.cards.getCardByName(name); }).filter(Boolean);
+    if (player.chosenStyle === "dirty") {
+      if (!cards.some(function (card) { return card.consumeFester; })) return "可补翻伤撒盐，把溃烂转为伤害。";
+      return "先减伤护身，再用溃烂消耗或收招。";
+    }
+    if (player.chosenStyle === "blade") return "先叠破绽，再出消耗招式；舍身招会扣血。";
+    if (player.chosenStyle === "iron") return "蓄架后反击；遇枪手可补迷眼或残废。";
+    return "低费、抽牌起手，三张后接连环减费。";
+  }
+
   function buildReport(state, outcome) {
     var safeOutcome = outcome === "victory" ? "victory" : "defeat";
     var chosenStyle = state && state.player ? state.player.chosenStyle : null;
@@ -165,6 +177,7 @@ G.runReport = G.runReport || {};
         "收起败局簿；养伤后重新准备，仍追查这份未送达的证据。",
       summaryRows: buildSummaryRows(state, safeOutcome),
       detailLines: buildDetailLines(state, safeOutcome),
+      nextAttempt: safeOutcome === "defeat" ? nextAttempt(state) : null,
       consequenceSummary: G.eventConsequences ? G.eventConsequences.epilogue(state).slice(-1)[0] || null : null,
       buttons: [
         {

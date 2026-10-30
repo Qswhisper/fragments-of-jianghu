@@ -87,3 +87,12 @@ dialog button { transition:scale .14s ease-out,color .18s; }
 
 /* Custom ink feedback replaces the browser's blue touch flash. */
 #entry-ui button,dialog button { -webkit-tap-highlight-color: transparent; }
+
+/* Use the accepted reading face for prose; ink lettering stays on headings/actions. */
+.cinematic-story-body { font-family:'KGame Song',serif; font-weight:500; }
+#entry-ui.cinematic-passage .cinematic-heading { font-size:3.5cqw; letter-spacing:.08em; }
+#entry-ui.cinematic-passage .cinematic-story-body {
+  font-size:var(--story-body-size); line-height:1.65;
+}
+#entry-ui.cinematic-passage .cinematic-story-body p { line-height:1.65; text-wrap:pretty; margin:0 0 .75em; }
+#entry-ui.cinematic-passage .cinematic-start-label { font-size:var(--story-action-size); line-height:1.35; }

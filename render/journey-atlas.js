@@ -19,6 +19,7 @@
     ctx.stroke();ctx.restore();
   }
   G.scenes.map.render=function(state,ctx){
+    if(G.journeyPassage?.active(state)){G.render.journeyOpening.renderPassage(state,ctx);return;}
     const m=state.map,nodes=m.nodes,reachable=m.reachableNodeIds,visited=m.visitedNodeIds,act=Math.max(1,Math.min(5,m.actNumber||1));
     ctx.fillStyle='#b3a58c';ctx.fillRect(0,0,1280,720);W.image(ctx,paths[act-1],{x:0,y:0,width:1280,height:720},true);
     ctx.fillStyle='#c8b89b38';ctx.fillRect(310,82,970,638);

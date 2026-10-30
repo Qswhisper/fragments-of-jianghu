@@ -1,18 +1,24 @@
-# Windows build
+# Windows 完整安装包
 
-The Windows target bundles Electron and the complete current PC game into one offline NSIS installer. It does not require an installed browser or WebView runtime.
+Windows x64，内含 Electron 运行环境，无需另装浏览器。
 
-```powershell
-npm ci --prefix desktop --ignore-scripts
-npm run package:windows
+## 构建
+
+需要 Node.js 20+、Python 3.11+ 和 Pillow（`python -m pip install Pillow`）。先生成完整离线目录，再运行：
+
+```sh
+npm ci --prefix desktop
+npm run package:windows -- --game-dir output/offline-package/KGame-offline
 ```
 
-`scripts/build-windows.mjs` creates a fresh directory under `output/windows-build/`. It checks that the root, desktop package and current offline game's versions match. Rebuild the existing PC bundle first when game files change; keep `desktop/package.json` in sync with the root version. `--dir` produces only an unpacked application; the default produces the complete x64 installer. No publish or automatic-update step runs.
+当前本地正式 PC 目录可直接用 `npm run package:windows`。每次构建使用新输出目录；运行时与工具版本由锁文件固定。
 
-Game bytes come from `output/offline-package/江湖残卷_1.0正式版_PC` without altering that folder. A byte/size manifest bounds the `jianghu://game` protocol and supports local audio ranges. The production renderer has Node integration disabled, context isolation and sandbox enabled, no remote navigation, and no network game resources.
+## 存档与许可
 
-Windows saves use `%APPDATA%/FragmentsOfJianghu` and the stable `jianghu://game` origin. Browser and Android saves remain independent. Installation-path changes and upgrades retain the Windows profile; uninstall does not request deleting application data.
+存档位于 `%APPDATA%/FragmentsOfJianghu`，协议固定为 `jianghu://game`，与浏览器版和安卓独立。安装包不自动更新，默认不作数字签名。
 
-Actual EXE verification uses `tests/windows-app.mjs --exe <packaged EXE>`. `--kgame-verify` keeps the window hidden/muted and requires an isolated `--kgame-data` directory. Hidden native windows may throttle RAF; tests wait for the game's reading condition and do not use those timings as foreground FPS. `npm run test:windows` checks protocol boundaries and range handling. Installer validation additionally extracts the exact embedded archive and compares all game bytes; silent installation, shortcuts and registry changes are separate coverage.
+[封装依赖许可](THIRD_PARTY_NOTICES.md)；游戏素材遵循项目的第三方声明。
 
-Pinned dependencies are recorded in `package-lock.json`. The accepted Android icon is only converted to ICO sizes. Runtime licenses remain in the delivered folder; see [desktop notices](THIRD_PARTY_NOTICES.md). Current outputs and hashes: [release identity](../docs/RELEASE-IDENTITY.md).
+## 检查
+
+`npm run test:windows` 检查资源协议；`node tests/windows-app.mjs --exe <实际EXE> --cinematic` 使用隐藏窗口和隔离存档检查出牌、剧情、结算与续档。

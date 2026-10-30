@@ -25,4 +25,4 @@ npm ci --prefix desktop
 npm run package:windows -- --game-dir output/offline-package/KGame-offline
 ```
 
-需先生成离线目录。EXE 自带 Electron 运行环境；默认构建不作数字签名。运行存档在 `%APPDATA%/FragmentsOfJianghu`，与浏览器版独立。封装细节见 [desktop/README](../desktop/README.md)。
+需先生成离线目录，并安装 Pillow（`python -m pip install Pillow`）。EXE 自带 Electron 运行环境；默认构建不作数字签名。运行存档在 `%APPDATA%/FragmentsOfJianghu`，与浏览器版独立。封装细节见 [desktop/README](../desktop/README.md)。

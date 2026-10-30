@@ -10,7 +10,7 @@
 
 </div>
 
-![江湖残卷主界面](docs/media/title.png)
+[![津门街战 · 吹命刀](docs/media/battle-tianjin.png)](docs/media/battle-tianjin.png)
 
 清末，你带着一份密约穿过五道封锁。挑选招式与旧物，在追兵、旧识和宿敌之间，走完这趟险路。
 
@@ -37,11 +37,41 @@
 
 ## 游戏画面
 
-| 回合战斗 | 剧情交接 |
-| --- | --- |
-| [![招式与架势](docs/media/combat.png)](docs/media/combat.png) | [![津门验押](docs/media/story.png)](docs/media/story.png) |
+### 刀与枪
 
-画面来自 1.0.43 版本，可点击查看原图。
+南下渡口 · 下三滥
+
+[![渡口交锋](docs/media/battle-river.png)](docs/media/battle-river.png)
+
+| 租界关口 · 外家横练 | 北洋铁路营 · 贴身短打 |
+| --- | --- |
+| [![外家横练迎战租界总巡长](docs/media/battle-inspector.png)](docs/media/battle-inspector.png) | [![贴身短打对阵铁路营追兵](docs/media/battle-railway.png)](docs/media/battle-railway.png) |
+
+### 暗巷与旅途
+
+暗巷黑市 · 购招、寻旧物、撤去旧招
+
+[![暗巷黑市](docs/media/shop.png)](docs/media/shop.png)
+
+| 焦土驿道 · 选择前路 | 破庙暂歇 · 养伤练招 |
+| --- | --- |
+| [![焦土驿道水墨路线图](docs/media/map-embers.png)](docs/media/map-embers.png) | [![破庙中的休整](docs/media/rest.png)](docs/media/rest.png) |
+
+### 旧仇与奇遇
+
+旧仇再会 · 宿敌带着新的准备归来
+
+[![宿敌再会](docs/media/nemesis.png)](docs/media/nemesis.png)
+
+难民破船 · 渡口的一次抉择
+
+[![难民破船](docs/media/event-act5_refugee_boat.png)](docs/media/event-act5_refugee_boat.png)
+
+| 灰里旧旗 | 雨夜电报局 |
+| --- | --- |
+| [![焦土中的旧旗与操练册](docs/media/event-act2_buried_flag.png)](docs/media/event-act2_buried_flag.png) | [![雨夜电报局的取舍](docs/media/event-act4_telegraph_station.png)](docs/media/event-act4_telegraph_station.png) |
+
+以上为 1.0.43 版本游戏画面，可点击查看原图。
 
 ## 开发
 

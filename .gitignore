@@ -1,0 +1,16 @@
+node_modules/
+.env
+.env.*
+__pycache__/
+.cache/
+dist/
+output/
+assets/
+/systems/music-library.js
+*.log
+*.apk
+*.zip
+*.p12
+*.jks
+*.keystore
+*.key

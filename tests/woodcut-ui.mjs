@@ -1,0 +1,126 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { pathToFileURL, fileURLToPath } from 'node:url';
+import { chromium } from 'playwright';
+import {createVerificationOutput} from './verification-output.mjs';
+const root = fileURLToPath(new URL('../', import.meta.url));
+const arg = process.argv.indexOf('--entry');
+const entry = path.resolve(root, arg < 0 ? 'index.html' : process.argv[arg + 1]);
+const output = fileURLToPath(await createVerificationOutput('woodcut'));
+await fs.mkdir(output, { recursive: true });
+let browser;
+try { browser = await chromium.launch({channel: 'chrome', headless: true, args: ['--mute-audio']}); }
+catch (e) { if (!/not found|doesn't exist|ENOENT/i.test(e.message)) throw e; browser = await chromium.launch({channel: 'msedge', headless: true, args: ['--mute-audio']}); }
+const errors = [], checks = [];
+try {
+  const p = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  p.on('pageerror', e => errors.push(e.message));
+  p.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  p.on('requestfailed', r => { if (r.failure()?.errorText !== 'net::ERR_ABORTED') errors.push(r.url()); });
+  await p.goto(pathToFileURL(entry).href);
+  await p.waitForFunction(() => window.G?.main);
+  await p.waitForFunction(() => ['background-gate','background-market','background-temple','player-blade','player-iron','player-dirty','player-combo','player-blade-rear-v3','player-iron-rear-v3','player-dirty-rear-v3','player-combo-rear-v3','enemy-blade-front-v3','enemy-rifle-front-v3','enemy-boxer-front-v3'].every(id => G.render.assets.getImageEntry('assets/woodcut/' + id + '.png').loaded));
+  const state = () => p.evaluate(() => G.main.getState());
+  const settle = () => p.evaluate(() => advanceTime(1200));
+  const click = async b => { await p.mouse.click(b.x + b.width / 2, b.y + b.height / 2, { delay: 40 }); await settle(); };
+  const shot = async name => { await settle(); await p.mouse.move(1270, 710); await p.screenshot({ path: path.join(output, name + '.png') }); };
+  const titleBox = key => p.evaluate(key => G.scenes.title.getLayout()[key], key);
+  await p.evaluate(() => { G.storage.clearAll(); reset_game_state(); });
+  await shot('01-menu');
+  await click((await titleBox('menuButtons'))[2]);
+  assert.equal((await state()).title.mode, 'settings');
+  const volume = (await state()).settings.volume;
+  await click(await titleBox('volumeMinus'));
+  assert.ok((await state()).settings.volume < volume);
+  const quality = (await state()).settings.quality;
+  await click(await titleBox('qualityButton'));
+  assert.notEqual((await state()).settings.quality, quality);
+  await shot('02-settings');
+  await click(await titleBox('qualityButton'));
+  await click(await titleBox('settingsBack'));
+  await click((await titleBox('menuButtons'))[3]);
+  assert.equal((await state()).title.mode, 'credits'); await shot('03-credits');
+  await click(await titleBox('creditsBack'));
+  await click((await titleBox('menuButtons'))[0]);
+  for (let i = 0; i < 4; i++) {
+    const boxes = await p.evaluate(() => G.scenes.title.getStyleBoxes(G.scenes.title.getLayout()));
+    await click(boxes[i]); assert.equal((await state()).title.selectedStyle, ['blade','iron','dirty','combo'][i]);
+    await shot('04-style-' + i);
+  }
+  await click((await p.evaluate(() => G.scenes.title.getStyleBoxes(G.scenes.title.getLayout())))[0]);
+  await click(await titleBox('startButton')); assert.equal((await state()).scene, 'combat');
+  const base = await state(); await shot('05-combat');
+  await click(await p.evaluate(() => G.scenes.combat.debugGetLayout().drawPile));
+  assert.equal((await state()).combat.ui.overlay.visible, true); await shot('05-pile');
+  await p.keyboard.press('Escape'); await settle(); assert.equal((await state()).combat.ui.overlay, null);
+  checks.push('Menu, settings, credits, four style choices and start use real clicks');
+  const fixture = async (scene, gold = 500) => {
+    await p.evaluate(({ base, scene, gold }) => { base.player.gold = gold; base.player.hp = 30; base.scene = scene; base[scene] = null; replace_game_state(G.scenes[scene].prepareState(base)); }, { base, scene, gold });
+    await settle();
+  };
+  await fixture('shop');
+  const shopLayout = await p.evaluate(() => G.scenes.shop.getLayout());
+  const cardBoxes = await p.evaluate(() => G.scenes.shop.getCardBoxes(G.scenes.shop.getLayout()));
+  let before = await state();
+  await click(cardBoxes[0]);
+  assert.equal((await state()).player.deckSize, before.player.deckSize + 1);
+  assert.equal((await state()).player.gold, before.player.gold - before.shop.cardOffers[0].price);
+  before = await state(); await click(cardBoxes[0]); assert.equal((await state()).player.gold, before.player.gold);
+  const relicBoxes = await p.evaluate(() => G.scenes.shop.getRelicBoxes(G.scenes.shop.getLayout()));
+  await click(relicBoxes[0]); assert.equal((await state()).player.relics.length, before.player.relics.length + 1);
+  await shot('06-shop');
+  await click(shopLayout.removeButton); assert.equal((await state()).shop.mode, 'remove'); await shot('07-remove');
+  before = await state();
+  const removeBoxes = await p.evaluate(() => G.scenes.shop.getRemoveBoxes(G.main.getState().shop.deckEntries, G.scenes.shop.getLayout()));
+  await click(removeBoxes[1]); assert.equal((await state()).player.deckSize, before.player.deckSize); assert.equal((await state()).player.gold, before.player.gold);
+  assert.equal((await state()).shop.removeSelectedIndex,removeBoxes[1].index); await click(shopLayout.removeConfirm);
+  assert.equal((await state()).player.deckSize, before.player.deckSize - 1); assert.equal((await state()).player.gold, before.player.gold - before.shop.removeCost);
+  await click(shopLayout.leaveButton); assert.equal((await state()).scene, 'map'); await shot('08-map');
+  await fixture('shop', 0); before = await state(); await click(cardBoxes[0]); assert.equal((await state()).player.deckSize, before.player.deckSize); await click(shopLayout.removeButton); assert.equal((await state()).shop.mode, 'browse');
+  checks.push('Shop purchase, sold protection, relic, correct removal index, insufficient funds and exit');
+  await fixture('rest'); before = await state(); await shot('09-rest');
+  await click(await p.evaluate(() => G.scenes.restShared.getLayout().heal));
+  assert.equal((await state()).scene, 'map'); assert.equal((await state()).player.hp, before.player.hp + before.rest.healAmount);
+  checks.push('Rest heal applies displayed amount and returns to map');
+  await fixture('event'); await shot('10-event');
+  await click((await p.evaluate(() => G.scenes.event.getLayout(G.main.getState().event.choices.length).choiceBoxes))[0]);
+  assert.equal((await state()).event.mode, 'result'); await shot('11-event-result');
+  await click(await p.evaluate(() => G.scenes.event.getLayout(G.main.getState().event.choices.length).continueButton));
+  assert.equal((await state()).scene, 'map'); checks.push('Event choice, consequences and continue');
+  await p.evaluate(base => {
+    base.combat.enemies = G.enemies.buildEncounter('gate_guard_chief').enemies;
+    base.combat.encounterId = 'gate_guard_chief'; base.combat.nodeType = 'gate';
+    base.combat.result = 'victory'; base.combat.nemesisRecorded = false;
+    base.combat.enemies.forEach(e => e.hp = 0);
+    let next = G.nemesis.recordBattleOutcome(base);
+    next.nemesisIntro = { entryId: next.nemesis.pool[0].id };
+    replace_game_state(G.scenes.nemesis.prepareState(next));
+  }, base);
+  assert.equal((await state()).scene, 'nemesis'); await shot('12-nemesis');
+  await click(await p.evaluate(() => G.scenes.nemesis.getLayout().fight));
+  assert.equal((await state()).scene, 'combat'); assert.equal((await state()).combat.enemies[0].kind, 'nemesis'); await shot('13-nemesis-combat');
+  checks.push('Nemesis history -> introduction -> fight');
+  await p.evaluate(base => {
+    base.combat.enemies = G.enemies.buildEncounter('act2_street_rifle_cart').enemies;
+    base.combat.encounterName = '押车火枪'; base.combat.seeded = true; base.combat.result = 'active';
+    base.combat.enemies[0].intent = 'attack'; base.combat.enemies[0].intentLabel = '举枪射击'; base.combat.enemies[0].intentValue = 9;
+    replace_game_state(base);
+  }, base);
+  await shot('14-firearm-pair');
+  assert.equal(await p.evaluate(() => G.render.woodcut.enemyArt(G.main.getState().combat.enemies[0])), 'enemy-rifle-front-v3');
+  checks.push('Two-enemy firearm fixture renders with rifle role');
+  await p.evaluate(() => { const s = G.main.getState(); const extra = structuredClone(s.combat.enemies[1]); extra.id = 'third-enemy'; s.combat.enemies.push(extra); replace_game_state(s); });
+  await shot('14-three-enemies');
+  assert.equal(await p.evaluate(() => G.scenes.combat.getEnemyLayoutBoxes(G.main.getState()).every(b => b.x >= 0 && b.x + b.width <= 1280 && b.y + b.height <= 510)), true);
+  checks.push('Three-enemy targets fit the stage; pile list opens and Escape closes it');
+  await p.evaluate(base => replace_game_state(G.runReport.enter(base, 'defeat')), base);
+  await shot('15-report'); await click((await titleBox('reportButtons'))[1]); assert.equal((await state()).title.mode, 'styles');
+  await click(await titleBox('startButton')); assert.equal((await state()).scene, 'combat');
+  checks.push('Report retry returns to styles and starts another run');
+  assert.deepEqual(errors, []);
+  console.log(JSON.stringify({ passed: true, checks, errors }, null, 2));
+  await fs.writeFile(path.join(output, 'summary.json'), JSON.stringify({ passed: true, checks, errors }, null, 2));
+} finally { await browser.close(); }
+
+

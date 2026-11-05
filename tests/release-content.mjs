@@ -1,0 +1,40 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+import {chromium} from 'playwright';
+import {createVerificationOutput} from './verification-output.mjs';
+import {inspectReleaseContent} from '../scripts/release-content.mjs';
+const root=fileURLToPath(new URL('../',import.meta.url)),args=process.argv.slice(2),at=args.indexOf('--entry');
+const entry=path.resolve(root,at<0?'play.html':args[at+1]),base=path.dirname(entry),out=fileURLToPath(await createVerificationOutput('release-content'));
+const report={entry,checks:[],errors:[],scope:'Release text, actual credits input/navigation and removal of derived credits from saved UI. Progress fields compared separately; no new balance or natural-campaign claim.'};
+const browser=await chromium.launch({channel:'chrome',headless:true,args:['--mute-audio']});
+try{
+ const audit=await inspectReleaseContent(base);assert.deepEqual(audit.findings,[]);report.staticFiles=audit.files;
+ const p=await browser.newPage({viewport:{width:1280,height:758}});p.on('pageerror',e=>report.errors.push(String(e)));
+ await p.goto(pathToFileURL(entry).href,{waitUntil:'domcontentloaded'});await p.waitForFunction(()=>G.main&&G.journeyShell);
+ const labels=[];await p.evaluate(()=>{window.readText=[];const old=CanvasRenderingContext2D.prototype.fillText;CanvasRenderingContext2D.prototype.fillText=function(value,...rest){readText.push(String(value));return old.call(this,value,...rest);};});
+ await p.getByRole('button',{name:'制作与鸣谢',exact:true}).click();await p.waitForSelector('#journey-dialog[open]');
+ const credits=await p.locator('#journey-dialog').innerText();
+ const banned=String.fromCodePoint(0x7528,0x6237,0x8ba4,0x53ef);assert.ok(!credits.includes(banned));
+ assert.doesNotMatch(credits,/Codex|ChatGPT|AI\s*辅助|已认可|用户.{0,12}(?:确认|选定|反馈|要求)/i);
+ for(const name of ['DavidW','Will Leamon','OGA-BY','历史参考与出处'])assert.ok(credits.includes(name),name);
+ await p.screenshot({path:path.join(out,'credits-desktop.png')});
+ const popup=p.waitForEvent('popup');await p.getByRole('link',{name:'素材署名与许可',exact:true}).click();const licence=await popup;await licence.waitForLoadState('domcontentloaded');
+ const text=await licence.locator('body').innerText();assert.ok(text.includes('音乐')&&text.includes('许可全文'));assert.doesNotMatch(text,/Codex|ChatGPT|用户认可/);
+ await licence.close();report.checks.push('Actual credits retain source/licence links and open the offline document without process labels');
+ await p.setViewportSize({width:854,height:393});await p.screenshot({path:path.join(out,'credits-854.png')});assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ await p.locator('#close-dialog').click();
+ const persistence=await p.evaluate(()=>{
+   const original=G.main.getState(),fixture=structuredClone(original);
+   fixture.scene='map';fixture.player.masterDeckNames=G.cards.getStarterDeck('blade');fixture.map={actNumber:3,routeSeed:4242,currentNodeId:'preserved',nodes:[{id:'preserved',nextIds:[]}]};
+   fixture.title.creditRows=[{role:'legacy',value:String.fromCodePoint(0x7528,0x6237)+' + '+String.fromCharCode(67,111,100,101,120)}];
+   fixture.combat={turn:4,rngSeed:987,hand:[],drawPileNames:['劈砍'],discardPileNames:[],enemies:[],cardLibrary:{}};
+   G.storage.saveRun(fixture);const saved=G.storage.loadRunRecord();
+   return {expected:{player:fixture.player,map:fixture.map,combat:fixture.combat},saved:{player:saved.state.player,map:saved.state.map,combat:saved.state.combat},hasCredits:Object.hasOwn(saved.state.title,'creditRows'),keys:G.storage.keys||null};
+ });assert.deepEqual(persistence.saved,persistence.expected);assert.equal(persistence.hasCredits,false);
+ await p.reload();await p.waitForFunction(()=>G.main);
+ const loaded=await p.evaluate(()=>{const r=G.storage.loadRunRecord();return {map:r.state.map,hasCredits:Object.hasOwn(r.state.title,'creditRows')};});assert.equal(loaded.hasCredits,false);assert.equal(loaded.map.routeSeed,4242);
+ report.checks.push('Saved UI drops the derived legacy credits list while deck, map, combat/piles/RNG remain exact, including after reload');
+ assert.deepEqual(report.errors,[]);report.passed=true;
+}catch(e){report.passed=false;report.failure=e.stack;process.exitCode=1;}finally{await browser.close();await fs.writeFile(path.join(out,'summary.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}

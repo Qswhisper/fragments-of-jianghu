@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="woodcut">
+<head>
+  <meta charset="UTF-8"><base href="../../"><script>window.KGAME_STORAGE_NAMESPACE="kgame-gunfight-review";</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="data:,">
+  <title>江湖残卷 · 枪手战试玩</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: #0f0f0f;
+      overflow: hidden;
+      font-family: "Noto Serif SC", "Microsoft YaHei", serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #game-shell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    #game-canvas {
+      display: block;
+      width: 1280px;
+      height: 720px;
+      background: #121212;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
+      image-rendering: auto;
+    }
+  body { flex-direction:column; } #game-shell { min-height:0; flex:1; } #review-controls {box-sizing:border-box;width:100%;padding:8px 18px;background:#171713;color:#b9ad95;font-size:13px;display:flex;gap:14px;align-items:center;} select,button {background:#28251e;color:#dfd1b7;border:1px solid #514736;padding:5px 10px;font:inherit;} #review-controls small {margin-left:auto;} </style>
+</head>
+<body>
+  <div id="review-controls"><label>遭遇 <select id="encounter"><option value="scout">斥候：刺刀与点射</option><option value="instructor">教官：瞄准与穿透</option><option value="pair">双敌：押车枪手</option></select></label><label>流派 <select id="style"><option value="blade">吹命刀</option><option value="iron">铁骨衣</option><option value="dirty">下九流</option><option value="combo">江湖把子</option></select></label><button id="retry">开始 / 重试</button><small>独立试玩存档 · 悬停读牌，点击或拖放出牌</small></div><div id="game-shell">
+    <canvas id="game-canvas" width="1280" height="720" aria-label="江湖残卷游戏画布"></canvas>
+  </div>
+
+  <script src="data/cards.js"></script>
+  <script src="data/card-art.js?v=20260929-mixed-v1"></script>
+  <script src="data/enemies.js"></script>
+  <script src="data/relics.js"></script>
+  <script src="data/events.js"></script>
+
+  <script src="systems/player.js"></script>
+  <script src="systems/relics.js"></script>
+  <script src="systems/deck.js"></script>
+  <script src="systems/status-effects.js"></script>
+  <script src="systems/enemy-ai.js"></script>
+  <script src="systems/nemesis.js"></script>
+  <script src="systems/storage.js"></script>
+  <script src="systems/run-report.js"></script>
+  <script src="systems/audio.js"></script>
+
+  <script src="render/assets.js"></script>
+  <script src="render/canvas-utils.js"></script>
+  <script src="render/ui-components.js"></script>
+  <script src="render/animations-easing.js"></script>
+  <script src="render/animations-state.js"></script>
+  <script src="render/animations-ui.js"></script>
+  <script src="render/animations.js"></script>
+  <script src="render/ui-interactive.js"></script>
+  <script src="render/combat-interaction.js"></script>
+  <script src="render/woodcut-ui.js"></script>
+
+  <script src="scenes/combat.js"></script>
+  <script src="scenes/map.js"></script>
+  <script src="scenes/shop.js"></script>
+  <script src="scenes/rest-shared.js"></script>
+  <script src="scenes/rest-choice.js"></script>
+  <script src="scenes/rest-upgrade.js"></script>
+  <script src="scenes/rest.js"></script>
+  <script src="scenes/nemesis.js"></script>
+  <script src="scenes/event.js"></script>
+  <script src="scenes/reward.js"></script>
+  <!-- Use the complete title scene until the split controller supports the runtime state API. -->
+  <script src="scenes/title.js"></script>
+  <script src="render/woodcut-scenes.js"></script>
+
+  <script src="test-api.js"></script>
+  <script src="main.js"></script>
+<script src="art/gunfight/review.js"></script></body>
+</html>
+

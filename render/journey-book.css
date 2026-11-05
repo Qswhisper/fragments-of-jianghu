@@ -1,0 +1,226 @@
+/* Travel book: one material language for inventory, pause and records. */
+#journey-dialog[data-panel="removeDeck"] { width:min(1480px,96vw); max-height:94dvh; padding:22px 28px; }
+#journey-dialog[data-panel="removeDeck"] #dialog-content { max-height:calc(94dvh - 100px); padding:0 12px 20px 2px; overscroll-behavior:contain; touch-action:pan-y; }
+#journey-dialog .remove-summary { font-size:17px; margin:16px 0 20px; }
+.remove-shelf { display:grid; grid-template-columns:repeat(auto-fill,minmax(145px,1fr)); align-items:start; gap:24px 18px; }
+#journey-dialog .remove-card { display:block; min-width:0; max-width:188px; width:100%; justify-self:center; }
+.remove-card-number { display:block; font:16px 'KGame Song',serif; line-height:1.5; padding:6px 0; color:#4c3728; }
+@media(max-height:500px) {
+  #journey-dialog[data-panel="removeDeck"] { padding:12px 18px; max-height:96dvh; --remove-card-width:clamp(100px,calc((96dvh - 166px)/1.48),136px); }
+  #journey-dialog[data-panel="removeDeck"] #dialog-content { max-height:calc(96dvh - 76px); }
+  #journey-dialog .remove-summary { margin:8px 0 10px; font-size:15px; line-height:1.6; }
+  .remove-shelf { grid-template-columns:repeat(auto-fill,minmax(var(--remove-card-width),1fr)); gap:18px 14px; }
+  #journey-dialog .remove-card { max-width:var(--remove-card-width); }
+  .remove-card-number { font-size:14px; line-height:1.4; padding:3px 0; }
+}
+#journey-dialog { width:min(1100px,94vw); padding:24px 30px; color:#362d24; background:linear-gradient(100deg,#b6a58aee,#d0c2a7f5 38%,#b8a689f5); border:0; border-left:12px solid #292923; box-shadow:0 22px 90px #000d,inset 1px 0 #9a8869; }
+#journey-dialog::before { content:''; position:absolute; inset:0; pointer-events:none; opacity:.16; background:url('../assets/ui/combat_card_torn_rice_paper_gpt4ovip_transparent_01.png') center/cover; mix-blend-mode:multiply; }
+#journey-dialog { overflow:hidden; }
+#journey-dialog header,#dialog-content { position:relative; }
+#dialog-content { max-height:calc(88dvh - 116px);overflow:auto;padding:0 10px 12px 0;scrollbar-color:#846d51 transparent;scrollbar-width:thin; }
+#journey-dialog header { border-bottom:1px solid #79654c66; padding-bottom:16px; }
+#journey-dialog h1 { font-size:30px; letter-spacing:.12em; color:#34291f; }
+#journey-dialog h2 { color:#3c2f23; font-family:'KGame Ink',serif; font-size:24px; }
+#journey-dialog h3 { color:#4b3928; font-size:16px; margin:20px 0 8px; }
+#journey-dialog p { color:#4c4031; line-height:1.85; }
+#journey-dialog a { color:#793d2c; text-decoration:underline; text-underline-offset:3px; }
+#journey-dialog a:hover,#journey-dialog a:focus-visible { color:#572719; }
+#journey-dialog .meta { color:#7b4837; }
+#journey-dialog button,#journey-dialog select { color:#493726; background:#d3c3a33d; border-color:#7b644f66; border-radius:0; }
+#journey-dialog button:hover,#journey-dialog button:focus-visible { color:#7c3028; background:#e1cba65e; outline:1px solid #833d2e; }
+#journey-dialog #close-dialog,#journey-dialog #back-dialog { background:transparent; border:0; }
+#journey-dialog .entry { border-top:1px solid #79654c66; background:transparent; }
+#journey-dialog.pause-root { width:min(850px,92vw); padding:24px 36px 36px; }
+#journey-dialog.pause-root header { position:absolute; inset:8px 10px auto auto; border:0; padding:0; background:transparent; z-index:4; }
+#journey-dialog.pause-root header h1 { position:absolute; width:1px; height:1px; overflow:hidden; }
+#journey-dialog.pause-root #close-dialog { min-width:44px; min-height:44px; }
+#journey-dialog.pause-root .pause-layout { padding-top:16px; }
+#journey-dialog.pause-root #dialog-content { max-height:calc(88dvh - 72px); }
+#journey-dialog.pause-root h1 { visibility:hidden; }
+.pause-layout { display:grid; grid-template-columns:1.25fr 1fr; gap:48px; }
+.pause-lead { padding:8px 10px 0 4px; }
+.pause-kicker { color:#806449; letter-spacing:.3em; font:16px 'KGame Ink',serif; }
+#journey-dialog .pause-lead h2 { font-size:42px; letter-spacing:.12em; margin:18px 0 20px; }
+#journey-dialog #resume-journey { display:block; margin-top:35px; padding:12px 34px; color:#dbc7a4; background:#34342d; border:0; font:26px 'KGame Ink',serif; letter-spacing:.15em; box-shadow:3px 4px 9px #35271640; }
+#journey-dialog #resume-journey::before { content:'行'; color:#dab896; background:#803b2e; display:inline-grid; place-items:center; width:25px; height:25px; font-size:18px; margin-right:18px; rotate:-4deg; }
+.pause-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; border-left:1px solid #80694d66; padding-left:32px; margin:0; }
+#journey-dialog .pause-actions button { padding:12px 4px; border:0; border-bottom:1px solid #8b70524d; font:23px 'KGame Ink',serif; text-align:left; background:transparent; }
+#journey-dialog #return-main-menu { grid-column:1/-1; font-size:17px; margin-top:16px; color:#70533d; border:0; }
+.book-summary { display:flex; justify-content:space-between; gap:20px; padding:18px 0; color:#715b41; font-size:14px; }
+.opening-preparation { border-top:1px solid #79654c66; margin-bottom:20px; }
+#journey-dialog .opening-preparation p { margin:8px 0; font-size:14px; }
+.opening-preparation details { font-size:14px; margin:10px 0; }
+#journey-dialog .opening-preparation button,#journey-dialog .prepare-opening { min-height:44px; padding:8px 12px; margin-top:12px; font-size:15px; }
+.entry-save-note { font:clamp(12px,1.1cqw,21px)/1 'KGame Sans',sans-serif;color:#a6a392; }
+#journey-dialog .book-summary::after { content:'向下滚动查看更多';color:#7b4837;font-size:13px; }
+.deck-book { display:grid; grid-template-columns:minmax(0,1fr) 235px; gap:35px; align-items:start; }
+.card-shelf { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:24px 20px; padding:5px 7px 25px; }
+#journey-dialog .book-card { position:relative; border:0; padding:0; background:transparent; box-shadow:2px 5px 7px #33251670; line-height:0; }
+.book-card canvas { width:100%; height:auto; display:block; }
+.card-accessible-name { position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%); }
+#journey-dialog .book-card.selected { outline:2px solid #873e2f; outline-offset:4px; }
+.card-count { position:absolute; right:-5px; bottom:-9px; font:14px/1.6 'KGame Sans',sans-serif; padding:2px 12px; color:#d6c3a1; background:#33332b; box-shadow:1px 2px 4px #0006; }
+.card-detail { border-left:1px solid #80694d66; padding-left:25px; position:sticky; top:0; }
+.card-detail canvas { width:100%; height:auto; display:block; box-shadow:2px 4px 8px #49352055; }
+.card-detail:focus-visible { outline:1px solid #833d2e; outline-offset:3px; }
+#journey-dialog .card-detail h2 { font-size:22px; margin:16px 0 9px; }
+#journey-dialog .card-detail p { font-size:14px; margin-bottom:0; }
+.book-relics { border-top:1px solid #79654c66; margin-top:20px; }
+.relic-entry { display:flex; gap:20px; align-items:center; }
+.relic-entry img { width:70px; height:80px; object-fit:contain; }
+#journey-dialog .relic-entry h3 { margin:8px 0 0; }.relic-entry p { margin:5px 0; font-size:14px; }
+.route-chapters { grid-template-columns:1fr!important; gap:8px; counter-reset:chapter; }
+.route-chapters .entry { padding-left:65px!important; position:relative; }
+.route-chapters .entry::before { counter-increment:chapter; content:'0' counter(chapter); position:absolute; left:3px; top:20px; font:36px 'KGame Ink',serif; color:#88664c; }
+.nemesis-record { display:grid; grid-template-columns:250px minmax(0,1fr); gap:34px; padding:25px 0; border-bottom:1px solid #79654c66; }
+.nemesis-record > img { width:100%; height:360px; object-fit:contain; object-position:center top; filter:saturate(.65) brightness(.85); mask-image:linear-gradient(#000 75%,transparent); }
+#journey-dialog .nemesis-record h2 { margin:13px 0 10px; font-size:32px; }
+.record-stamp { display:inline-block; padding:3px 8px; border:1px solid #8b3c2a; color:#883d2e; font:15px 'KGame Ink',serif; rotate:-3deg; }
+.memory-history { padding-left:23px; color:#57432f; font-size:14px; line-height:2; }
+.help-chapter { position:relative; padding-left:60px; margin:24px 0; }.help-chapter h2 { margin:0 0 9px; }
+.chapter-number { position:absolute; left:3px; top:0; font:32px 'KGame Ink',serif; color:#88664c; }
+#journey-dialog input[type=range],#journey-dialog input[type=checkbox] { accent-color:#7f3d2e; }
+#journey-dialog .range-controls output { color:#6b4e37; }
+#journey-dialog[data-panel="settings"],#journey-dialog[data-panel="credits"] { width:min(480px,92vw); padding:26px 30px; }
+#journey-dialog .enemy-history summary { color:#793d2c; }
+@media(max-height:500px){#journey-dialog[data-panel="settings"],#journey-dialog[data-panel="credits"]{padding:14px 24px}}
+@media(max-width:850px){.deck-book{grid-template-columns:minmax(0,1fr) 185px;gap:23px}.card-shelf{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 16px}.card-detail{padding-left:18px}}
+@media(max-width:600px){#journey-dialog{padding:18px;border-left-width:6px}.pause-layout{grid-template-columns:1fr;gap:22px}.pause-actions{border-left:0;padding-left:0}.deck-book{grid-template-columns:minmax(0,1fr) 135px;gap:16px}.card-shelf{grid-template-columns:repeat(2,minmax(0,1fr))}.nemesis-record{grid-template-columns:120px minmax(0,1fr);gap:20px}.nemesis-record>img{height:240px}}
+
+/* Keep the selected identity and its actions reachable beside a long shelf. */
+@media(max-height:500px) {
+  .card-detail { max-height:calc(88dvh - 128px); overflow:auto; overscroll-behavior:contain; scrollbar-color:#846d51 transparent; scrollbar-width:thin; padding-right:8px; padding-bottom:8px; }
+  .card-detail canvas { width:56px; float:right; margin:0 0 8px 8px; }
+  #journey-dialog .card-detail h2 { font-size:20px; margin:0 0 9px; }
+  #journey-dialog .card-detail p { clear:both; }
+}
+
+/* A short PC window needs the same complete pause choices as a phone. */
+@media(max-height:500px) and (min-width:601px) {
+  #journey-dialog.pause-root { padding:12px 22px; }
+  .pause-root .pause-layout { gap:24px; }
+  .pause-root .pause-lead { padding:0; }
+  .pause-root .pause-kicker { font-size:12px; }
+  #journey-dialog .pause-lead h2 { font-size:26px; margin:8px 0; }
+  #journey-dialog .pause-lead p { font-size:14px; line-height:1.5; margin:8px 0; }
+  #journey-dialog #resume-journey { margin-top:8px; padding:8px 18px; font-size:22px; min-height:44px; }
+  .pause-root .pause-actions { gap:4px 12px; padding-left:16px; }
+  #journey-dialog .pause-actions button { font-size:18px; min-height:44px; padding:8px 4px; }
+  #journey-dialog #return-main-menu { margin-top:0; }
+}
+
+/* Keep the integrated opening scene; give its primary entrance weight. */
+#journey-dialog[data-panel="runReport"] { width:min(1320px,96vw);padding:20px 34px 24px;border-left-width:16px; }
+#journey-dialog[data-panel="runReport"] header { border-bottom:0;padding-bottom:12px; }
+#journey-dialog[data-panel="runReport"] #dialog-content { max-height:calc(92dvh - 100px);padding:0 8px 10px 0; }
+#journey-dialog[data-panel="runReport"] p { font:20px/1.8 'KGame Song',serif;color:#3d3022;margin:12px 0; }
+.terminal-book { position:relative;min-width:0; }
+#journey-dialog .ledger-tabs { position:sticky;top:0;z-index:3;display:flex;gap:30px;background:#c4b493;border-bottom:1px solid #79654c80;padding:0 8px; }
+#journey-dialog .ledger-tabs button { border:0;border-bottom:3px solid transparent;background:transparent;padding:12px 14px 10px;min-height:48px;font:22px 'KGame Ink',serif;letter-spacing:.08em; }
+#journey-dialog .ledger-tabs button[aria-selected="true"] { color:#7a2c25;border-bottom-color:#7a2c25; }
+.ledger-page[hidden] { display:none!important; }
+.ledger-spread { display:grid;grid-template-columns:.9fr 1.1fr;gap:54px;padding:28px 8px 24px; }
+.ledger-outcome { padding-right:36px;border-right:1px solid #75624666; }
+.ledger-kicker { font:17px 'KGame Song',serif;letter-spacing:.4em;color:#796348; }
+#journey-dialog .ledger-verdict { font:64px/1.2 'KGame Ink',serif;letter-spacing:.09em;margin:18px 0 16px;color:#772d26; }
+.terminal-book[data-outcome="defeat"] .ledger-verdict { color:#342d27; }
+.ledger-style { font:24px 'KGame Ink',serif;color:#453423;letter-spacing:.1em; }
+.ledger-numbers { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 18px;margin:28px 0 0; }
+.ledger-numbers>div { min-width:0; }
+.ledger-numbers dt { font:15px 'KGame Song',serif;color:#796348;margin-bottom:8px; }
+.ledger-numbers dd { font:26px/1.4 'KGame Song',serif;color:#3b2b1c;margin:0;overflow-wrap:anywhere; }
+.ledger-numbers dd small { display:inline-block;white-space:nowrap;font-size:14px;margin-left:5px;color:#796348; }
+#journey-dialog .ledger-recap h2 { margin:0 0 20px;font:28px 'KGame Ink',serif;letter-spacing:.14em; }
+#journey-dialog .ledger-recap p:first-of-type { font-size:23px;line-height:1.8;color:#392a1e;margin:0 0 24px; }
+#journey-dialog .ledger-trophies { border-top:1px solid #79654c66;padding:18px 8px 8px; }
+#journey-dialog .ledger-trophies h2 { margin:0 0 10px;font:23px 'KGame Ink',serif;letter-spacing:.1em; }
+.ledger-trophy-tray { display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:12px; }
+#journey-dialog .ledger-trophy-tray button { display:flex;flex-direction:column;align-items:center;justify-content:start;border:0;background:transparent;padding:5px 0; }
+.ledger-trophy-tray img { width:90px;max-width:100%;height:82px;object-fit:contain;filter:drop-shadow(2px 4px 3px #33251655); }
+.ledger-trophy-tray span { font:15px/1.55 'KGame Song',serif;color:#3b2b1c;text-align:center; }
+.ledger-inheritance { padding:16px 8px 8px;border-top:1px solid #79654c66;margin-top:14px; }
+.ledger-inheritance summary { cursor:pointer;font:19px 'KGame Ink',serif;letter-spacing:.1em;min-height:32px; }
+#journey-dialog .ledger-inheritance p { font-size:18px; }
+.ledger-deck-summary { color:#796348;padding:20px 8px;font:18px 'KGame Song',serif; }
+.ledger-deck { display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:42px;padding:8px; }
+.ledger-deck .card-shelf { grid-template-columns:repeat(5,minmax(0,1fr));gap:30px 24px; }
+.ledger-deck .card-detail { top:70px; }
+.ledger-relic-catalog { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;padding:28px 8px; }
+.ledger-relic { display:grid;grid-template-columns:95px minmax(0,1fr);align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid #79654c44;min-width:0; }
+.ledger-relic img { width:95px;height:110px;object-fit:contain;filter:drop-shadow(2px 4px 3px #33251655); }
+#journey-dialog .ledger-relic h2 { font:22px/1.5 'KGame Ink',serif;margin:0 0 8px; }
+#journey-dialog .ledger-relic p { font-size:18px;margin:0; }
+@media(max-width:1000px),(max-height:550px) {
+ #journey-dialog[data-panel="runReport"] { padding:12px 18px;max-height:96dvh; }
+ #journey-dialog[data-panel="runReport"] header { padding-bottom:6px; }
+ #journey-dialog[data-panel="runReport"] header h1 { font-size:24px; }
+ #journey-dialog[data-panel="runReport"] #dialog-content { max-height:calc(96dvh - 66px); }
+ #journey-dialog .ledger-tabs { gap:18px; }
+ #journey-dialog .ledger-tabs button { font-size:20px;padding:9px 10px;min-height:44px; }
+ .ledger-spread { gap:24px;padding:18px 4px; }
+ .ledger-outcome { padding-right:20px; }
+ #journey-dialog .ledger-verdict { font-size:42px;margin:10px 0 12px; }
+ .ledger-style { font-size:21px; }.ledger-kicker { font-size:15px; }
+ .ledger-numbers { gap:16px 10px;margin:20px 0 0; }.ledger-numbers dd { font-size:22px; }.ledger-numbers dt { font-size:14px;margin-bottom:5px; }
+ #journey-dialog .ledger-recap h2 { font-size:24px;margin-bottom:12px; }
+ #journey-dialog .ledger-recap p,#journey-dialog .ledger-recap p:first-of-type { font-size:18px;line-height:1.75;margin:8px 0 12px; }
+ .ledger-trophy-tray { grid-template-columns:repeat(5,minmax(0,1fr));gap:14px; }
+ .ledger-trophy-tray img { height:72px; }
+ .ledger-deck { grid-template-columns:minmax(0,1fr) 174px;gap:22px; }.ledger-deck .card-shelf { grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 18px; }
+ .ledger-relic-catalog { grid-template-columns:repeat(2,minmax(0,1fr));gap:20px; }
+ .ledger-relic { grid-template-columns:72px minmax(0,1fr);gap:12px; }.ledger-relic img { width:72px;height:86px; }
+ #journey-dialog .ledger-relic h2 { font-size:21px; }#journey-dialog .ledger-relic p { font-size:18px; }
+}
+@media(max-width:560px) {
+ .ledger-spread { grid-template-columns:1fr;gap:24px; }.ledger-outcome { border-right:0;border-bottom:1px solid #79654c66;padding:0 0 20px; }
+ .ledger-deck { grid-template-columns:minmax(0,1fr) 150px;gap:18px; }.ledger-deck .card-shelf { grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px; }
+ .ledger-trophy-tray { grid-template-columns:repeat(4,minmax(0,1fr)); }.ledger-relic-catalog { grid-template-columns:1fr; }
+}
+@media(max-height:550px) {
+ #journey-dialog[data-panel="runReport"] .ledger-deck .card-detail { display:block;position:sticky;top:60px;padding-left:16px; }
+ #journey-dialog[data-panel="runReport"] .ledger-deck .card-detail canvas { display:none;float:none; }
+ #journey-dialog[data-panel="runReport"] .ledger-deck .card-detail h2 { float:none;clear:both;font-size:21px;margin:4px 0 12px;line-height:1.5; }
+ #journey-dialog[data-panel="runReport"] .ledger-deck .card-detail p { font-size:18px;line-height:1.8; }
+}
+.run-report-metrics { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 24px;margin:20px 0 24px; }
+.report-metric { border-top:1px solid #79654c66;padding:12px 0 8px; }
+.report-metric>span { display:block;color:#6a543e;font-size:16px;margin-bottom:5px; }
+.report-metric>strong { display:block;color:#392b1f;font:clamp(24px,1.8vw,38px)/1.4 'KGame Song',serif;overflow-wrap:anywhere; }
+.run-report-recap,.run-report-relics { border-top:1px solid #79654c66; }
+.report-relic-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px; }
+#journey-dialog .report-relic-grid h3 { font:22px/1.5 'KGame Ink',serif;margin:4px 0 8px;color:#3d3022; }
+#journey-dialog .report-relic-grid p { margin:0 0 14px; }
+.event-owned { padding:8px 0 14px;font-size:17px; }
+.event-technique-shelf { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:stretch;padding:10px 4px 18px; }
+#journey-dialog .event-technique { line-height:normal;box-shadow:none;padding:14px 12px;border:1px solid #80694d66;display:flex;flex-direction:column;align-items:center; }
+.event-technique>canvas { width:150px;max-width:100%;height:auto; }
+#journey-dialog .event-technique h2 { font-size:23px;margin:12px 0 8px; }
+#journey-dialog .event-technique p { font:18px/1.6 'KGame Song',serif;text-align:left;margin:0;color:#3d3022; }
+#journey-dialog[data-panel="eventTechniques"] #dialog-content { display:flex;flex-direction:column;overflow:hidden;min-height:0; }
+#journey-dialog[data-panel="eventTechniques"] .event-owned { flex:none; }
+#journey-dialog[data-panel="eventTechniques"] .event-technique-shelf { flex:1;min-height:0;overflow:auto;overscroll-behavior:contain; }
+.event-technique-actions { display:flex;gap:18px;flex:none;background:#cbbba0;padding:12px 0 8px; }
+.event-technique-actions button { min-height:46px;padding:10px 20px;font-size:19px; }
+.event-technique-actions button:disabled { opacity:.45;cursor:default; }
+@media(max-width:760px) {
+ .run-report-metrics { grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px; }
+ .report-relic-grid { grid-template-columns:1fr;gap:12px; }
+ .event-technique-shelf { grid-template-columns:1fr;gap:14px; }
+ #journey-dialog .event-technique { flex-direction:row;align-items:center;gap:18px;text-align:left; }
+ .event-technique>canvas { width:92px;flex:none; }
+ #journey-dialog .event-technique h2 { margin:0 0 6px; }
+}
+@media(max-height:500px) {
+ #journey-dialog[data-panel="eventTechniques"] { max-height:96dvh;padding:12px 18px; }
+ .event-technique-shelf { grid-template-columns:1fr;gap:12px;padding-top:4px; }
+ .event-technique>canvas { width:68px;flex:none; }
+ #journey-dialog .event-technique { flex-direction:row;align-items:center;gap:16px;padding:10px 12px;text-align:left; }
+ #journey-dialog .event-technique h2 { font-size:20px;margin:0 0 6px; }
+ #journey-dialog[data-panel="eventTechniques"] h1 { font-size:24px; }
+ #journey-dialog[data-panel="eventTechniques"] .event-owned { padding:4px 0 10px; }
+ #journey-dialog[data-panel="eventTechniques"]>header { padding-bottom:8px; }
+ #journey-dialog[data-panel="eventTechniques"] #dialog-content { max-height:calc(96dvh - 78px); }
+}
+:is(#entry-ui,.journey-motion-ghost).cinematic-menu .entry-menu-button.primary { padding-left:4.7cqw;background:linear-gradient(90deg,#30372ee8,#30372e99 76%,#30372e00);clip-path:polygon(0 6%,29% 0,98% 4%,100% 93%,67% 100%,0 96%); }
+:is(#entry-ui,.journey-motion-ghost).cinematic-menu .entry-menu-button.primary::before { content:'行';left:1.25cqw;top:50%;transform:translateY(-50%);width:2.1cqw;height:2.1cqw;display:grid;place-items:center;rotate:-4deg;background:#843b2f;color:#dbc4a4;font:1.5cqw 'KGame Ink',serif; }
+:is(#entry-ui,.journey-motion-ghost).cinematic-menu .entry-menu-button:not(.primary) { font-size:clamp(21px,1.9cqw,36px);color:#b7b09f; }

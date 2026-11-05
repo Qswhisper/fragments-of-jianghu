@@ -1,0 +1,68 @@
+#game-shell { position: relative; }
+#game-shell { overflow: clip; }
+:is(#entry-ui,.journey-motion-ghost) { position: absolute; container-type: inline-size; pointer-events: none; color: #c9c2b4; overflow: clip; }
+:is(#entry-ui,.journey-motion-ghost)[hidden] { display: none; }
+:is(#entry-ui,.journey-motion-ghost) > * { position: absolute; }
+:is(#entry-ui,.journey-motion-ghost) button { pointer-events: auto; background: transparent; border: 0; border-radius: 0; color: inherit; padding: 0; }
+:is(#entry-ui,.journey-motion-ghost) button:hover,:is(#entry-ui,.journey-motion-ghost) button:focus-visible { outline: none; }
+:is(#entry-ui,.journey-motion-ghost) button:focus-visible { filter: drop-shadow(0 0 3px #d5b78b88); }
+:is(#entry-ui,.journey-motion-ghost) .entry-menu-button::after,:is(#entry-ui,.journey-motion-ghost) .entry-school::after { content: ''; position: absolute; left: 5px; bottom: 7px; width: 0; height: 2px; background: #b39670; clip-path: polygon(0 50%,6% 0,85% 35%,100% 80%,66% 100%); transition: width .22s; }
+:is(#entry-ui,.journey-motion-ghost) .entry-menu-button:hover::after,:is(#entry-ui,.journey-motion-ghost) .entry-menu-button:focus-visible::after,:is(#entry-ui,.journey-motion-ghost) .entry-school:focus-visible::after { width: 42%; }
+.entry-title { font-family: 'KGame Ink',serif; font-size: clamp(42px,6cqw,110px); letter-spacing: .13em; color: #d1c9b9; text-shadow: 2px 3px 7px #000a; white-space: nowrap; }
+.entry-subtitle { font-family: 'KGame Ink',serif; font-size: clamp(22px,2.15cqw,40px); letter-spacing: .4em; color: #aaa18f; }
+:is(#entry-ui,.journey-motion-ghost) .entry-menu-button { text-align: left; font-family: 'KGame Ink',serif; font-size: clamp(24px,2.15cqw,40px); letter-spacing: .16em; padding-left: 6px; }
+:is(#entry-ui,.journey-motion-ghost) .entry-menu-button.primary { color: #d6c0a1; }
+:is(#entry-ui,.journey-motion-ghost) .entry-menu-button.primary::before { content: ''; width: 4px; height: 30%; position: absolute; left: -18px; top: 35%; background: #813b30; }
+:is(#entry-ui,.journey-motion-ghost) .entry-menu-button:hover { color: #efdbc0; }
+:is(#entry-ui,.journey-motion-ghost) .entry-school { text-align: left; color: #a49f94; }
+.school-name { display: block; font: clamp(24px,2.35cqw,44px)/1.3 'KGame Ink',serif; letter-spacing: .12em; }
+:is(#entry-ui,.journey-motion-ghost) .entry-school.selected { color: #d7c7ad; }
+.entry-school.selected .school-name { font-size: clamp(32px,3.45cqw,63px); line-height: 1.15; }
+.entry-school.selected::before { content: ''; position: absolute; left: -22px; top: 16%; height: 38%; width: 5px; background: #873e2f; clip-path: polygon(10% 0,100% 8%,80% 93%,20% 100%,0 68%); }
+.school-hint { display: block; margin-top: .35em; font-size: clamp(16px,1.4cqw,26px); line-height: 1.3; color: #a9a497; }
+:is(#entry-ui,.journey-motion-ghost) .entry-school:hover .school-name { color: #ead7b9; }
+:is(#entry-ui,.journey-motion-ghost) .entry-start { font-family: 'KGame Ink',serif; font-size: clamp(27px,2.65cqw,49px); letter-spacing: .18em; color: #d9c5a8; text-align: center; padding-left: 2cqw; background: #49504a url('../assets/ui/combat_card_torn_rice_paper_gpt4ovip_transparent_01.png') center/cover; background-blend-mode: multiply; box-shadow: 0 .35cqw 1.2cqw #0007; clip-path: polygon(2% 4%,25% 0,55% 3%,99% 1%,100% 92%,70% 100%,40% 96%,0 100%); }
+:is(#entry-ui,.journey-motion-ghost) .entry-start::before { content: '行'; position: absolute; left: 1.4cqw; top: 25%; width: 2.3cqw; height: 2.3cqw; background: #813b2e; color: #d7bca0; font: 1.7cqw/2.3cqw 'KGame Ink',serif; letter-spacing: 0; rotate: -4deg; box-shadow: inset 0 0 0 2px #aa74555a; }
+:is(#entry-ui,.journey-motion-ghost) .entry-start:hover { color: #f1d9b8; filter: brightness(1.15); }
+:is(#entry-ui,.journey-motion-ghost) .entry-back,:is(#entry-ui,.journey-motion-ghost) .entry-loadout { font: clamp(16px,1.5cqw,28px)/1 'KGame Ink',serif; text-align: center; color: #342c23; background: #b8ac91 url('../assets/ui/combat_card_torn_rice_paper_gpt4ovip_transparent_01.png') center/cover; background-blend-mode: multiply; clip-path: polygon(3% 0,30% 4%,73% 1%,99% 6%,97% 98%,52% 96%,2% 100%,0 40%); filter: drop-shadow(2px 4px 6px #0009); }
+:is(#entry-ui,.journey-motion-ghost) .entry-back:hover,:is(#entry-ui,.journey-motion-ghost) .entry-loadout:hover { color: #8b3528; filter: brightness(1.08); }
+:is(#entry-ui,.journey-motion-ghost) .entry-back::before { content: '‹'; display: inline-block; margin-right: .65cqw; color: #7e3b2d; }
+:is(#entry-ui,.journey-motion-ghost) .entry-loadout::before { content: '册'; display: inline-block; color: #813b2e; margin-right: .5cqw; }
+dialog { background: linear-gradient(120deg,#151616ed,#0e1011f7); border-color: #595044; box-shadow: 0 24px 100px #000d; }
+.entry { background: transparent; border-left: 0; border-top: 1px solid #4b4338; padding: 14px 8px; }
+button,select { background: #232321; border-color: #645744; }
+input[type=range],input[type=checkbox] { accent-color: #a0835d; }
+.range-controls { display: flex; align-items: center; gap: 16px; }
+.range-controls output { width: 48px; text-align: right; color: #aa9679; }
+
+/* The scene owns its motion; labels and objects retain their resting positions. */
+.journey-motion-ghost { position: absolute; z-index: 4; pointer-events: none; }
+.journey-motion-ghost * { pointer-events: none !important; }
+.journey-dialog-ghost,.journey-dialog-ghost * { pointer-events: none !important; }
+.journey-dialog-ghost * { animation: none !important; }
+#entry-ui { z-index: 3; }
+#entry-ui .entry-title { animation: entry-ink .65s cubic-bezier(.16,1,.3,1) both; }
+#entry-ui .entry-subtitle { animation: entry-ink .65s .09s cubic-bezier(.16,1,.3,1) both; }
+#entry-ui .entry-menu-button,#entry-ui .entry-back,#entry-ui .entry-loadout,#entry-ui .entry-start { animation: entry-arrive .48s .1s cubic-bezier(.16,1,.3,1) both; transition: color .18s ease,transform .22s cubic-bezier(.16,1,.3,1),letter-spacing .25s; }
+#entry-ui .entry-menu-button:hover { transform: translateX(5px); letter-spacing: .19em; }
+#entry-ui .entry-menu-button:active { transform: translateX(3px); }
+.school-name { transition: font-size .32s cubic-bezier(.22,1,.36,1),color .2s,line-height .32s; }
+.school-hint { opacity: 0; max-height: 0; transform: translateY(5px); overflow: hidden; transition: opacity .24s,transform .3s,max-height .28s; }
+.entry-school.selected .school-hint { opacity: 1; max-height: 64px; transform: translateY(0); }
+#entry-ui .entry-school { transition: color .22s,transform .24s; animation: entry-arrive .5s .08s cubic-bezier(.16,1,.3,1) both; }
+#entry-ui .entry-school:hover { transform: translateX(3px); }
+#entry-ui .entry-school::before { transition: opacity .22s; }
+dialog[open] { animation: dialog-arrive .19s cubic-bezier(.16,1,.3,1) both; }
+dialog[open]::backdrop { animation: backdrop-arrive .19s ease-out both; }
+dialog .entry { animation: entry-arrive .24s cubic-bezier(.16,1,.3,1) both; }
+@keyframes entry-ink { from { opacity: 0; transform: translateY(12px); filter: blur(2px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+@keyframes entry-arrive { from { opacity: 0; translate: 0 12px; } to { opacity: 1; translate: 0 0; } }
+@keyframes dialog-arrive { from { opacity: 0; translate: 0 7px; scale: .988; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes backdrop-arrive { from { background: #0000; } to { background: #000a; } }
+.journey-paused #entry-ui > * { animation-play-state: paused; }
+.motion-reduced #entry-ui > *,.motion-reduced dialog,.motion-reduced dialog::backdrop,.motion-reduced dialog .entry { animation: none !important; }
+.motion-reduced .school-name,.motion-reduced .school-hint,.motion-reduced #entry-ui button { transition: none !important; transform: none !important; }
+@media(prefers-reduced-motion:reduce) { #entry-ui > *,dialog,dialog::backdrop,dialog .entry { animation: none !important; } .school-name,.school-hint,#entry-ui button { transition: none !important; } }
+
+
+.entry-version { font-size: clamp(14px,1.4cqw,24px); letter-spacing: .16em; color: #aaa18f; }
